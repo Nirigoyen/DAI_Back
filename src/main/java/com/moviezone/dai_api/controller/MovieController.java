@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
 import okhttp3.Response;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,11 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/movies")
 public class MovieController {
 
 
-    @GetMapping(value = "/movies")
+    @GetMapping(value = "")
     public ResponseEntity<String> discover() throws IOException {
 
         String API_URL = "https://api.themoviedb.org/3/discover/movie";
@@ -34,29 +35,14 @@ public class MovieController {
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
 
         if (response.getStatusCodeValue() == 200) {
-            String datos = response.getBody();
-            return new ResponseEntity<String>(datos, HttpStatus.OK);
+            //String datos = response.getBody();
+            //return new ResponseEntity<String>(datos, HttpStatus.OK);
+            return response;
         } else {
             return new ResponseEntity<String>("Error en la petición", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 }
-
-
-
-//        String url = "https://api.themoviedb.org/3/discover/movie";
-//        OkHttpClient client = new OkHttpClient();
-//
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .get()
-//                .addHeader("accept", "application/json")
-//                .addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjUxODkzODQ4NDEwYWE4OThmMzQ5MTYwZjc4MjFkZiIsInN1YiI6IjY1ZmNkMzFjMzUyMGU4MDE2NWQ1MDZjZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.d_ivgbfrcNn_yuTciheY2saSHuS2F2a5ZAAZds_uGU8")
-//                .build();
-//
-//        Response response = client.newCall(request).execute();
-//        return response;
-//    }
 
 
