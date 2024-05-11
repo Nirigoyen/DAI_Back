@@ -1,6 +1,7 @@
 package com.moviezone.dai_api.controller;
 
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
+import io.github.cdimascio.dotenv.Dotenv;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
@@ -22,14 +23,14 @@ public class MovieController {
 
     @GetMapping(value = "")
     public ResponseEntity<String> discover() throws IOException {
-
+        //Dotenv dotenv = Dotenv.load();
         String API_URL = "https://api.themoviedb.org/3/discover/movie";
 
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization","Bearer ");
+        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
