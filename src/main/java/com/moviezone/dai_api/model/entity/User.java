@@ -25,7 +25,7 @@ public class User {
     @JsonManagedReference(value = "user-favoriteMovies")
     private List<Movie> favoriteMovies = new ArrayList<Movie>();
 
-    @ManyToOne
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-ratedMovies")
     private List<Rating> ratedMovies = new ArrayList<Rating>();
 
