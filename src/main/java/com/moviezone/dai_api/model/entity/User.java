@@ -13,13 +13,15 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int userId;
     private String username;
     private String name;
     private String lastName;
     private String email;
     private Date birthDate;
     private String profilePicture;
+
+
 
     @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-favoriteMovies")
@@ -44,10 +46,10 @@ public class User {
     }
 
     public int getId() {
-        return id;
+        return userId;
     }
     public void setId(int id) {
-        this.id = id;
+        this.userId = id;
     }
     public String getUsername() {
         return username;

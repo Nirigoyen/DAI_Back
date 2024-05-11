@@ -12,15 +12,17 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int movieId;
 
     private String title;
-    
+
     private int year;
 
-    private List<String> genres = new ArrayList<String>();
-
     private int duration;
+
+    private String director;
+
+    private int globalRating;
 
     private String synopsis;
 
@@ -28,11 +30,10 @@ public class Movie {
 
     private String trailer;
 
-    private String director;
 
-    private List<String> actors = new ArrayList<String>();
-
-    private List<String> images = new ArrayList<String>();
+    @ManyToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "movie-genres")
+    private List<Genre> genres = new ArrayList<Genre>();
 
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
