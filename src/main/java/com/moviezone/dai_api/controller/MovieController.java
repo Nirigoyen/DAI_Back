@@ -29,7 +29,7 @@ public class MovieController {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization","Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNjUxODkzODQ4NDEwYWE4OThmMzQ5MTYwZjc4MjFkZiIsInN1YiI6IjY1ZmNkMzFjMzUyMGU4MDE2NWQ1MDZjZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.d_ivgbfrcNn_yuTciheY2saSHuS2F2a5ZAAZds_uGU8");
+        headers.add("Authorization","Bearer ");
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
