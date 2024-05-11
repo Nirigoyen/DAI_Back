@@ -14,27 +14,92 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String username;
     private String name;
     private String lastName;
     private String email;
     private Date birthDate;
+    private String profilePicture;
 
     @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-favoriteMovies")
     private List<Movie> favoriteMovies = new ArrayList<Movie>();
 
+    @ManyToOne
+    @JsonManagedReference(value = "user-ratedMovies")
+    private List<Rating> ratedMovies = new ArrayList<Rating>();
 
-    public User(String name, String lastName, String email, Date birthDate) {
-        super();
-        this.name = name;
-        this.lastName = lastName;
-        this.email = email;
-        this.birthDate = birthDate;
-    }
 
     public User() {
         super();
     }
+
+    public User(String username, String name, String lastName, String email, Date birthDate, String profilePicture) {
+        this.username = username;
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.birthDate = birthDate;
+        this.profilePicture = profilePicture;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public Date getBirthDate() {
+        return birthDate;
+    }
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+    public List<Movie> getFavoriteMovies() {
+        return favoriteMovies;
+    }
+    public void setFavoriteMovies(List<Movie> favoriteMovies) {
+        this.favoriteMovies = favoriteMovies;
+    }
+    public List<Rating> getRatedMovies() {
+        return ratedMovies;
+    }
+    public void setRatedMovies(List<Rating> ratedMovies) {
+        this.ratedMovies = ratedMovies;
+    }
+
+
+
 
 
 }
