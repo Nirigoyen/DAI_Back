@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 import com.moviezone.dai_api.model.dto.MovieDTO;
+import com.moviezone.dai_api.utils.IMAGE_TYPE;
+import com.moviezone.dai_api.utils.ImageLinks;
 import io.github.cdimascio.dotenv.Dotenv;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -57,13 +59,13 @@ public class MovieController {
             String movieId;
             List<MovieComponentDTO> allMovieTest = new ArrayList<>();
             System.out.println(jsonObjList.get(0).toString());
-            for(int i = 0; i < 5; i++){
-                String movie = jsonObjList.get(i).toString();
+            for(Object movie : jsonObjList){
+                //String movie = jsonObjList.get(i).toString();
                 MovieComponentDTO movieDTO = new MovieComponentDTO();
-                String[] movieAttributes = movie.split(",");
+                String[] movieAttributes = movie.toString().split(",");
                 for(String attribute: movieAttributes){
                     if (attribute.contains("id=")) movieDTO.setMovieId((int)Float.parseFloat(attribute.split("=")[1]));
-                    if (attribute.contains("poster_path")) movieDTO.setMoviePosterPath(attribute.split("=")[1]);
+                    if (attribute.contains("poster_path")) movieDTO.setMoviePosterPath(ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER)+attribute.split("=")[1]);
                 if (!allMovieTest.contains(movieDTO))
                     allMovieTest.add(movieDTO);
                 }
