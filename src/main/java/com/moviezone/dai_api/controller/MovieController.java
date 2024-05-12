@@ -5,16 +5,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
-import com.moviezone.dai_api.model.dto.MovieDTO;
+
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
 import io.github.cdimascio.dotenv.Dotenv;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 
-
-import okhttp3.Response;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -58,7 +52,7 @@ public class MovieController {
             //ArrayList<?> auxArray = gson.fromJson(jsonObjList.get(0).toString(), ArrayList.class);
             String movieId;
             List<MovieComponentDTO> allMovieTest = new ArrayList<>();
-            System.out.println(jsonObjList.get(0).toString());
+//            System.out.println(jsonObjList.get(0).toString());
             for(Object movie : jsonObjList){
                 //String movie = jsonObjList.get(i).toString();
                 MovieComponentDTO movieDTO = new MovieComponentDTO();

@@ -4,8 +4,24 @@ import com.moviezone.dai_api.model.entity.User;
 
 public class IUserImplementation implements IUserDAO{
 
-    public User findUser(int id) {
+    @Override
+    public User findUserById(int userId) {
         return null;
+    }
+
+    @Override
+    public void createUser(int userId) {
+
+    }
+
+    @Override
+    public void modifyUser(int userId) {
+
+    }
+
+    @Override
+    public void deleteUser(int userId) {
+
     }
 
 }

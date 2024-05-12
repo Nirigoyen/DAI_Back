@@ -2,6 +2,7 @@ package com.moviezone.dai_api.model.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.moviezone.dai_api.model.dto.UserDTO;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -19,9 +20,13 @@ public class User {
     private String lastName;
     private String email;
     private Date birthDate;
-    private String profilePicture;
 
 
+
+    //Relaciones
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "user-profile_picture")
+    private ProfilePicture profilePicture;
 
     @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-favoriteMovies")
@@ -36,7 +41,7 @@ public class User {
         super();
     }
 
-    public User(String username, String name, String lastName, String email, Date birthDate, String profilePicture) {
+    public User(String username, String name, String lastName, String email, Date birthDate, ProfilePicture profilePicture) {
         this.username = username;
         this.name = name;
         this.lastName = lastName;
@@ -81,10 +86,10 @@ public class User {
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
-    public String getProfilePicture() {
+    public ProfilePicture getProfilePicture() {
         return profilePicture;
     }
-    public void setProfilePicture(String profilePicture) {
+    public void setProfilePicture(ProfilePicture profilePicture) {
         this.profilePicture = profilePicture;
     }
     public List<Movie> getFavoriteMovies() {
@@ -100,7 +105,11 @@ public class User {
         this.ratedMovies = ratedMovies;
     }
 
-
+//    public UserDTO toDTO(){
+//        return new UserDTO(this.userId, this.username, this.name, this.lastName, this.email, this.birthDate,
+//                this.profilePicture.toDTO(), this.favoriteMovies, this.ratedMovies);
+//        //FIJARSE EN QUE MOMENTO CONVERTIR LAS PELICULAS EN DTOS.
+//    }
 
 
 
