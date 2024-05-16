@@ -20,14 +20,11 @@ public class User {
     private String lastName;
     private String email;
     private Date birthDate;
+    private String profilePictureLink;
 
 
 
     //Relaciones
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "user-profile_picture")
-    private ProfilePicture profilePicture;
-
     @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-favoriteMovies")
     private List<Movie> favoriteMovies = new ArrayList<Movie>();
@@ -41,13 +38,13 @@ public class User {
         super();
     }
 
-    public User(String username, String name, String lastName, String email, Date birthDate, ProfilePicture profilePicture) {
+    public User(String username, String name, String lastName, String email, Date birthDate, String profilePicture) {
         this.username = username;
         this.name = name;
         this.lastName = lastName;
         this.email = email;
         this.birthDate = birthDate;
-        this.profilePicture = profilePicture;
+        this.profilePictureLink = profilePictureLink;
     }
 
     public int getId() {
@@ -86,11 +83,11 @@ public class User {
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
-    public ProfilePicture getProfilePicture() {
-        return profilePicture;
+    public String getProfilePicture() {
+        return profilePictureLink;
     }
-    public void setProfilePicture(ProfilePicture profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfilePicture(String profilePictureLink) {
+        this.profilePictureLink = profilePictureLink;
     }
     public List<Movie> getFavoriteMovies() {
         return favoriteMovies;
