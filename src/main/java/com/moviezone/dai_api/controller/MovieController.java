@@ -14,13 +14,12 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 @RestController
 @RequestMapping("/movies")
@@ -28,9 +27,12 @@ public class MovieController {
 
 
     @GetMapping(value = "")
-    public List<MovieComponentDTO> discover() throws IOException {
+    public List<MovieComponentDTO> discover(@RequestParam(name = "page") int page) {
         //Dotenv dotenv = Dotenv.load();
-        String API_URL = "https://api.themoviedb.org/3/discover/movie";
+        if (page == 0) page = 1;
+        String API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR&page=" + page + "&release_date.lte=" + "2024-05-15" + "&sort_by=primary_release_date.desc";
+
+        //https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR&page=2&release_date.lte=2024-12-31&sort_by=primary_release_date.desc'
 
 
         RestTemplate restTemplate = new RestTemplate();
