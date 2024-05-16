@@ -38,7 +38,7 @@ public class User {
         super();
     }
 
-    public User(String username, String name, String lastName, String email, Date birthDate, String profilePicture) {
+    public User(String username, String name, String lastName, String email, Date birthDate, String profilePictureLink) {
         this.username = username;
         this.name = name;
         this.lastName = lastName;
