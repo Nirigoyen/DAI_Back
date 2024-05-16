@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 
 @Repository
-public class IUserDAOImplementation implements IUserDAO{
+public class UserDAOImplementation implements IUserDAO{
 
     @PersistenceContext
     private EntityManager entityManager;

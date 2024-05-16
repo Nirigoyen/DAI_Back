@@ -1,15 +1,15 @@
 package com.moviezone.dai_api.service;
 
-import com.moviezone.dai_api.model.dao.IUserDAOImplementation;
+import com.moviezone.dai_api.model.dao.UserDAOImplementation;
 import com.moviezone.dai_api.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class IUserServiceImplementation implements IUserService{
+public class UserServiceImplementation implements IUserService{
 
     @Autowired
-    private IUserDAOImplementation IUserDAOImplementation;
+    private UserDAOImplementation IUserDAOImplementation;
 
 
     @Override

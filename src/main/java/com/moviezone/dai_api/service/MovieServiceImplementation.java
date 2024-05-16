@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class IMovieServiceImplementation implements IMovieService{
+public class MovieServiceImplementation implements IMovieService{
     public void getMovieById(int id){
         System.out.println("Getting movie by id: " + id);
     }

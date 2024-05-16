@@ -1,10 +1,12 @@
 package com.moviezone.dai_api.model.dao;
 
 import com.moviezone.dai_api.model.entity.Rating;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public class IRatingImplementation implements IRating{
+@Repository
+public class RatingDAOImplementation implements IRatingDAO {
     @Override
     public void rateMovie(int id, int rating, int userId) {
 

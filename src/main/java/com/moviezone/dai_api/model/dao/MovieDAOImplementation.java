@@ -4,11 +4,13 @@ import com.moviezone.dai_api.model.dto.MovieDTO;
 import com.moviezone.dai_api.model.entity.MovieE1;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.*;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-public class IMovieDAOImplementation implements IMovieDAO {
+@Repository
+public class MovieDAOImplementation implements IMovieDAO {
     public MovieE1 findMovie(int id) {
         return null;
     }
