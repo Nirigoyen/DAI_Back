@@ -3,7 +3,9 @@ package com.moviezone.dai_api.service;
 import com.moviezone.dai_api.model.dao.IUserDAOImplementation;
 import com.moviezone.dai_api.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class IUserServiceImplementation implements IUserService{
 
     @Autowired

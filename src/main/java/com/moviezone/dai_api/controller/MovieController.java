@@ -30,7 +30,7 @@ public class MovieController {
     public List<MovieComponentDTO> discover(@RequestParam(name = "page") int page) {
         //Dotenv dotenv = Dotenv.load();
         if (page == 0) page = 1;
-        String API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR&page=" + page + "&release_date.lte=" + "2024-05-15" + "&sort_by=primary_release_date.desc";
+        String API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR&page=" + String.valueOf(page) + "&release_date.lte=" + "2024-05-15" + "&sort_by=primary_release_date.desc";
 
         //https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR&page=2&release_date.lte=2024-12-31&sort_by=primary_release_date.desc'
 
