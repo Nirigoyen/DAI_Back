@@ -44,6 +44,7 @@ public class MovieController {
         if (response.getStatusCodeValue() == 200) {
 
             String datos = response.getBody();
+            //return response;
 
             JsonParser parser = new JsonParser();
             JsonObject jsonObject = (JsonObject) parser.parse(datos);
@@ -54,10 +55,17 @@ public class MovieController {
             for (int i = 0; i < allMovies.size(); i++) {
                 MovieComponentDTO newMovie = new MovieComponentDTO();
                 JsonObject TMDBmovie = allMovies.get(i).getAsJsonObject();
-                newMovie.setMovieId(TMDBmovie.get("id").getAsInt());
-                newMovie.setMoviePosterPath(TMDBmovie.get("poster_path").getAsString());
+
+                int newMovieId = TMDBmovie.get("id").getAsInt(); // Get "ID" field from JSON
+                String newMovieImagePosterPath = ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER, TMDBmovie.get("poster_path").getAsString()); // get "poster_path" field from JSON
+
+                newMovie.setMovieId(newMovieId);
+                newMovie.setMoviePosterPath(newMovieImagePosterPath);
                 allMovieTest.add(newMovie);
+
             }
+
+
 
             System.out.println("All Movies = " + allMovieTest);
 
