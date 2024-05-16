@@ -10,7 +10,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/auths")
 public class AuthenticationController {
-    private final int EXPIRATION_TIME = 864_000_000; // 10 days
+    private final int EXPIRATION_TIME = 864_000_000; // 10 days Y esto? xDD
     /*
     @PostMapping("/login")
     @CrossOrigin(origins = "http://localhost:3000")

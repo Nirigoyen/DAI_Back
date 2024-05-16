@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 
+import com.moviezone.dai_api.model.dto.MovieDTO;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @RestController
 @RequestMapping("/movies")
@@ -42,27 +44,19 @@ public class MovieController {
         if (response.getStatusCodeValue() == 200) {
 
             String datos = response.getBody();
-            //return response;
 
             JsonParser parser = new JsonParser();
             JsonObject jsonObject = (JsonObject) parser.parse(datos);
             JsonArray allMovies = jsonObject.getAsJsonArray("results");
-            Gson gson = new Gson();
-            ArrayList<?> jsonObjList = gson.fromJson(allMovies, ArrayList.class);
-            //ArrayList<?> auxArray = gson.fromJson(jsonObjList.get(0).toString(), ArrayList.class);
-            String movieId;
+
             List<MovieComponentDTO> allMovieTest = new ArrayList<>();
-//            System.out.println(jsonObjList.get(0).toString());
-            for(Object movie : jsonObjList){
-                //String movie = jsonObjList.get(i).toString();
-                MovieComponentDTO movieDTO = new MovieComponentDTO();
-                String[] movieAttributes = movie.toString().split(",");
-                for(String attribute: movieAttributes){
-                    if (attribute.contains("id=")) movieDTO.setMovieId((int)Float.parseFloat(attribute.split("=")[1]));
-                    if (attribute.contains("poster_path")) movieDTO.setMoviePosterPath(ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER)+attribute.split("=")[1]);
-                if (!allMovieTest.contains(movieDTO))
-                    allMovieTest.add(movieDTO);
-                }
+
+            for (int i = 0; i < allMovies.size(); i++) {
+                MovieComponentDTO newMovie = new MovieComponentDTO();
+                JsonObject TMDBmovie = allMovies.get(i).getAsJsonObject();
+                newMovie.setMovieId(TMDBmovie.get("id").getAsInt());
+                newMovie.setMoviePosterPath(TMDBmovie.get("poster_path").getAsString());
+                allMovieTest.add(newMovie);
             }
 
             System.out.println("All Movies = " + allMovieTest);

@@ -28,4 +28,12 @@ public class MovieComponentDTO {
     public void setMoviePosterPath(String moviePosterPath) {
         this.moviePosterPath = moviePosterPath;
     }
+
+    @Override
+    public String toString() {
+        return "MovieComponentDTO{" +
+                "movieId=" + movieId +
+                ", moviePosterPath='" + moviePosterPath + '\'' +
+                '}';
+    }
 }
