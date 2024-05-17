@@ -11,7 +11,7 @@ import jakarta.persistence.EntityManager;
 @Repository
 public class UserDAOImplementation implements IUserDAO{
 
-    @PersistenceContext
+    //@PersistenceContext
     private EntityManager entityManager;
 
     @Override
