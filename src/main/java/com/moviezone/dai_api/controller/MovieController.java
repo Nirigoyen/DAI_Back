@@ -26,8 +26,8 @@ import java.util.List;
 @RequestMapping("/movies")
 public class MovieController {
 
-    //@Autowired
-    //private IMovieService movieService;
+    @Autowired
+    private IMovieService movieService;
 
     @GetMapping(value = "")
     public ResponseEntity<?> discover(@RequestParam(name = "page", required = true) String page, @RequestParam(name = "genres", required = false) String genres) {
@@ -45,68 +45,68 @@ public class MovieController {
         else if (Integer.parseInt(page) > 500) page = "500"; // if page is greater than 500 return page 500
 
         if (genres == null) genres = ""; // Genre formatting : <GenreID>%2C<GenreID>%2C>GenreID> - Example: 28%2C18 - GenreName to GenreId should be handled for frontend
-//
-//        List<MovieComponentDTO> result = movieService.discover(page, genres);
-//        if (result != null){
-//            return new ResponseEntity<>(result, HttpStatus.OK);
-//        }
-//
-//        return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
 
-
-
-
-
-        String API_URL = "https://api.themoviedb.org/3/discover/movie" +
-                "?include_adult=false" +
-                "&include_video=false" +
-                "&language=es-AR" +
-                "&page=" + page +
-                "&release_date.lte=" + RELEASE_DATE_LOWER_THAN +
-                "&sort_by=primary_release_date.desc&with_genres=" + genres;
-
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("accept", "application/json");
-        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
-
-        if (response.getStatusCodeValue() == 200) {
-
-            String datos = response.getBody();
-            //return response;
-
-            JsonParser parser = new JsonParser();
-            JsonObject jsonObject = (JsonObject) parser.parse(datos);
-            JsonArray allMovies = jsonObject.getAsJsonArray("results");
-
-            List<MovieComponentDTO> allMovieTest = new ArrayList<>();
-
-            for (int i = 0; i < allMovies.size(); i++) {
-                MovieComponentDTO newMovie = new MovieComponentDTO();
-                JsonObject TMDBmovie = allMovies.get(i).getAsJsonObject();
-
-                int newMovieId = TMDBmovie.get("id").getAsInt(); // Get "ID" field from JSON
-                try { // If a posterPath doesn't exist, the movie is not added to the list
-                    String newMovieImagePosterPath = ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER, TMDBmovie.get("poster_path").getAsString()); // get "poster_path" field from JSON
-
-                    newMovie.setMovieId(newMovieId);
-                    newMovie.setMoviePosterPath(newMovieImagePosterPath);
-                    allMovieTest.add(newMovie);
-                } catch (Exception ignored){
-
-                }
-            }
-
-            //System.out.println("All Movies = " + allMovieTest);
-            return new ResponseEntity<>(allMovieTest, HttpStatus.OK);
-
-        } else {
-            return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
+        List<MovieComponentDTO> result = movieService.discover(page, genres);
+        if (result != null){
+            return new ResponseEntity<>(result, HttpStatus.OK);
         }
+
+        return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
+
+
+
+
+//
+//        String API_URL = "https://api.themoviedb.org/3/discover/movie" +
+//                "?include_adult=false" +
+//                "&include_video=false" +
+//                "&language=es-AR" +
+//                "&page=" + page +
+//                "&release_date.lte=" + RELEASE_DATE_LOWER_THAN +
+//                "&sort_by=primary_release_date.desc&with_genres=" + genres;
+//
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("accept", "application/json");
+//        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+//        HttpEntity<String> entity = new HttpEntity<String>(headers);
+//
+//        ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
+//
+//        if (response.getStatusCodeValue() == 200) {
+//
+//            String datos = response.getBody();
+//            //return response;
+//
+//            JsonParser parser = new JsonParser();
+//            JsonObject jsonObject = (JsonObject) parser.parse(datos);
+//            JsonArray allMovies = jsonObject.getAsJsonArray("results");
+//
+//            List<MovieComponentDTO> allMovieTest = new ArrayList<>();
+//
+//            for (int i = 0; i < allMovies.size(); i++) {
+//                MovieComponentDTO newMovie = new MovieComponentDTO();
+//                JsonObject TMDBmovie = allMovies.get(i).getAsJsonObject();
+//
+//                int newMovieId = TMDBmovie.get("id").getAsInt(); // Get "ID" field from JSON
+//                try { // If a posterPath doesn't exist, the movie is not added to the list
+//                    String newMovieImagePosterPath = ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER, TMDBmovie.get("poster_path").getAsString()); // get "poster_path" field from JSON
+//
+//                    newMovie.setMovieId(newMovieId);
+//                    newMovie.setMoviePosterPath(newMovieImagePosterPath);
+//                    allMovieTest.add(newMovie);
+//                } catch (Exception ignored){
+//
+//                }
+//            }
+//
+//            //System.out.println("All Movies = " + allMovieTest);
+//            return new ResponseEntity<>(allMovieTest, HttpStatus.OK);
+//
+//        } else {
+//            return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
+//        }
     }
 
 }
