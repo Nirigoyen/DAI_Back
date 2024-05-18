@@ -53,11 +53,44 @@ public class MovieController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<?> search(@RequestParam(name = "page", required = true) String page, @RequestParam(name = "search", required = true), @RequestParam(name = "orderBy") String orderBy, @RequestParam(name = "ordering") String ordering)
-    {
+    public ResponseEntity<?> search(@RequestParam(name = "page", required = true) String page, @RequestParam(name = "search", required = true) String search, @RequestParam(name = "orderBy") String orderBy, @RequestParam(name = "ordering") String ordering) {
 
 
-        return null;
+        String API_URL = "https://api.themoviedb.org/3/search/multi" +
+                "?query="+ search +
+                "&include_adult=false" +
+                "&language=es-AR" +
+                "&page=" + page;
+
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "application/json");
+        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+
+        ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
+
+        JsonArray finalResponse = new JsonArray();
+        for (int i = 0; i < 3; i++) {
+
+            if (response.getStatusCodeValue() == 200) {
+
+                String datos = response.getBody();
+                //return response;
+
+                JsonParser parser = new JsonParser();
+                JsonObject jsonObject = (JsonObject) parser.parse(datos);
+                JsonArray allMovies = jsonObject.getAsJsonArray("results");
+
+                finalResponse.addAll(jsonObject.getAsJsonArray("results"));
+            }
+
+        }
+
+
+        return new ResponseEntity<>(finalResponse, HttpStatus.OK);
     }
 
 }
