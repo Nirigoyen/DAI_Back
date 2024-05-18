@@ -1,7 +1,5 @@
 package com.moviezone.dai_api.model.dto;
 
-import com.moviezone.dai_api.model.entity.ProfilePicture;
-
 import java.util.Date;
 import java.util.List;
 

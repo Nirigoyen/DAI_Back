@@ -6,39 +6,40 @@ import jakarta.persistence.Query;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import jakarta.persistence.EntityManager;
+//import jakarta.persistence.EntityManager;
 
 @Repository
 public class UserDAOImplementation implements IUserDAO{
 
     //@PersistenceContext
-    private EntityManager entityManager;
+    //private EntityManager entityManager;
 
     @Override
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true)
     public User findUserById(int userId) {
-        Session currentSession = entityManager.unwrap(Session.class);
+        //Session currentSession = entityManager.unwrap(Session.class);
 
-        User user = currentSession.get(User.class, userId);
+        //User user = currentSession.get(User.class, userId);
 
-        return user;
+        return null;
     }
 
     @Override
-    @Transactional
+    //@Transactional
     public void createUser(User user) {
-        Session currentSession = entityManager.unwrap(Session.class);
-        currentSession.persist(user);
+        //Session currentSession = entityManager.unwrap(Session.class);
+        //currentSession.persist(user);
 
     }
 
     @Override
+    //@Transactional
     public void deleteUser(int userId) {
-        Session currentSession = entityManager.unwrap(Session.class);
+        //Session currentSession = entityManager.unwrap(Session.class);
 
-        Query theQuery = currentSession.createQuery("delete from User where id=:userId");
-        theQuery.setParameter("userId", userId);
-        theQuery.executeUpdate();
+        //Query theQuery = currentSession.createQuery("delete from User where id=:userId");
+        //theQuery.setParameter("userId", userId);
+        //theQuery.executeUpdate();
     }
 
 }

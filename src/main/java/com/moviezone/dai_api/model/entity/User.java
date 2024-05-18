@@ -2,7 +2,6 @@ package com.moviezone.dai_api.model.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.moviezone.dai_api.model.dto.UserDTO;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -23,15 +22,15 @@ public class User {
     private String profilePictureLink;
 
 
-
     //Relaciones
-    @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "user-favoriteMovies")
-    private List<Movie> favoriteMovies = new ArrayList<Movie>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    @JsonManagedReference(value = "user-favoriteMovies")
+//    private List<String> favoriteMovies = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-ratedMovies")
-    private List<Rating> ratedMovies = new ArrayList<Rating>();
+    private List<Rating> ratedMovies = new ArrayList<>();
 
 
     public User() {
@@ -89,12 +88,12 @@ public class User {
     public void setProfilePicture(String profilePictureLink) {
         this.profilePictureLink = profilePictureLink;
     }
-    public List<Movie> getFavoriteMovies() {
-        return favoriteMovies;
-    }
-    public void setFavoriteMovies(List<Movie> favoriteMovies) {
-        this.favoriteMovies = favoriteMovies;
-    }
+//    public List<String> getFavoriteMovies() {
+//        return favoriteMovies;
+//    }
+//    public void setFavoriteMovies(List<String> favoriteMovies) {
+//        this.favoriteMovies = favoriteMovies;
+//    }
     public List<Rating> getRatedMovies() {
         return ratedMovies;
     }

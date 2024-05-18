@@ -9,12 +9,12 @@ public class MovieFavouriteComponentDTO {
     private String movieTitle;
     private String movieOverview;
     private String moviePosterPath;
-    private List<GenreDTO> movieGenres;
+    private List<String> movieGenres;
 
     public MovieFavouriteComponentDTO() {
     }
 
-    public MovieFavouriteComponentDTO(List<GenreDTO> movieGenres, String moviePosterPath, String movieOverview,
+    public MovieFavouriteComponentDTO(List<String> movieGenres, String moviePosterPath, String movieOverview,
                                       String movieTitle, int movieUserVote, float movieVoteAverage, int movieId) {
         this.movieGenres = movieGenres;
         this.moviePosterPath = moviePosterPath;
@@ -73,11 +73,11 @@ public class MovieFavouriteComponentDTO {
         this.moviePosterPath = moviePosterPath;
     }
 
-    public List<GenreDTO> getMovieGenres() {
+    public List<String> getMovieGenres() {
         return movieGenres;
     }
 
-    public void setMovieGenres(List<GenreDTO> movieGenres) {
+    public void setMovieGenres(List<String> movieGenres) {
         this.movieGenres = movieGenres;
     }
 }

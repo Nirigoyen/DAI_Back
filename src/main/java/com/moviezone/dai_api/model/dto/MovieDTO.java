@@ -12,12 +12,12 @@ public class MovieDTO {
     private String movieCertification;
     private String movieOverview;
     private String movieTrailerYTKey;
-    private List<GenreDTO> movieGenres;
-    private List<CastDTO> movieCast;
+    private List<String> movieGenres;
     private List<MovieImageDTO> movieImages;
 
     public MovieDTO() {
     }
+
     public MovieDTO(int movieId, int movieRuntime, int movieUserRating, float movieVoteAverage, String movieTitle, String movieReleaseDate, String movieCertification, String movieOverview, String movieTrailerYTKey) {
         this.movieId = movieId;
         this.movieRuntime = movieRuntime;
