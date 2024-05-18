@@ -45,6 +45,7 @@ public class MovieServiceImplementation implements IMovieService {
                 newMovie.setMovieId(newMovieId);
                 newMovie.setMoviePosterPath(newMovieImagePosterPath);
                 result.add(newMovie);
+
             } catch (Exception ignored) {}
         }
         return result;
