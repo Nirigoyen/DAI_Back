@@ -149,10 +149,10 @@ public class MovieDAOImplementation implements IMovieDAO {
                     }
                 }
             }
-        }
 
+        }
+        System.out.println(finalResponse.toString());
         return finalResponse;
-        
     }
 
 }

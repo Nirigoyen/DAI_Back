@@ -50,4 +50,32 @@ public class MovieServiceImplementation implements IMovieService {
         }
         return result;
     }
+
+    @Override
+    public List<MovieComponentDTO> search(String search, String page) {
+
+        List<MovieComponentDTO> result = new ArrayList<>();
+
+        JsonArray allMovies = movieDAO.search(search, page);
+        if ( allMovies == null) return null; // if there was an error, return null.
+
+        for (int i = 0; i < allMovies.size(); i++) {
+            MovieComponentDTO newMovie = new MovieComponentDTO();
+
+            JsonObject TMDBmovie = allMovies.get(i).getAsJsonObject();
+
+            int newMovieId = TMDBmovie.get("id").getAsInt(); // Get "ID" field from JSON
+            try { // If a posterPath doesn't exist, the movie is not added to the list
+                String newMovieImagePosterPath = ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER, TMDBmovie.get("poster_path").getAsString()); // get "poster_path" field from JSON
+                newMovie.setMovieId(newMovieId);
+                newMovie.setMoviePosterPath(newMovieImagePosterPath);
+                result.add(newMovie);
+
+            } catch (Exception ignored) {}
+        }
+
+        return result;
+    }
+
+
 }

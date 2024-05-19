@@ -49,7 +49,6 @@ public class MovieController {
         if (result != null){
             return new ResponseEntity<>(result, HttpStatus.OK);
         }
-
         return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
     }
 
@@ -172,7 +171,7 @@ public class MovieController {
 //        }
 //        System.out.println(finalResponse);
 
-        return new ResponseEntity<>(finalResponse.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(finalResponse, HttpStatus.OK);
     }
 
 }
