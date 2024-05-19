@@ -6,7 +6,7 @@ import com.moviezone.dai_api.model.dto.MovieDTO;
 import java.util.List;
 
 public interface IMovieService {
-    public void getMovieById(int id);
+    public void getMovieDetails(int movieId);
     public List<MovieComponentDTO> discover(String page, String genres);
     public List<MovieComponentDTO> search(String search, String page, String orderBy, String ordering);
 }

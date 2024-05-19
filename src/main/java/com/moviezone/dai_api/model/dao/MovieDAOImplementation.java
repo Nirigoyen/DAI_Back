@@ -19,7 +19,7 @@ import java.util.List;
 public class MovieDAOImplementation implements IMovieDAO {
 
 
-    public Movie findMovie(int id) {
+    public Movie getMovieDetails(int movieId) {
 
         Movie movie = new Movie();
 

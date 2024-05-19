@@ -26,8 +26,8 @@ public class MovieServiceImplementation implements IMovieService {
     @Autowired
     private IMovieDAO movieDAO;
 
-    public void getMovieById(int id) {
-        System.out.println("Getting movie by id: " + id);
+    public void getMovieDetails(int movieId) {
+        System.out.println("Getting movie by id: " + movieId);
     }
 
     public List<MovieComponentDTO> discover(String page, String genres) {

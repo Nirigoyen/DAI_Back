@@ -1,6 +1,8 @@
 package com.moviezone.dai_api.model.dao;
 
 import com.moviezone.dai_api.model.entity.Favourite;
+
+import java.util.List;
 //import jakarta.persistence.EntityManager;
 
 public class FavouriteDAOImplementation implements IFavouriteDAO{
@@ -23,7 +25,7 @@ public class FavouriteDAOImplementation implements IFavouriteDAO{
 
     @Override
     //@Transactional
-    public void getFavouritesByUser(int userId) {
-
+    public List<Favourite> getFavouritesByUser(int userId) {
+        return List.of();
     }
 }

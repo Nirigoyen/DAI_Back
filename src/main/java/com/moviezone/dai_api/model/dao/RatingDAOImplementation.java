@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public class RatingDAOImplementation implements IRatingDAO {
     @Override
-    public void rateMovie(int id, int rating, int userId) {
+    public void rateMovie(int movieId, int rating, int userId) {
 
     }
 
@@ -18,7 +18,7 @@ public class RatingDAOImplementation implements IRatingDAO {
     }
 
     @Override
-    public void modifyRating(int id, int rating, int userId) {
+    public void modifyRating(int movieId, int newRating, int userId) {
 
     }
 }
