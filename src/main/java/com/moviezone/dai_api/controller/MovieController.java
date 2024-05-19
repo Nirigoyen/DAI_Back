@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 
+import com.moviezone.dai_api.model.entity.Movie;
 import com.moviezone.dai_api.service.IMovieService;
 import com.moviezone.dai_api.utils.ErrorResponse;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
@@ -55,91 +56,100 @@ public class MovieController {
     @GetMapping(value = "/search")
     public ResponseEntity<?> search(@RequestParam(name = "page", required = true) String page, @RequestParam(name = "search", required = true) String search, @RequestParam(name = "orderBy", required = false) String orderBy, @RequestParam(name = "ordering", required = false) String ordering) {
 
-        JsonArray finalResponse = new JsonArray();
+        if (page == null) return new ResponseEntity<>(new ErrorResponse("Bad Request, mandatory parameters not sent", 4), HttpStatus.BAD_REQUEST);
 
-        String API_URL = "https://api.themoviedb.org/3/search/multi" +
-                "?query="+ search +
-                "&include_adult=false" +
-                "&language=es-AR" +
-                "&page=" + page;
+        List<MovieComponentDTO> finalResult = movieService.search(search, page, orderBy, ordering);
 
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("accept", "application/json");
-        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
-
-        if (response.getStatusCodeValue() == 200) {
-
-            String datos = response.getBody();
-            JsonParser parser = new JsonParser();
-            JsonObject jsonObject = (JsonObject) parser.parse(datos);
-            JsonArray allMovies = jsonObject.getAsJsonArray("results");
-
-            JsonObject person = allMovies.get(0).getAsJsonObject();
-
-            if (person.get("media_type").getAsString().equals("person")) { //? ES UNA PERSONA
-                for (int i = Integer.parseInt(page); i <= Integer.parseInt(page) + 2; i++) { //* HACEMOS LAS 3 REQUESTS
-                    String NEW_API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR" +
-                            "&page=" + i +
-                            "&sort_by=popularity.desc&with_cast=" +
-                            person.get("id");
-
-                    restTemplate = new RestTemplate();
-                    headers = new HttpHeaders();
-                    headers.add("accept", "application/json");
-                    headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
-                    entity = new HttpEntity<String>(headers);
-
-                    response = restTemplate.exchange(NEW_API_URL,HttpMethod.GET, entity, String.class);
-
-                    if (response.getStatusCodeValue() == 200) {
-
-                        datos = response.getBody();
-                        parser = new JsonParser();
-                        jsonObject = (JsonObject) parser.parse(datos);
-                        allMovies = jsonObject.getAsJsonArray("results");
-
-                        finalResponse.addAll(allMovies);
-                    }
-                }
-            }
-
-            else { //? NO ES UNA PERSONA
-
-                //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
-                finalResponse.addAll(allMovies);
-
-                for (int i = Integer.parseInt(page) + 1; i <= Integer.parseInt(page) + 2; i++) { //* HACEMOS LAS 2 REQUESTS RESTANTES
-                    String NEW_API_URL = "https://api.themoviedb.org/3/search/multi" +
-                            "?query="+ search +
-                            "&include_adult=false" +
-                            "&language=es-AR" +
-                            "&page=" + i;
-
-                    restTemplate = new RestTemplate();
-                    headers = new HttpHeaders();
-                    headers.add("accept", "application/json");
-                    headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
-                    entity = new HttpEntity<String>(headers);
-
-                    response = restTemplate.exchange(NEW_API_URL,HttpMethod.GET, entity, String.class);
-
-                    if (response.getStatusCodeValue() == 200) {
-
-                        datos = response.getBody();
-                        parser = new JsonParser();
-                        jsonObject = (JsonObject) parser.parse(datos);
-                        allMovies = jsonObject.getAsJsonArray("results");
-
-                        finalResponse.addAll(allMovies);
-                    }
-                }
-            }
+        if (finalResult != null) {
+            return new ResponseEntity<>(finalResult, HttpStatus.OK);
         }
+        return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
+
+//        JsonArray finalResponse = new JsonArray();
+//
+//        String API_URL = "https://api.themoviedb.org/3/search/multi" +
+//                "?query="+ search +
+//                "&include_adult=false" +
+//                "&language=es-AR" +
+//                "&page=" + page;
+//
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("accept", "application/json");
+//        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+//        HttpEntity<String> entity = new HttpEntity<String>(headers);
+//
+//        ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
+//
+//        if (response.getStatusCodeValue() == 200) {
+//
+//            String datos = response.getBody();
+//            JsonParser parser = new JsonParser();
+//            JsonObject jsonObject = (JsonObject) parser.parse(datos);
+//            JsonArray allMovies = jsonObject.getAsJsonArray("results");
+//
+//            JsonObject person = allMovies.get(0).getAsJsonObject();
+//
+//            if (person.get("media_type").getAsString().equals("person")) { //? ES UNA PERSONA
+//                for (int i = Integer.parseInt(page); i <= Integer.parseInt(page) + 2; i++) { //* HACEMOS LAS 3 REQUESTS
+//                    String NEW_API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR" +
+//                            "&page=" + i +
+//                            "&sort_by=popularity.desc&with_cast=" +
+//                            person.get("id");
+//
+//                    restTemplate = new RestTemplate();
+//                    headers = new HttpHeaders();
+//                    headers.add("accept", "application/json");
+//                    headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+//                    entity = new HttpEntity<String>(headers);
+//
+//                    response = restTemplate.exchange(NEW_API_URL,HttpMethod.GET, entity, String.class);
+//
+//                    if (response.getStatusCodeValue() == 200) {
+//
+//                        datos = response.getBody();
+//                        parser = new JsonParser();
+//                        jsonObject = (JsonObject) parser.parse(datos);
+//                        allMovies = jsonObject.getAsJsonArray("results");
+//
+//                        finalResponse.addAll(allMovies);
+//                    }
+//                }
+//            }
+//
+//            else { //? NO ES UNA PERSONA
+//
+//                //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
+//                finalResponse.addAll(allMovies);
+//
+//                for (int i = Integer.parseInt(page) + 1; i <= Integer.parseInt(page) + 2; i++) { //* HACEMOS LAS 2 REQUESTS RESTANTES
+//                    String NEW_API_URL = "https://api.themoviedb.org/3/search/multi" +
+//                            "?query="+ search +
+//                            "&include_adult=false" +
+//                            "&language=es-AR" +
+//                            "&page=" + i;
+//
+//                    restTemplate = new RestTemplate();
+//                    headers = new HttpHeaders();
+//                    headers.add("accept", "application/json");
+//                    headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+//                    entity = new HttpEntity<String>(headers);
+//
+//                    response = restTemplate.exchange(NEW_API_URL,HttpMethod.GET, entity, String.class);
+//
+//                    if (response.getStatusCodeValue() == 200) {
+//
+//                        datos = response.getBody();
+//                        parser = new JsonParser();
+//                        jsonObject = (JsonObject) parser.parse(datos);
+//                        allMovies = jsonObject.getAsJsonArray("results");
+//
+//                        finalResponse.addAll(allMovies);
+//                    }
+//                }
+//            }
+//        }
 
 
 
@@ -170,8 +180,9 @@ public class MovieController {
 //
 //        }
 //        System.out.println(finalResponse);
-
-        return new ResponseEntity<>(finalResponse, HttpStatus.OK);
+//        System.out.println(finalResponse.size());
+//
+//        return new ResponseEntity<>(finalResponse.toString(), HttpStatus.OK);
     }
 
 }

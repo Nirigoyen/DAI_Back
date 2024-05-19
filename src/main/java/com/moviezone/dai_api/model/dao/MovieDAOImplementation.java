@@ -91,7 +91,9 @@ public class MovieDAOImplementation implements IMovieDAO {
 
             JsonObject person = allMovies.get(0).getAsJsonObject();
 
-            if (person.get("media_type").getAsString().equals("person")) { //! ES UNA PERSONA
+            //TODO: HACER QUE ITERE HASTA QUE NO HAYA MAS PAGINAS
+
+            if (person.get("media_type").getAsString().equals("person")) { //? ES UNA PERSONA
                 for (int i = Integer.parseInt(page); i <= Integer.parseInt(page) + 2; i++) { //* HACEMOS LAS 3 REQUESTS
                     String NEW_API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR" +
                             "&page=" + i +
@@ -118,7 +120,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                 }
             }
 
-            else { //! NO ES UNA PERSONA
+            else { //? NO ES UNA PERSONA
 
                 //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
                 finalResponse.addAll(allMovies);
@@ -151,7 +153,7 @@ public class MovieDAOImplementation implements IMovieDAO {
             }
 
         }
-        System.out.println(finalResponse.toString());
+
         return finalResponse;
     }
 
