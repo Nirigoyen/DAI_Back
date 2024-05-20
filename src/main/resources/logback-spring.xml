@@ -1,0 +1,43 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOG_PATH" value="./logs" />
+    <property name="LOG_FILE_NAME" value="application_logback" />
+
+    <springProfile name="dev">
+        <appender name="CONSOLE-LOGGER" class="ch.qos.logback.core.ConsoleAppender">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>
+                    %white(%d{ISO8601}) %highlight(%-5level) [%yellow(%t)] : %msg%n%throwable
+                </Pattern>
+            </layout>
+        </appender>
+
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE-LOGGER" />
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <appender name="FILE-LOGGER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- configuration for production environment -->
+            <file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <maxHistory>5</maxHistory>
+                <fileNamePattern>logs/dai-backend.%d{yyyy-MM-dd}.log</fileNamePattern>
+            </rollingPolicy>
+
+            <encoder
+                    class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <Pattern>
+                    %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level : %msg%n
+                </Pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="FILE-LOGGER" />
+        </root>
+    </springProfile>
+</configuration>

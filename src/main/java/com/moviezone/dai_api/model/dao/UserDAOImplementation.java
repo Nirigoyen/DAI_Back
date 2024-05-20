@@ -1,6 +1,7 @@
 package com.moviezone.dai_api.model.dao;
 
 import com.moviezone.dai_api.model.entity.User;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.hibernate.Session;
@@ -11,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class UserDAOImplementation implements IUserDAO{
 
-    //@PersistenceContext
-    //private EntityManager entityManager;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     //@Transactional(readOnly = true)
