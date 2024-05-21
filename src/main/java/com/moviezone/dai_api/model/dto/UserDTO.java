@@ -11,8 +11,7 @@ public class UserDTO {
     private String email;
     private String birthdate;
     private ProfilePictureDTO profilePicture;
-    private List<MovieDTO> favouriteMovies;
-    private List<RatingDTO> ratings;
+
 
 
     public UserDTO(int id, String username, String name, String lastName, String email, Date birthdate, ProfilePictureDTO profilePicture, List<MovieDTO> favouriteMovies, List<RatingDTO> ratings) {
@@ -23,8 +22,6 @@ public class UserDTO {
         this.email = email;
         this.birthdate = birthdate.toString();
         this.profilePicture = profilePicture;
-        this.favouriteMovies = favouriteMovies;
-        this.ratings = ratings;
     }
 
 
@@ -54,7 +51,6 @@ public class UserDTO {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     public ProfilePictureDTO getProfilePicture() {
         return profilePicture;
