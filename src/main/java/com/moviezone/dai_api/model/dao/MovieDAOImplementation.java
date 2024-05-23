@@ -128,7 +128,7 @@ public class MovieDAOImplementation implements IMovieDAO {
 
                 //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
 
-                for (int i = 1; i <= pages_count; i++) {
+                for (int i = 2; i <= pages_count; i++) {
                     NEW_API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR" +
                             "&page=" + i +
                             "&sort_by=popularity.desc&with_cast=" +
@@ -162,7 +162,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS
                 int pages_count = jsonObject.get("total_results").getAsInt();
 
-                for (int i = 1; i <= pages_count; i++) { //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
+                for (int i = 2; i <= pages_count; i++) { //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
                     String NEW_API_URL = "https://api.themoviedb.org/3/search/multi" +
                             "?query="+ search +
                             "&include_adult=false" +
@@ -188,7 +188,6 @@ public class MovieDAOImplementation implements IMovieDAO {
                     }
                 }
             }
-
         }
 
         return finalResponse;

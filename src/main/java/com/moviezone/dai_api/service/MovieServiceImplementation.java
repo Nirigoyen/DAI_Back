@@ -92,10 +92,10 @@ public class MovieServiceImplementation implements IMovieService {
             filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
             Collections.reverse(filteredMovies);
         }
-        else if (orderByScore != null && orderByDate == null) { //* ORDENAMIENTO POR PUNTAJE
+        else if (orderByScore == "True" && orderByDate == null) { //* ORDENAMIENTO POR PUNTAJE
             OrderByScore(orderingScore, filteredMovies);
         }
-        else if (orderByScore == null && orderByDate != null) { //* ORDENAMIENTO POR FECHA DE LANZAMIENTO
+        else if (orderByScore == null && orderByDate == "True") { //* ORDENAMIENTO POR FECHA DE LANZAMIENTO
             OrderByDate(orderingDate, filteredMovies);
         }
         else { //* ORDENAMIENTO POR VOTOS Y FECHA DE LANZAMIENTO (PRIMERO POR PUNTAJE Y DESPUES POR FECHA)
@@ -129,7 +129,7 @@ public class MovieServiceImplementation implements IMovieService {
             Collections.sort(filteredMovies, (o1, o2) -> {
 
                 LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                LocalDate releaseDate2 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                LocalDate releaseDate2 = LocalDate.parse(o2.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
                 return releaseDate1.compareTo(releaseDate2);
             });
@@ -137,12 +137,11 @@ public class MovieServiceImplementation implements IMovieService {
             Collections.sort(filteredMovies, (o1, o2) -> {
 
                 LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                LocalDate releaseDate2 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                LocalDate releaseDate2 = LocalDate.parse(o2.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
                 return releaseDate2.compareTo(releaseDate1);
             });
-        }
-        ;
+        };
     }
 
     private static void OrderByScore(String orderingScore, List<JsonObject> filteredMovies) {

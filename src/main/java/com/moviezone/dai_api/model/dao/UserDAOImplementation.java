@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class UserDAOImplementation implements IUserDAO{
 
-    @PersistenceContext
-    private EntityManager entityManager;
+//    @PersistenceContext
+//    private EntityManager entityManager;
 
     @Override
     //@Transactional(readOnly = true)

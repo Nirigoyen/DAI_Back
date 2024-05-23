@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private IUserService userServiceImplementation;
+//    @Autowired
+//    private IUserService userServiceImplementation;
 
     public ResponseEntity<?> createUser(String username, String name, String lastName, String email, String birthDate){
 

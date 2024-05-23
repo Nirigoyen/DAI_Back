@@ -25,7 +25,7 @@
 
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <maxHistory>5</maxHistory>
-                <fileNamePattern>logs/aquastilo-webapp.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <fileNamePattern>logs/dai-backend.%d{yyyy-MM-dd}.log</fileNamePattern>
             </rollingPolicy>
 
             <encoder
