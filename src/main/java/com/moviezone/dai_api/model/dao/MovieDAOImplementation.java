@@ -94,8 +94,42 @@ public class MovieDAOImplementation implements IMovieDAO {
             //TODO: HACER QUE ITERE HASTA QUE NO HAYA MAS PAGINAS
 
             if (person.get("media_type").getAsString().equals("person")) { //? ES UNA PERSONA
-                for (int i = Integer.parseInt(page); i <= Integer.parseInt(page) + 2; i++) { //* HACEMOS LAS 3 REQUESTS
-                    String NEW_API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR" +
+
+                //* HACEMOS EL PRIMER LLAMADO PARA VER LA CANTIDAD DE PAGINAS DE RESULTADOS
+
+                String NEW_API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR" +
+                        "&page=" + 1 +
+                        "&sort_by=popularity.desc&with_cast=" +
+                        person.get("id");
+                restTemplate = new RestTemplate();
+                headers = new HttpHeaders();
+                headers.add("accept", "application/json");
+                headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+                entity = new HttpEntity<String>(headers);
+
+                response = restTemplate.exchange(NEW_API_URL,HttpMethod.GET, entity, String.class);
+
+                if (response.getStatusCodeValue() == 200) {
+
+                    datos = response.getBody();
+                    parser = new JsonParser();
+                    jsonObject = (JsonObject) parser.parse(datos);
+                    allMovies = jsonObject.getAsJsonArray("results");
+
+                    //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
+
+                    finalResponse.addAll(allMovies);
+                }
+
+                //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS
+
+                int pages_count = jsonObject.get("total_pages").getAsInt();
+
+
+                //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
+
+                for (int i = 1; i <= pages_count; i++) {
+                    NEW_API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR" +
                             "&page=" + i +
                             "&sort_by=popularity.desc&with_cast=" +
                             person.get("id");
@@ -125,7 +159,10 @@ public class MovieDAOImplementation implements IMovieDAO {
                 //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
                 finalResponse.addAll(allMovies);
 
-                for (int i = Integer.parseInt(page) + 1; i <= Integer.parseInt(page) + 2; i++) { //* HACEMOS LAS 2 REQUESTS RESTANTES
+                //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS
+                int pages_count = jsonObject.get("total_results").getAsInt();
+
+                for (int i = 1; i <= pages_count; i++) { //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
                     String NEW_API_URL = "https://api.themoviedb.org/3/search/multi" +
                             "?query="+ search +
                             "&include_adult=false" +
