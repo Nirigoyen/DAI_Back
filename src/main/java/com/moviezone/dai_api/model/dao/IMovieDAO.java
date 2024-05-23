@@ -9,5 +9,5 @@ import java.util.List;
 public interface IMovieDAO {
     public Movie getMovieDetails(int movieId);
     public JsonArray discover(String page, String genres);
-    public JsonArray search(String search, String page);
+    public JsonArray search(String search);
 }

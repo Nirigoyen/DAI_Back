@@ -64,14 +64,14 @@ public class MovieDAOImplementation implements IMovieDAO {
 
     }
     @Override
-    public JsonArray search(String search, String page) {
+    public JsonArray search(String search) {
         JsonArray finalResponse = new JsonArray();
 
         String API_URL = "https://api.themoviedb.org/3/search/multi" +
                 "?query="+ search +
                 "&include_adult=false" +
                 "&language=es-AR" +
-                "&page=" + page;
+                "&page=1";
 
 
         RestTemplate restTemplate = new RestTemplate();
@@ -90,8 +90,6 @@ public class MovieDAOImplementation implements IMovieDAO {
             JsonArray allMovies = jsonObject.getAsJsonArray("results");
 
             JsonObject person = allMovies.get(0).getAsJsonObject();
-
-            //TODO: HACER QUE ITERE HASTA QUE NO HAYA MAS PAGINAS
 
             if (person.get("media_type").getAsString().equals("person")) { //? ES UNA PERSONA
 

@@ -61,11 +61,11 @@ public class MovieServiceImplementation implements IMovieService {
     }
 
     @Override
-    public List<MovieComponentDTO> search(String search, String page, String orderByScore, String orderingScore, String orderByDate, String orderingDate, String orderByVotes, String orderingVotes) {
+    public List<MovieComponentDTO> search(String search, String orderByScore, String orderingScore, String orderByDate, String orderingDate, String orderByVotes, String orderingVotes) {
 
         List<MovieComponentDTO> result = new ArrayList<>();
 
-        JsonArray allMovies = movieDAO.search(search, page);
+        JsonArray allMovies = movieDAO.search(search);
 
         List<JsonObject> filteredMovies = new ArrayList<>();
 
