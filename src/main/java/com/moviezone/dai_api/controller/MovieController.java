@@ -62,7 +62,7 @@ public class MovieController {
                                     @RequestParam(name = "orderByVotes", required = false) String orderByVotes,
                                     @RequestParam(name = "orderingVotes", required = false) String orderingVotes) {
 
-        if (page == null) return new ResponseEntity<>(new ErrorResponse("Bad Request, mandatory parameters not sent", 4), HttpStatus.BAD_REQUEST);
+        if (search == null) return new ResponseEntity<>(new ErrorResponse("Bad Request, mandatory parameters not sent", 4), HttpStatus.BAD_REQUEST);
 
         List<MovieComponentDTO> finalResult = movieService.search(search, orderByScore, orderingScore, orderByDate, orderingDate, orderByVotes, orderingVotes);
 
