@@ -23,7 +23,6 @@ public class UserServiceImplementation implements IUserService{
         currentUser.setName(user.getName());
         currentUser.setLastName(user.getLastName());
         currentUser.setEmail(user.getEmail());
-        currentUser.setBirthDate(user.getBirthDate());
         currentUser.setProfilePicture(user.getProfilePicture());
 
         userDAO.createUser(currentUser);

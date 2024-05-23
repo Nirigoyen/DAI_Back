@@ -80,7 +80,7 @@ public class MovieServiceImplementation implements IMovieService {
                 if (!TMDBmovie.get("media_type").getAsString().equals("movie")) continue; // If the media type is different from "movie", skip the iteration (don't add it to the list)
             } catch (Exception ignored) {}
 
-            if (TMDBmovie.get("vote_count").getAsInt() < 500) continue;; // If the vote count is lower than 500, skip the iteration (don't add it to the list)
+            if (TMDBmovie.get("vote_count").getAsInt() < 200) continue;; // If the vote count is lower than 500, skip the iteration (don't add it to the list)
 
             filteredMovies.add(TMDBmovie);
         }

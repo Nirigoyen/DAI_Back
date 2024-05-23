@@ -12,41 +12,38 @@ import java.util.List;
 @Table(name = "usuarios")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private long userId;
     private String username;
     private String name;
     private String lastName;
     private String email;
-    private Date birthDate;
     private String profilePictureLink;
 
 
-    //Relaciones
+    //? Relaciones
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    @JsonManagedReference(value = "user-favoriteMovies")
 //    private List<String> favoriteMovies = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference(value = "user-ratedMovies")
-    private List<Rating> ratedMovies = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    @JsonManagedReference(value = "user-ratedMovies")
+//    private List<Rating> ratedMovies = new ArrayList<>();
 
 
     public User() {
         super();
     }
 
-    public User(String username, String name, String lastName, String email, Date birthDate, String profilePictureLink) {
+    public User(String username, String name, String lastName, String email, String profilePictureLink) {
         this.username = username;
         this.name = name;
         this.lastName = lastName;
         this.email = email;
-        this.birthDate = birthDate;
         this.profilePictureLink = profilePictureLink;
     }
 
-    public int getId() {
+    public long getId() {
         return userId;
     }
     public void setId(int id) {
@@ -76,30 +73,26 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-    public Date getBirthDate() {
-        return birthDate;
-    }
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
     public String getProfilePicture() {
         return profilePictureLink;
     }
     public void setProfilePicture(String profilePictureLink) {
         this.profilePictureLink = profilePictureLink;
     }
-//    public List<String> getFavoriteMovies() {
+
+
+//        public List<String> getFavoriteMovies() {
 //        return favoriteMovies;
 //    }
 //    public void setFavoriteMovies(List<String> favoriteMovies) {
 //        this.favoriteMovies = favoriteMovies;
 //    }
-    public List<Rating> getRatedMovies() {
-        return ratedMovies;
-    }
-    public void setRatedMovies(List<Rating> ratedMovies) {
-        this.ratedMovies = ratedMovies;
-    }
+//    public List<Rating> getRatedMovies() {
+//        return ratedMovies;
+//    }
+//    public void setRatedMovies(List<Rating> ratedMovies) {
+//        this.ratedMovies = ratedMovies;
+//    }
 
 //    public UserDTO toDTO(){
 //        return new UserDTO(this.userId, this.username, this.name, this.lastName, this.email, this.birthDate,

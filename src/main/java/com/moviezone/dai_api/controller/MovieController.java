@@ -58,8 +58,7 @@ public class MovieController {
                                     @RequestParam(name = "orderByScore", required = false) String orderByScore,
                                     @RequestParam(name = "orderingScore", required = false) String orderingScore,
                                     @RequestParam(name = "orderByDate", required = false) String orderByDate,
-                                    @RequestParam(name = "orderingDate", required = false) String orderingDate
-                                    ) {
+                                    @RequestParam(name = "orderingDate", required = false) String orderingDate) {
 
         if (search == null) return new ResponseEntity<>(new ErrorResponse("Bad Request, mandatory parameters not sent", 4), HttpStatus.BAD_REQUEST);
 

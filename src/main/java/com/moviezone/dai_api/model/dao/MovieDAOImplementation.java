@@ -161,7 +161,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                 int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), 6);
 
                 for (int i = 2; i <= pages_count; i++) { //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
-                    String NEW_API_URL = "https://api.themoviedb.org/3/search/multi" +
+                    String NEW_API_URL = "https://api.themoviedb.org/3/search/movie" +
                             "?query="+ search +
                             "&include_adult=false" +
                             "&language=es-AR" +

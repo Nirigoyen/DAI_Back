@@ -9,24 +9,22 @@ public class UserDTO {
     private String name;
     private String lastName;
     private String email;
-    private String birthdate;
-    private ProfilePictureDTO profilePicture;
+    private String profilePictureURL;
 
 
-
-    public UserDTO(int id, String username, String name, String lastName, String email, Date birthdate, ProfilePictureDTO profilePicture, List<MovieDTO> favouriteMovies, List<RatingDTO> ratings) {
+    public UserDTO(int id, String username, String name, String lastName, String email, String profilePictureURL) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.lastName = lastName;
         this.email = email;
-        this.birthdate = birthdate.toString();
-        this.profilePicture = profilePicture;
+        this.profilePictureURL = profilePictureURL;
     }
 
 
     public UserDTO() {
     }
+
 
     public int getId() {
         return id;
@@ -52,11 +50,27 @@ public class UserDTO {
         this.email = email;
     }
 
-    public ProfilePictureDTO getProfilePicture() {
-        return profilePicture;
+    public String getName() {
+        return name;
     }
 
-    public void setProfilePicture(ProfilePictureDTO profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getProfilePictureURL() {
+        return profilePictureURL;
+    }
+
+    public void setProfilePictureURL(String profilePictureURL) {
+        this.profilePictureURL = profilePictureURL;
     }
 }
