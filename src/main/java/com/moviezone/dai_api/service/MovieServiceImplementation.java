@@ -77,10 +77,10 @@ public class MovieServiceImplementation implements IMovieService {
         for (JsonElement movie : allMovies) { //* FILTRADO DE PELICULAS CON MENOS DE 500 VOTOS
             JsonObject TMDBmovie = movie.getAsJsonObject();
             try {
-                if (TMDBmovie.get("media_type").getAsString().equals("movie")) continue; // If the media type is person, skip the iteration (don't add it to the list)
+                if (!TMDBmovie.get("media_type").getAsString().equals("movie")) continue; // If the media type is different from "movie", skip the iteration (don't add it to the list)
             } catch (Exception ignored) {}
 
-            if (TMDBmovie.get("vote_count").getAsInt() < 500) continue;; // If the media type is different from movie, skip the iteration (don't add it to the list
+            if (TMDBmovie.get("vote_count").getAsInt() < 500) continue;; // If the vote count is lower than 500, skip the iteration (don't add it to the list)
 
             filteredMovies.add(TMDBmovie);
         }

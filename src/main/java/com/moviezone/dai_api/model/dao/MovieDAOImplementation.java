@@ -158,7 +158,8 @@ public class MovieDAOImplementation implements IMovieDAO {
                 finalResponse.addAll(allMovies);
 
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS
-                int pages_count = jsonObject.get("total_results").getAsInt();
+                int pages_count = jsonObject.get("total_pages").getAsInt();
+                System.err.println(pages_count);
 
                 for (int i = 2; i <= pages_count; i++) { //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
                     String NEW_API_URL = "https://api.themoviedb.org/3/search/multi" +
