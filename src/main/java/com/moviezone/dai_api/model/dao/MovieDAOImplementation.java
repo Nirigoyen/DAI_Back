@@ -187,8 +187,6 @@ public class MovieDAOImplementation implements IMovieDAO {
                 }
             }
         }
-
         return finalResponse;
     }
-
 }

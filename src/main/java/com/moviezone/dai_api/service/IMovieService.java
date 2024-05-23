@@ -9,5 +9,5 @@ public interface IMovieService {
     public void getMovieDetails(int movieId);
     public List<MovieComponentDTO> discover(String page, String genres);
     public List<MovieComponentDTO> search(String search, String orderByScore, String orderingScore,
-                                          String orderByDate, String orderingDate, String orderByVotes, String orderingVotes);
+                                          String orderByDate, String orderingDate);
 }

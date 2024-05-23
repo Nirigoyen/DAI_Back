@@ -61,7 +61,7 @@ public class MovieServiceImplementation implements IMovieService {
     }
 
     @Override
-    public List<MovieComponentDTO> search(String search, String orderByScore, String orderingScore, String orderByDate, String orderingDate, String orderByVotes, String orderingVotes) {
+    public List<MovieComponentDTO> search(String search, String orderByScore, String orderingScore, String orderByDate, String orderingDate) {
 
         List<MovieComponentDTO> result = new ArrayList<>();
 
