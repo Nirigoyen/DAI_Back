@@ -61,7 +61,7 @@ public class MovieServiceImplementation implements IMovieService {
     }
 
     @Override
-    public List<MovieComponentDTO> search(String search, String page, String orderBy, String ordering) {
+    public List<MovieComponentDTO> search(String search, String page, String orderByScore, String orderingScore, String orderByDate, String orderingDate, String orderByVotes, String orderingVotes) {
 
         List<MovieComponentDTO> result = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class MovieServiceImplementation implements IMovieService {
         List<JsonObject> filteredMovies = new ArrayList<>();
 
         if (allMovies == null) return null; // if there was an error, return null.
-
+        
 
         //? FILTRADO
 
@@ -88,42 +88,21 @@ public class MovieServiceImplementation implements IMovieService {
 
         //? ORDENAMIENTO
 
-        if (orderBy == null && ordering == null) { //* POR DEFECTO ORDENAMOS LOS RESULTADOS POR PUNTAJE DE MANERA DESCENDENTE
+        if (orderByScore == null && orderByDate == null) { //* POR DEFECTO ORDENAMOS LOS RESULTADOS POR PUNTAJE DE MANERA DESCENDENTE
             filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
             Collections.reverse(filteredMovies);
         }
-        else if (orderBy != null && ordering != null) {
-            if (orderBy.equals("vote_average")) { //* ORDENAMIENTO POR PUNTAJE
-                if (ordering.equals("asc")) {
-                    filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
-                } else {
-                    filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
-                    Collections.reverse(filteredMovies);
-                }
-            }
-            else if (orderBy.equals("release_date")) { //* ORDENAMIENTO POR FECHA DE LANZAMIENTO
-                if (ordering.equals("asc")) {
-                    Collections.sort(filteredMovies, (o1, o2) -> {
-
-                        LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        LocalDate releaseDate2 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-                        return releaseDate1.compareTo(releaseDate2);
-                    });
-                } else {
-                    Collections.sort(filteredMovies, (o1, o2) -> {
-
-                        LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        LocalDate releaseDate2 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-                        return releaseDate2.compareTo(releaseDate1);
-                    });
-                };
-            }
-            else { //* ORDENAMIENTO POR VOTOS Y FECHA DE LANZAMIENTO
-                // TODO: IMPLEMENTAR ORDENAMIENTO CRUZADO
-            }
+        else if (orderByScore != null && orderByDate == null) { //* ORDENAMIENTO POR PUNTAJE
+            OrderByScore(orderingScore, filteredMovies);
         }
+        else if (orderByScore == null && orderByDate != null) { //* ORDENAMIENTO POR FECHA DE LANZAMIENTO
+            OrderByDate(orderingDate, filteredMovies);
+        }
+        else { //* ORDENAMIENTO POR VOTOS Y FECHA DE LANZAMIENTO (PRIMERO POR PUNTAJE Y DESPUES POR FECHA)
+            OrderByScore(orderingScore, filteredMovies);
+            OrderByDate(orderingDate, filteredMovies);
+            }
+
 
 
         //? CREADO DE DTOS Y CARGADO A LA LISTA FINAL
@@ -143,6 +122,36 @@ public class MovieServiceImplementation implements IMovieService {
             } catch (Exception ignored) {}
         }
         return result;
+    }
+
+    private static void OrderByDate(String orderingDate, List<JsonObject> filteredMovies) {
+        if (orderingDate.equals("asc")) {
+            Collections.sort(filteredMovies, (o1, o2) -> {
+
+                LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                LocalDate releaseDate2 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                return releaseDate1.compareTo(releaseDate2);
+            });
+        } else {
+            Collections.sort(filteredMovies, (o1, o2) -> {
+
+                LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                LocalDate releaseDate2 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                return releaseDate2.compareTo(releaseDate1);
+            });
+        }
+        ;
+    }
+
+    private static void OrderByScore(String orderingScore, List<JsonObject> filteredMovies) {
+        if (orderingScore.equals("asc")) {
+            filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
+        } else {
+            filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
+            Collections.reverse(filteredMovies);
+        }
     }
 
 

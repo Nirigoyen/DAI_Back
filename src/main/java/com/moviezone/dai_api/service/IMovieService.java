@@ -8,5 +8,6 @@ import java.util.List;
 public interface IMovieService {
     public void getMovieDetails(int movieId);
     public List<MovieComponentDTO> discover(String page, String genres);
-    public List<MovieComponentDTO> search(String search, String page, String orderBy, String ordering);
+    public List<MovieComponentDTO> search(String search, String page, String orderByScore, String orderingScore,
+                                          String orderByDate, String orderingDate, String orderByVotes, String orderingVotes);
 }
