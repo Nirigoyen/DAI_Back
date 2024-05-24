@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImplementation implements IUserService{
+public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR ENTITY POR DTOs.
 
     @Autowired
     private UserDAOImplementation userDAO;
