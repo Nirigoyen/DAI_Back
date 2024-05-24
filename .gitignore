@@ -27,3 +27,4 @@ replay_pid*
 .idea/misc.xml
 *.env
 src/main/resources/application.properties
+*.properties
