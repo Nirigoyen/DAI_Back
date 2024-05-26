@@ -42,7 +42,7 @@ public class MovieServiceImplementation implements IMovieService {
         for (int i = 0; i < allMovies.size(); i++) {
             JsonObject TMDBmovie = allMovies.get(i).getAsJsonObject();
 
-            if (!TMDBmovie.get("media_type").getAsString().equals("movie")) continue; // If the media type is different from movie, skip the iteration (don't add it to the list)
+            //if (!TMDBmovie.get("media_type").getAsString().equals("movie")) continue; // If the media type is different from movie, skip the iteration (don't add it to the list)
 
             MovieComponentDTO newMovie = new MovieComponentDTO();
 
