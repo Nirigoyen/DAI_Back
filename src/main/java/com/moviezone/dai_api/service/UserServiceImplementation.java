@@ -28,7 +28,7 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
     }
 
     @Override
-    public UserDTO modifyUser(int userId, User user) {
+    public UserDTO modifyUser(long userId, User user) {
         User currentUser = userDAO.findUserById(userId);
         currentUser.setName(user.getName());
         currentUser.setLastName(user.getLastName());
@@ -49,12 +49,12 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
     }
 
     @Override
-    public void deleteById(int userId) {
+    public void deleteById(long userId) {
         userDAO.deleteUser(userId);
     }
 
     @Override
-    public UserDTO findUserById(int userId) {
+    public UserDTO findUserById(long userId) {
         User user = userDAO.findUserById(userId);
         if (user != null) {
             UserDTO userDTO = new UserDTO();

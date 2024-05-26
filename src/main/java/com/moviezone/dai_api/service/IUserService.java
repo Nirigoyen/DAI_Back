@@ -5,7 +5,7 @@ import com.moviezone.dai_api.model.entity.User;
 
 public interface IUserService {
     public UserDTO createUser(User user);
-    public UserDTO modifyUser(int userId, User user);
-    public void deleteById(int userId);
-    public UserDTO findUserById(int userId);
+    public UserDTO modifyUser(long userId, User user);
+    public void deleteById(long userId);
+    public UserDTO findUserById(long userId);
 }

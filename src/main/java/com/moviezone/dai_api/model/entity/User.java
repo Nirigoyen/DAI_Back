@@ -46,7 +46,7 @@ public class User {
     public long getId() {
         return userId;
     }
-    public void setId(int id) {
+    public void setId(long id) {
         this.userId = id;
     }
     public String getUsername() {
