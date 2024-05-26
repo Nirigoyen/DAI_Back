@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class UserDTO {
-    private int id;
+    private long id;
     private String username;
     private String name;
     private String lastName;
@@ -12,7 +12,7 @@ public class UserDTO {
     private String profilePictureURL;
 
 
-    public UserDTO(int id, String username, String name, String lastName, String email, String profilePictureURL) {
+    public UserDTO(long id, String username, String name, String lastName, String email, String profilePictureURL) {
         this.id = id;
         this.username = username;
         this.name = name;
@@ -26,11 +26,11 @@ public class UserDTO {
     }
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

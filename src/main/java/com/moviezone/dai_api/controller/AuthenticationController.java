@@ -1,9 +1,13 @@
 package com.moviezone.dai_api.controller;
 
 
+import com.google.api.client.googleapis.auth.oauth2.GooglePublicKeysManager;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 
 import java.util.Date;
 
@@ -34,6 +38,7 @@ public class AuthenticationController {
      */
     public ResponseEntity<String> login()
     {
+        //GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new GooglePublicKeysManager());
 
         return null;
     }

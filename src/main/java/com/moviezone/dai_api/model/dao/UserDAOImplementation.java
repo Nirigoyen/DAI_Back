@@ -22,7 +22,7 @@ public class UserDAOImplementation implements IUserDAO{
 
         User user = currentSession.get(User.class, userId);
 
-        return null;
+        return user;
     }
 
     @Override

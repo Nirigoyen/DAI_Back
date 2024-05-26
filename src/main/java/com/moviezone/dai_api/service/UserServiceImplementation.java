@@ -1,6 +1,7 @@
 package com.moviezone.dai_api.service;
 
 import com.moviezone.dai_api.model.dao.UserDAOImplementation;
+import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,21 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
 
 
     @Override
-    public void createUser(User user) {
+    public UserDTO createUser(User user) {
         userDAO.createUser(user);
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setName(user.getName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setProfilePictureURL(user.getProfilePicture());
+
+        return userDTO;
     }
 
     @Override
-    public void modifyUser(int userId, User user) {
+    public UserDTO modifyUser(int userId, User user) {
         User currentUser = userDAO.findUserById(userId);
         currentUser.setName(user.getName());
         currentUser.setLastName(user.getLastName());
@@ -26,6 +36,15 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
         currentUser.setProfilePicture(user.getProfilePicture());
 
         userDAO.createUser(currentUser);
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(currentUser.getId());
+        userDTO.setName(currentUser.getName());
+        userDTO.setLastName(currentUser.getLastName());
+        userDTO.setEmail(currentUser.getEmail());
+        userDTO.setProfilePictureURL(currentUser.getProfilePicture());
+
+        return userDTO;
 
     }
 
@@ -35,7 +54,18 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
     }
 
     @Override
-    public User findUserById(int userId) {
-        return (userDAO.findUserById(userId));
+    public UserDTO findUserById(int userId) {
+        User user = userDAO.findUserById(userId);
+        if (user != null) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setName(user.getName());
+            userDTO.setLastName(user.getLastName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setProfilePictureURL(user.getProfilePicture());
+
+            return userDTO;
+        }
+        return null;
     }
 }
