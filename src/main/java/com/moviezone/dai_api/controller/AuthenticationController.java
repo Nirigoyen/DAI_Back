@@ -7,6 +7,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.moviezone.dai_api.model.dto.GoogleTokenDTO;
 import com.moviezone.dai_api.model.entity.User;
 import com.moviezone.dai_api.service.IUserService;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -54,7 +55,7 @@ public class AuthenticationController {
      */
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody String googleToken) {
+    public ResponseEntity<String> login(@RequestBody GoogleTokenDTO googleToken) {
 
         final String GOOGLE_TOKEN_VALIDATION_URL = "https://oauth2.googleapis.com/tokeninfo?id_token=" + googleToken; // Should change this https://developers.google.com/identity/sign-in/web/backend-auth?hl=es-419
 
