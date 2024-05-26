@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/auths")
+@RequestMapping("/v1/auths")
 public class AuthenticationController {
     private final int EXPIRATION_TIME = 864_000_000; // 10 days Y esto? xDD
     /*
@@ -32,5 +32,11 @@ public class AuthenticationController {
 
     @PostMapping("/register")
      */
+    public ResponseEntity<String> login()
+    {
+
+        return null;
+    }
+
 
 }
