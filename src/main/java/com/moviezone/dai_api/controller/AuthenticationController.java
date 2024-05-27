@@ -1,27 +1,15 @@
 package com.moviezone.dai_api.controller;
 
 
-import com.google.api.client.googleapis.auth.oauth2.GooglePublicKeysManager;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.moviezone.dai_api.model.dto.GoogleTokenDTO;
+import com.moviezone.dai_api.model.dto.TokenDTO;
 import com.moviezone.dai_api.model.dto.UserDTO;
-import com.moviezone.dai_api.model.entity.User;
 import com.moviezone.dai_api.service.IUserService;
-import io.github.cdimascio.dotenv.Dotenv;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import org.springframework.web.client.RestTemplate;
-
-import javax.crypto.SecretKey;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/v1/auths")
@@ -56,9 +44,9 @@ public class AuthenticationController {
      */
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody GoogleTokenDTO googleToken) {
+    public ResponseEntity<String> login(@RequestBody TokenDTO googleToken) {
 
-        final String GOOGLE_TOKEN_VALIDATION_URL = "https://oauth2.googleapis.com/tokeninfo?id_token=" + googleToken; // Should change this https://developers.google.com/identity/sign-in/web/backend-auth?hl=es-419
+        final String GOOGLE_TOKEN_VALIDATION_URL = "https://oauth2.googleapis.com/tokeninfo?id_token=" + googleToken.getToken(); // Should change this https://developers.google.com/identity/sign-in/web/backend-auth?hl=es-419
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -86,6 +74,8 @@ public class AuthenticationController {
             // Datos que pueden ser null
             if(jsonObject.has("family_name")) user.setLastName(jsonObject.get("family_name").getAsString());
             if(jsonObject.has("picture")) user.setProfilePictureURL(jsonObject.get("picture").getAsString());
+
+            user.setUsername(jsonObject.get("name").getAsString());
             //! NO DEVUELVE EL USERNAME, HAY QUE PERMITIR AL USUARIO EDITARLO EN LA APP
 
             userService.createUser(user);
