@@ -1,5 +1,7 @@
 package com.moviezone.dai_api.model.dto;
 
+import com.moviezone.dai_api.model.entity.User;
+
 import java.util.Date;
 import java.util.List;
 
@@ -72,5 +74,9 @@ public class UserDTO {
 
     public void setProfilePictureURL(String profilePictureURL) {
         this.profilePictureURL = profilePictureURL;
+    }
+
+    public User toEntity(){
+        return (new User(this.id, this.username, this.name, this.lastName, this.email, this.profilePictureURL));
     }
 }

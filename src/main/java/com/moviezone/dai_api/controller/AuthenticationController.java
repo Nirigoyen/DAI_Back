@@ -8,6 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moviezone.dai_api.model.dto.GoogleTokenDTO;
+import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.model.entity.User;
 import com.moviezone.dai_api.service.IUserService;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -75,9 +76,8 @@ public class AuthenticationController {
         JsonObject jsonObject = (JsonObject) parser.parse(data);
         long userId = jsonObject.get("sub").getAsLong();
 
-        if (userService.findUserById(userId) == null) // Si El usuario no esta en nuestra BD registrarlo
-        {
-            User user = new User();
+        if (userService.findUserById(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
+            UserDTO user = new UserDTO();
             // Datos que estan si o si
             user.setId(userId);
             user.setEmail(jsonObject.get("email").getAsString());
@@ -85,7 +85,7 @@ public class AuthenticationController {
 
             // Datos que pueden ser null
             if(jsonObject.has("family_name")) user.setLastName(jsonObject.get("family_name").getAsString());
-            if(jsonObject.has("picture")) user.setProfilePicture(jsonObject.get("picture").getAsString());
+            if(jsonObject.has("picture")) user.setProfilePictureURL(jsonObject.get("picture").getAsString());
             //! NO DEVUELVE EL USERNAME, HAY QUE PERMITIR AL USUARIO EDITARLO EN LA APP
 
             userService.createUser(user);

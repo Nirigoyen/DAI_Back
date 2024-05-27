@@ -14,16 +14,8 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
 
 
     @Override
-    public UserDTO createUser(User user) {
-        userDAO.createUser(user);
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
-        userDTO.setLastName(user.getLastName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setProfilePictureURL(user.getProfilePicture());
-
+    public UserDTO createUser(UserDTO userDTO) {
+        userDAO.createUser(userDTO.toEntity());
         return userDTO;
     }
 

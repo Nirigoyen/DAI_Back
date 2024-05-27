@@ -33,9 +33,6 @@ public class MovieController {
 
     @GetMapping(value = "")
     public ResponseEntity<?> discover(@RequestParam(name = "page", required = true) String page, @RequestParam(name = "genres", required = false) String genres) {
-        //List<MovieComponentDTO>
-        // Query params validation
-
         final String RELEASE_DATE_LOWER_THAN = "2024-05-01"; // Final means CONSTANT - DATE FORMAT YYYY/MM/DD
 
         if (page == null) return new ResponseEntity<>(new ErrorResponse("Bad Request, mandatory parameters not sent", 4), HttpStatus.BAD_REQUEST);

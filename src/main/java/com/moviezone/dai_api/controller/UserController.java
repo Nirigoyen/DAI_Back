@@ -1,23 +1,41 @@
 package com.moviezone.dai_api.controller;
 
 
+import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/v1/user")
 public class UserController {
 
-//    @Autowired
-//    private IUserService userServiceImplementation;
+    @Autowired
+    private IUserService userServiceImplementation;
 
-    public ResponseEntity<?> createUser(String username, String name, String lastName, String email, String birthDate){
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO){
+        if (userDTO == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        
+        UserDTO result = userServiceImplementation.createUser(userDTO);
+
+        if (result != null)
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PatchMapping
+    public ResponseEntity<?> modifyUser(UserDTO userDTO){
+
         return null;
     }
+
+//    @DeleteMapping
+//    public ResponseEntity<?> deleteUser(int userID){
+//        if (userID == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//    }
 
 }

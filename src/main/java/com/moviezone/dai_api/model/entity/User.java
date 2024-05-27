@@ -2,6 +2,7 @@ package com.moviezone.dai_api.model.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.moviezone.dai_api.model.dto.UserDTO;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ public class User {
         super();
     }
 
-    public User(String username, String name, String lastName, String email, String profilePictureLink) {
+    public User(long userId, String username, String name, String lastName, String email, String profilePictureLink) {
+        this.userId = userId;
         this.username = username;
         this.name = name;
         this.lastName = lastName;
@@ -94,11 +96,11 @@ public class User {
 //        this.ratedMovies = ratedMovies;
 //    }
 
-//    public UserDTO toDTO(){
-//        return new UserDTO(this.userId, this.username, this.name, this.lastName, this.email, this.birthDate,
-//                this.profilePicture.toDTO(), this.favoriteMovies, this.ratedMovies);
-//        //FIJARSE EN QUE MOMENTO CONVERTIR LAS PELICULAS EN DTOS.
-//    }
+    public UserDTO toDTO(){
+        return new UserDTO(this.userId, this.username, this.name, this.lastName, this.email,
+                this.profilePictureLink);
+        //FIJARSE EN QUE MOMENTO CONVERTIR LAS PELICULAS EN DTOS.
+    }
 
 
 
