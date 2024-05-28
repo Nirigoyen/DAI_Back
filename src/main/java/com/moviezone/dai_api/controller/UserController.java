@@ -3,13 +3,15 @@ package com.moviezone.dai_api.controller;
 
 import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.service.IUserService;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping("/v1/users")
 public class UserController {
 
     @Autowired
@@ -26,6 +28,13 @@ public class UserController {
         else
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @PostMapping(value = "/images")
+    public ResponseEntity<?> modifyImage(@RequestParam("archivo") MultipartFile archivo){
+
+        return null;
+    }
+
 
     @PatchMapping
     public ResponseEntity<?> modifyUser(UserDTO userDTO){
