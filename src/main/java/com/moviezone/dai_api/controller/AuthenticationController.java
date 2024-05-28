@@ -3,13 +3,20 @@ package com.moviezone.dai_api.controller;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.huaweicloud.sdk.obs.v1.model.Bucket;
 import com.moviezone.dai_api.model.dto.TokenDTO;
 import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.service.IUserService;
+import com.obs.services.ObsClient;
+import com.obs.services.ObsConfiguration;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.ByteArrayInputStream;
 
 @RestController
 @RequestMapping("/v1/auths")
@@ -60,12 +67,8 @@ public class AuthenticationController {
 
         String data = response.getBody();
 
-        System.out.println(data);
-
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = (JsonObject) parser.parse(data);
-
-        System.out.println(jsonObject);
 
         String userId = jsonObject.get("sub").getAsString();
 
@@ -78,6 +81,7 @@ public class AuthenticationController {
 
             // Datos que pueden ser null
             if(jsonObject.has("family_name")) user.setLastName(jsonObject.get("family_name").getAsString());
+
             if(jsonObject.has("picture")) user.setProfilePictureURL(jsonObject.get("picture").getAsString());
 
             user.setUsername(jsonObject.get("name").getAsString());
@@ -85,6 +89,7 @@ public class AuthenticationController {
 
             userService.createUser(user);
         }
+
 
 //        String token = Jwts.builder()
 //                .setSubject(jsonObject.get("given_name").toString())
@@ -96,6 +101,47 @@ public class AuthenticationController {
 
         return new ResponseEntity<>(data, HttpStatus.OK);
 
+    }
+
+    private UserDTO createUserDTO(JsonObject userJSON){
+        UserDTO user = new UserDTO();
+        user.setId(userJSON.get("sub").getAsString());
+        user.setUsername(userJSON.get("name").getAsString());
+        user.setName(userJSON.get("given_name").getAsString());
+        user.setEmail(userJSON.get("email").getAsString());
+
+        if (userJSON.has("family_name")) user.setLastName(userJSON.get("family_name").getAsString());
+
+        if (userJSON.has("picture")) user.setProfilePictureURL(uploadImage(userJSON));
+
+        return user;
+    }
+
+    private static String uploadImage(JsonObject userJSON) {
+
+        String finalURL = "";
+
+        String imgURL = userJSON.get("picture").getAsString();
+
+        RestTemplate restTemplateGet = new RestTemplate();
+
+        ByteArrayResource byteArrayResource = restTemplateGet.getForObject(imgURL, ByteArrayResource.class);
+
+        Bucket bucket = new Bucket();
+        bucket.setName(Dotenv.load().get("BUCKET_NAME")); //* HACER ENV
+
+        ObsConfiguration config = new ObsConfiguration();
+        config.setEndPoint(Dotenv.load().get("OBS_URL")); //* HACER ENV
+
+        String userid = "profile-pictures/" + userJSON.get("sub").getAsString() + ".jpg";
+
+        try {
+            ObsClient obsClient = new ObsClient(config);
+            obsClient.putObject(Dotenv.load().get("BUCKET_NAME"), userid, new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
+            finalURL = Dotenv.load().get("OBS_URL") + userid;
+        }catch (Exception e){}
+
+        return finalURL;
     }
 
 

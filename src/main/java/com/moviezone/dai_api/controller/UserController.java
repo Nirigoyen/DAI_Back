@@ -61,83 +61,30 @@ public class UserController {
     @PostMapping(value = "/images")
     public ResponseEntity<?> modifyImage(@RequestParam String key)throws Exception { //, @RequestParam("archivo") File archivo) throws Exception {
 
-        String foto = "https://lh3.googleusercontent.com/a/ACg8ocLqCYrKJba4wsLo9oZqHvPhvHv6m9yGDcynwpEBrTmT45Zw7Q=s96-c";
-
-        RestTemplate restTemplateGet = new RestTemplate();
-        HttpHeaders headersGet = new HttpHeaders();
-        headersGet.add("accept", "multipart/form-data");
-
-        headersGet.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        URL url = new URL(foto);
-
-        ByteArrayResource byteArrayResource = restTemplateGet.getForObject(foto, ByteArrayResource.class);
-
-
-//        Resource resource = new UrlResource(url);
+//        String fotoGoogle = "https://lh3.googleusercontent.com/a/ACg8ocLqCYrKJba4wsLo9oZqHvPhvHv6m9yGDcynwpEBrTmT45Zw7Q=s96-c";
 //
-//        Path tempfile = Files.createTempFile("tempfile", ".tmp");
+//        RestTemplate restTemplateGet = new RestTemplate();
+//        HttpHeaders headersGet = new HttpHeaders();
+//        headersGet.add("accept", "multipart/form-data");
 //
-//        Files.copy(resource.getInputStream(), tempfile, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+//        headersGet.setContentType(MediaType.MULTIPART_FORM_DATA);
 //
-//        System.out.println("termino");
-
-//        ResponseEntity<BufferedImage> fotobajada = restTemplateGet.exchange(foto, HttpMethod.GET, null, BufferedImage.class);
+//        ByteArrayResource byteArrayResource = restTemplateGet.getForObject(fotoGoogle, ByteArrayResource.class);
 //
-//        ImageIO.write(fotobajada.getBody(), "jpg", new ByteArrayOutputStream());
+//        Bucket bucket = new Bucket();
+//        bucket.setName("dai-obs");
 //
-//        BufferedImage asubir = ImageIO.write(fotobajada.getBody(), "jpg", new ByteArrayOutputStream());
-
-//        return new ResponseEntity<>(asubir, HttpStatus.OK);
-
-        String URL = "https://dai-obs.obs.la-south-2.myhuaweicloud.com/";
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-
-        Bucket bucket = new Bucket();
-        bucket.setName("dai-obs");
-
-        ObsConfiguration config = new ObsConfiguration();
-        config.setEndPoint("obs.la-south-2.myhuaweicloud.com");
-
-        try {
-            ObsClient obsClient = new ObsClient(config);
-            obsClient.putObject("dai-obs", "pruebajava.jpg", new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
-        }catch (Exception e){
-            System.out.println(e);}
+//        ObsConfiguration config = new ObsConfiguration();
+//        config.setEndPoint("obs.la-south-2.myhuaweicloud.com");
+//
+//        try {
+//            ObsClient obsClient = new ObsClient(config);
+//            obsClient.putObject("dai-obs", "pruebajava.jpg", new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
+//        }catch (Exception e){
+//            System.out.println(e);}
 
 
         return null;
-
-
-
-//        InputStream inputStream = new URL(foto).openStream();
-
-
-//        obsClient.putObject("dai-obs", "pruebajava", inputStream, null);
-//
-//        PutObjectRequest putObjectRequest = new PutObjectRequest();
-//        putObjectRequest.setBucketName("dai-obs");
-//        putObjectRequest.setObjectKey("pruebajava");
-//        putObjectRequest.setI;
-//
-//        obsClient.putObject(putObjectRequest);
-//
-//
-//
-////        headers.setContentType(MediaType.IMAGE_JPEG);
-//
-//
-//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-//        body.add("key", key);
-//        body.add("file", tempfile.toFile());
-
-//        HttpEntity<MultiValueMap<String, Object>> requestEntityPost = new HttpEntity<>(body, headers);
-
-//        ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.POST, requestEntityPost, String.class);
-
-//        return new  ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
