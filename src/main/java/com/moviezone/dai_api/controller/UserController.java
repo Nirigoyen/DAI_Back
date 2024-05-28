@@ -5,9 +5,9 @@ import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.service.IUserService;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -31,6 +31,15 @@ public class UserController {
 
     @PostMapping(value = "/images")
     public ResponseEntity<?> modifyImage(@RequestParam("archivo") MultipartFile archivo){
+
+        String URL = "https://dai-obs.obs.la-south-2.myhuaweicloud.com";
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "application/json");
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.GET, entity, String.class);
 
         return null;
     }
