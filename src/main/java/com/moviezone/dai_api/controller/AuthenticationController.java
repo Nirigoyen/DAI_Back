@@ -60,9 +60,14 @@ public class AuthenticationController {
 
         String data = response.getBody();
 
+        System.out.println(data);
+
         JsonParser parser = new JsonParser();
         JsonObject jsonObject = (JsonObject) parser.parse(data);
-        long userId = jsonObject.get("sub").getAsLong();
+
+        System.out.println(jsonObject);
+
+        String userId = jsonObject.get("sub").getAsString();
 
         if (userService.findUserById(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
             UserDTO user = new UserDTO();

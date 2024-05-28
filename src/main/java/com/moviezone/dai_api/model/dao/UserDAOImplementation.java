@@ -17,7 +17,7 @@ public class UserDAOImplementation implements IUserDAO{
 
     @Override
     @Transactional(readOnly = true)
-    public User findUserById(long userId) {
+    public User findUserById(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
 
         User user = currentSession.get(User.class, userId);
@@ -35,7 +35,7 @@ public class UserDAOImplementation implements IUserDAO{
 
     @Override
     @Transactional
-    public void deleteUser(long userId) {
+    public void deleteUser(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
 
         Query theQuery = currentSession.createQuery("delete from User where id=:userId");

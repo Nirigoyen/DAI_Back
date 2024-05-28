@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "usuarios")
 public class User {
     @Id
-    private long userId;
+    private String userId;
     private String username;
     private String name;
     private String lastName;
@@ -36,7 +36,7 @@ public class User {
         super();
     }
 
-    public User(long userId, String username, String name, String lastName, String email, String profilePictureLink) {
+    public User(String userId, String username, String name, String lastName, String email, String profilePictureLink) {
         this.userId = userId;
         this.username = username;
         this.name = name;
@@ -45,10 +45,10 @@ public class User {
         this.profilePictureLink = profilePictureLink;
     }
 
-    public long getId() {
+    public String getId() {
         return userId;
     }
-    public void setId(long id) {
+    public void setId(String id) {
         this.userId = id;
     }
     public String getUsername() {
