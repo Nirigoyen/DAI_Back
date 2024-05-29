@@ -1,7 +1,6 @@
 package com.moviezone.dai_api.controller;
 
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dto.HealthDTO;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -27,8 +26,6 @@ public class HealthController {
 
         HealthDTO healthDTO = new HealthDTO();
 
-        JsonObject finalResponse = new JsonObject();
-
 
         String API_URL = "https://api.themoviedb.org/3/configuration" ;
 
@@ -36,7 +33,7 @@ public class HealthController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
         headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.GET, entity, String.class);
 

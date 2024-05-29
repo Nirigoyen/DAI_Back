@@ -116,10 +116,10 @@ public class AuthenticationController {
         ByteArrayResource byteArrayResource = restTemplateGet.getForObject(imgURL, ByteArrayResource.class);
 
         Bucket bucket = new Bucket();
-        bucket.setName(Dotenv.load().get("BUCKET_NAME")); //* HACER ENV
+        bucket.setName(Dotenv.load().get("BUCKET_NAME"));
 
         ObsConfiguration config = new ObsConfiguration();
-        config.setEndPoint(Dotenv.load().get("OBS_URL")); //* HACER ENV
+        config.setEndPoint(Dotenv.load().get("OBS_URL"));
 
         String userid = "profile-pictures/" + userJSON.get("sub").getAsString() + ".jpg";
 

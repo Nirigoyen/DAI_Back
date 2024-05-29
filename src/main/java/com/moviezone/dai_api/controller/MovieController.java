@@ -1,17 +1,12 @@
 package com.moviezone.dai_api.controller;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 
-import com.moviezone.dai_api.model.entity.Movie;
+
 import com.moviezone.dai_api.service.IMovieService;
 import com.moviezone.dai_api.utils.ErrorResponse;
-import com.moviezone.dai_api.utils.IMAGE_TYPE;
-import com.moviezone.dai_api.utils.ImageLinks;
-import io.github.cdimascio.dotenv.Dotenv;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -19,9 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -65,7 +58,6 @@ public class MovieController {
             return new ResponseEntity<>(finalResult, HttpStatus.OK);
         }
         return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
-        
     }
 
 }

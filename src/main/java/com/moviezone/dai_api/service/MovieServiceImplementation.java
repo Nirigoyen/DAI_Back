@@ -4,12 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dao.IMovieDAO;
-import com.moviezone.dai_api.model.dao.MovieDAOImplementation;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
-import com.moviezone.dai_api.model.dto.MovieDTO;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
-import kotlin.collections.ArrayDeque;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
