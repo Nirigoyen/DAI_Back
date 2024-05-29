@@ -1,5 +1,7 @@
 package com.moviezone.dai_api.model.dto;
 
+
+//! NO IMPLEMENTADO
 public class RatingDTO {
     private int id;
     private int rating;

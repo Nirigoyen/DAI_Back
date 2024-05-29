@@ -2,6 +2,8 @@ package com.moviezone.dai_api.model.dto;
 
 import java.util.List;
 
+
+//! NO IMPLEMENTADO
 public class MovieFavouriteComponentDTO {
     private int movieId;
     private float movieVoteAverage;

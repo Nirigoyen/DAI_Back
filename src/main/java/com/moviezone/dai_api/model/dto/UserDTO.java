@@ -2,8 +2,6 @@ package com.moviezone.dai_api.model.dto;
 
 import com.moviezone.dai_api.model.entity.User;
 
-import java.util.Date;
-import java.util.List;
 
 public class UserDTO {
     private String id;

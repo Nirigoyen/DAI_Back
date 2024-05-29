@@ -2,6 +2,8 @@ package com.moviezone.dai_api.model.dto;
 
 import java.util.List;
 
+
+//! NO IMPLEMENTADO, SIRVE PARA EL DETALLE DE PELICULAS
 public class MovieDTO {
     private int movieId;
     private int movieRuntime;
