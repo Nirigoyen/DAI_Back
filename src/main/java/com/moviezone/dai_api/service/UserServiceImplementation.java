@@ -21,20 +21,18 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
 
     @Override
     public UserDTO modifyUser(String userId, UserDTO userDTO, String base64Img) {
+
+        //? OBTENEMOS EL USUARIO ACTUAL Y ACTUALIZAMOS SUS DATOS
         User currentUser = userDAO.findUserById(userId);
         currentUser.setUsername(userDTO.getUsername());
         currentUser.setName(userDTO.getName());
         currentUser.setLastName(userDTO.getLastName());
         currentUser.setEmail(userDTO.getEmail());
 
+        //? ACTUALIZAMOS LOS DATOS DEL USUARIO EN LA BASE DE DATOS
+        userDAO.updateUser(currentUser, base64Img);
 
-        //? SI NO ACTUALIZA LA IMAGEN, NO HACEMOS REQUEST AL OBS.
-        if (base64Img != null) {
-            userDAO.updateUserWithImg(currentUser, base64Img);
-        } else {
-            userDAO.updateUser(currentUser);
-        }
-
+        //? RETORNAMOS EL USUARIO ACTUALIZADO
         return new UserDTO(currentUser.getId(), currentUser.getUsername(), currentUser.getName(),
                 currentUser.getLastName(), currentUser.getEmail());
     }

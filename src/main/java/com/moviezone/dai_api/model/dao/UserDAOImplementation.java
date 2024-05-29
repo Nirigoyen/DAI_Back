@@ -50,18 +50,16 @@ public class UserDAOImplementation implements IUserDAO{
     }
 
     @Override
-    public void updateUser(User user) {
-        Session currentSession = entityManager.unwrap(Session.class);
-        currentSession.update(user);
-    }
-
-    @Override
-    public void updateUserWithImg(User user, String base64Img) {
+    public void updateUser(User user, String base64Img) {
 
         //? ACTUALIZAMOS LOS DATOS DEL USER EN LA BASE DE DATOS
         Session currentSession = entityManager.unwrap(Session.class);
         currentSession.update(user);
 
+        if (base64Img != null) updateImg(user, base64Img);
+    }
+
+    private static void updateImg(User user, String base64Img) {
         //? ACTUALIZAMOS LA IMAGEN DE PERFIL EN EL OBS
         RestTemplate restTemplate = new RestTemplate();
 

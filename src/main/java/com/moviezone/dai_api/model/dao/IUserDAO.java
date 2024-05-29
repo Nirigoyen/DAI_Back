@@ -7,6 +7,5 @@ public interface IUserDAO {
     public User findUserById(String userId);
     public void createUser(User user);
     public void deleteUser(String userId);
-    public void updateUser(User user);
-    public void updateUserWithImg(User user, String base64Img);
+    public void updateUser(User user, String base64Img);
 }
