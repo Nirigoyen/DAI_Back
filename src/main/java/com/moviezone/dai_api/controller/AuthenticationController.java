@@ -73,19 +73,7 @@ public class AuthenticationController {
         String userId = jsonObject.get("sub").getAsString();
 
         if (userService.findUserById(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
-            UserDTO user = new UserDTO();
-            // Datos que estan si o si
-            user.setId(userId);
-            user.setEmail(jsonObject.get("email").getAsString());
-            user.setName(jsonObject.get("given_name").getAsString());
-
-            // Datos que pueden ser null
-            if(jsonObject.has("family_name")) user.setLastName(jsonObject.get("family_name").getAsString());
-
-            if(jsonObject.has("picture")) user.setProfilePictureURL(jsonObject.get("picture").getAsString());
-
-            user.setUsername(jsonObject.get("name").getAsString());
-            //! NO DEVUELVE EL USERNAME, HAY QUE PERMITIR AL USUARIO EDITARLO EN LA APP
+            UserDTO user = createUserDTO(jsonObject);
 
             userService.createUser(user);
         }
