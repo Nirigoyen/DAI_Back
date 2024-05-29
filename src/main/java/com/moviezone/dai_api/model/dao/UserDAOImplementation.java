@@ -46,10 +46,7 @@ public class UserDAOImplementation implements IUserDAO{
     @Transactional
     public void deleteUser(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
-
-        Query theQuery = currentSession.createQuery("delete from User where id=:userId");
-        theQuery.setParameter("userId", userId);
-        theQuery.executeUpdate();
+        currentSession.remove(findUserById(userId));
     }
 
     @Override

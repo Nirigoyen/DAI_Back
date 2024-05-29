@@ -102,10 +102,14 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-//    @DeleteMapping
-//    public ResponseEntity<?> deleteUser(int userID){
-//        if (userID == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-//    }
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(String userID){
+        if (userID == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        userServiceImplementation.deleteById(userID);
+
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
 
 }
 
