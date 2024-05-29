@@ -20,25 +20,25 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
     }
 
     @Override
-    public UserDTO modifyUser(String userId, User user) {
+    public UserDTO modifyUser(String userId, UserDTO userDTO, String base64Img) {
         User currentUser = userDAO.findUserById(userId);
-        currentUser.setName(user.getName());
-        currentUser.setLastName(user.getLastName());
-        currentUser.setEmail(user.getEmail());
-        currentUser.setProfilePicture(user.getProfilePicture());
+        currentUser.setUsername(userDTO.getUsername());
+        currentUser.setName(userDTO.getName());
+        currentUser.setLastName(userDTO.getLastName());
+        currentUser.setEmail(userDTO.getEmail());
 
-        userDAO.createUser(currentUser);
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(currentUser.getId());
-        userDTO.setName(currentUser.getName());
-        userDTO.setLastName(currentUser.getLastName());
-        userDTO.setEmail(currentUser.getEmail());
-        userDTO.setProfilePictureURL(currentUser.getProfilePicture());
+        //? SI NO ACTUALIZA LA IMAGEN, NO HACEMOS REQUEST AL OBS.
+        if (base64Img != null) {
+            userDAO.updateUserWithImg(currentUser, base64Img);
+        } else {
+            userDAO.updateUser(currentUser);
+        }
 
-        return userDTO;
-
+        return new UserDTO(currentUser.getId(), currentUser.getUsername(), currentUser.getName(),
+                currentUser.getLastName(), currentUser.getEmail());
     }
+
 
     @Override
     public void deleteById(String userId) {

@@ -23,6 +23,13 @@ public class UserDTO {
         this.profilePictureURL = profilePictureURL;
     }
 
+    public UserDTO(String id, String username, String name, String lastName, String email) {
+        this.id = id;
+        this.username = username;
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+    }
 
     public UserDTO() {
     }

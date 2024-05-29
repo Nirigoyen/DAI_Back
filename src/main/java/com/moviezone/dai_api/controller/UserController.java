@@ -6,6 +6,7 @@ import com.huaweicloud.sdk.obs.v1.model.Bucket;
 import com.huaweicloud.sdk.obs.v1.model.PutObjectRequest;
 import com.huaweicloud.sdk.obs.v1.model.PutObjectResponse;
 import com.huaweicloud.sdk.obs.v1.region.ObsRegion;
+import com.moviezone.dai_api.model.dao.UserDAOImplementation;
 import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.service.IUserService;
 import com.obs.services.ObsClient;
@@ -43,7 +44,8 @@ public class UserController {
 
     @Autowired
     private IUserService userServiceImplementation;
-
+    @Autowired
+    private UserDAOImplementation userDAOImplementation;
 
 
     @PostMapping
@@ -89,9 +91,15 @@ public class UserController {
 
 
     @PatchMapping
-    public ResponseEntity<?> modifyUser(UserDTO userDTO){
+    public ResponseEntity<?> modifyUser(@RequestBody UserDTO userDTO, @RequestBody String base64img){
 
-        return null;
+        if (userDTO == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        if (base64img == null) base64img = null; //! CHEQUEAR COMO HACERLO BIEN
+
+        UserDTO result = userServiceImplementation.modifyUser(userDTO.getId(), userDTO, base64img);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 //    @DeleteMapping

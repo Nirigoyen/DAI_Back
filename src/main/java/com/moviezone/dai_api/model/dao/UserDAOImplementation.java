@@ -1,12 +1,21 @@
 package com.moviezone.dai_api.model.dao;
 
 import com.moviezone.dai_api.model.entity.User;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.hibernate.Session;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Base64;
 
 
 @Repository
@@ -41,6 +50,44 @@ public class UserDAOImplementation implements IUserDAO{
         Query theQuery = currentSession.createQuery("delete from User where id=:userId");
         theQuery.setParameter("userId", userId);
         theQuery.executeUpdate();
+    }
+
+    @Override
+    public void updateUser(User user) {
+        Session currentSession = entityManager.unwrap(Session.class);
+        currentSession.update(user);
+    }
+
+    @Override
+    public void updateUserWithImg(User user, String base64Img) {
+
+        //? ACTUALIZAMOS LOS DATOS DEL USER EN LA BASE DE DATOS
+        Session currentSession = entityManager.unwrap(Session.class);
+        currentSession.update(user);
+
+        //? ACTUALIZAMOS LA IMAGEN DE PERFIL EN EL OBS
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+
+        MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+        formData.add("key", user.getId() + ".jpg");
+
+        //* CONVERTIMOS LA IMAGEN DE BASE64 A JPG Y LA AGREGAMOS A LA REQUEST
+        byte[] imageBytes = Base64.getDecoder().decode(base64Img);
+        ByteArrayResource imgResource = new ByteArrayResource(imageBytes) {
+            @Override
+            public String getFilename() {
+                return user.getId() + ".jpg";
+            }
+        };
+
+        formData.add("file", imgResource);
+
+        HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(formData, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(user.getProfilePicture(), HttpMethod.POST, entity, String.class);
     }
 
 }
