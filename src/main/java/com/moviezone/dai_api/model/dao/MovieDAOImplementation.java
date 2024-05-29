@@ -65,6 +65,9 @@ public class MovieDAOImplementation implements IMovieDAO {
     }
     @Override
     public JsonArray search(String search) {
+
+        final int MAX_PAGES_TO_RETURN = 6;
+
         JsonArray finalResponse = new JsonArray();
 
         String API_URL = "https://api.themoviedb.org/3/search/multi" +
@@ -121,12 +124,12 @@ public class MovieDAOImplementation implements IMovieDAO {
 
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS. COLOCAMOS UN MAXIMO DE 6 PAGINAS (120 RESULTADOS).
 
-                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), 6);
+                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), MAX_PAGES_TO_RETURN);
 
 
                 //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
 
-                for (int i = 2; i <= pages_count; i++) {
+                for (int i = 1; i <= pages_count; i++) {
                     NEW_API_URL = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=es-AR" +
                             "&page=" + i +
                             "&sort_by=popularity.desc&with_cast=" +
@@ -158,9 +161,9 @@ public class MovieDAOImplementation implements IMovieDAO {
                 finalResponse.addAll(allMovies);
 
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS. COLOCAMOS UN MAXIMO DE 6 PAGINAS (120 RESULTADOS).
-                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), 6);
+                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), MAX_PAGES_TO_RETURN);
 
-                for (int i = 2; i <= pages_count; i++) { //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
+                for (int i = 1; i <= pages_count; i++) { //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
                     String NEW_API_URL = "https://api.themoviedb.org/3/search/movie" +
                             "?query="+ search +
                             "&include_adult=false" +
