@@ -25,39 +25,56 @@ public class MovieController {
     private IMovieService movieService;
 
     @GetMapping(value = "")
-    public ResponseEntity<?> discover(@RequestParam(name = "page", required = true) String page, @RequestParam(name = "genres", required = false) String genres) {
-        final String RELEASE_DATE_LOWER_THAN = "2024-05-01"; // Final means CONSTANT - DATE FORMAT YYYY/MM/DD
+    public ResponseEntity<?> discover(@RequestParam(name = "page", required = false) String page,
+                                      @RequestParam(name = "search", required = false) String search,
+                                      @RequestParam(name = "genres", required = false) String genres,
+                                      @RequestParam(name = "orderByScore", required = false) String orderByScore,
+                                      @RequestParam(name = "orderingScore", required = false) String orderingScore,
+                                      @RequestParam(name = "orderByDate", required = false) String orderByDate,
+                                      @RequestParam(name = "orderingDate", required = false) String orderingDate) {
 
-        if (page == null) return new ResponseEntity<>(new ErrorResponse("Bad Request, mandatory parameters not sent", 4), HttpStatus.BAD_REQUEST);
-        // since movie pages range is between 1 and 500...
 
-        else if (Integer.parseInt(page) < 1) page = "1"; // if page is less than 1 return page 1
-        else if (Integer.parseInt(page) > 500) page = "500"; // if page is greater than 500 return page 500
+        //? SI EXISTE PAGE, ESTAMOS EN LA LANDING PAGE
+        //? SI EXISTE SEARCH, ESTAMOS EN LA BUSQUEDA
+        //! SI EXISTEN AMBOS, RETORNAR UN BAD REQUEST
+        if (page != null && search != null) return new ResponseEntity<>
+                (new ErrorResponse("Bad Request, both parameters sent", 4), HttpStatus.BAD_REQUEST);
 
-        if (genres == null) genres = ""; // Genre formatting : <GenreID>%2C<GenreID>%2C>GenreID> - Example: 28%2C18 - GenreName to GenreId should be handled for frontend
+        //! SI NO EXISTE PAGE NI SEARCH, RETORNAR UN BAD REQUEST
+        if (page == null && search == null) return new ResponseEntity<>
+                (new ErrorResponse("Bad Request, no parameters sent", 4), HttpStatus.BAD_REQUEST);
 
-        List<MovieComponentDTO> result = movieService.discover(page, genres);
-        if (result != null){
-            return new ResponseEntity<>(result, HttpStatus.OK);
+
+
+        //* INICIALIZAMOS LA LISTA A RETORNAR
+        List<MovieComponentDTO> finalResult = null;
+
+
+        //? SI EL PARAMETRO DE BUSQUEDA ES 0, ENTONCES ESTAMOS EN LA LANDING PAGE
+        if (search == null){
+
+            //* NOS ASEGURAMOS DE QUE "PAGE" ESTE ENTRE LOS LIMITES QUE SOPORTA TMDB
+            if (Integer.parseInt(page) < 1) page = "1"; // if page is less than 1 return page 1
+            else if (Integer.parseInt(page) > 500) page = "500"; // if page is greater than 500 return page 500
+
+            //* SI NO HAY GENEROS, ENTONCES LOS INICIALIZAMOS COMO UN STRING VACIO
+            if (genres == null) genres = ""; // Genre formatting : <GenreID>%2C<GenreID>%2C>GenreID> - Example: 28%2C18 - GenreName to GenreId should be handled for frontend
+
+            //* OBTENEMOS LOS RESULTADOS DE LA LANDING
+            finalResult = movieService.discover(page, genres);
+        } else if (page == null) {
+
+            //* SI EL PARAMETRO DE PAGINA ES 0, ENTONCES ESTAMOS EN LA BUSQUEDA
+            finalResult = movieService.search(search, orderByScore, orderingScore, orderByDate, orderingDate);
         }
-        return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
-    }
 
-    @GetMapping(value = "/search")
-    public ResponseEntity<?> search(@RequestParam(name = "search", required = true) String search,
-                                    @RequestParam(name = "orderByScore", required = false) String orderByScore,
-                                    @RequestParam(name = "orderingScore", required = false) String orderingScore,
-                                    @RequestParam(name = "orderByDate", required = false) String orderByDate,
-                                    @RequestParam(name = "orderingDate", required = false) String orderingDate) {
-
-        if (search == null) return new ResponseEntity<>(new ErrorResponse("Bad Request, mandatory parameters not sent", 4), HttpStatus.BAD_REQUEST);
-
-        List<MovieComponentDTO> finalResult = movieService.search(search, orderByScore, orderingScore, orderByDate, orderingDate);
-
+        //* SI HAY RESULTADOS, LOS RETORNAMOS
         if (finalResult != null) {
             return new ResponseEntity<>(finalResult, HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
+        else {//* SI NO HAY RESULTADOS, RETORNAMOS UN NOT FOUND
+            return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
+        }
     }
 
 }
