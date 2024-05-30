@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 @RestController
 @RequestMapping("/v1/auths")
 public class AuthenticationController {
+
     private final int EXPIRATION_TIME = 864_000_000; // 10 days Y esto? xDD
 
     @Autowired
@@ -107,6 +108,9 @@ public class AuthenticationController {
 
     private static String uploadImage(JsonObject userJSON) {
 
+        String OBS_URL = System.getenv("OBS_URL");
+        String BUCKET_NAME = System.getenv("BUCKET_NAME");
+
         String finalURL = "";
 
         String imgURL = userJSON.get("picture").getAsString();
@@ -116,17 +120,17 @@ public class AuthenticationController {
         ByteArrayResource byteArrayResource = restTemplateGet.getForObject(imgURL, ByteArrayResource.class);
 
         Bucket bucket = new Bucket();
-        bucket.setName(Dotenv.load().get("BUCKET_NAME"));
+        bucket.setName(BUCKET_NAME);
 
         ObsConfiguration config = new ObsConfiguration();
-        config.setEndPoint(Dotenv.load().get("OBS_URL"));
+        config.setEndPoint(OBS_URL);
 
         String userid = "profile-pictures/" + userJSON.get("sub").getAsString() + ".jpg";
 
         try {
             ObsClient obsClient = new ObsClient(config);
-            obsClient.putObject(Dotenv.load().get("BUCKET_NAME"), userid, new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
-            finalURL = Dotenv.load().get("OBS_URL") + userid;
+            obsClient.putObject(BUCKET_NAME, userid, new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
+            finalURL = OBS_URL + userid;
         }catch (Exception e){}
 
         return finalURL;

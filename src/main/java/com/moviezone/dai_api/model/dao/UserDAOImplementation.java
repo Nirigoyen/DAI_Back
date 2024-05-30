@@ -1,10 +1,8 @@
 package com.moviezone.dai_api.model.dao;
 
 import com.moviezone.dai_api.model.entity.User;
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import org.hibernate.Session;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -13,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 
