@@ -9,6 +9,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 
 @Repository
 public class MovieDAOImplementation implements IMovieDAO {
@@ -22,9 +25,14 @@ public class MovieDAOImplementation implements IMovieDAO {
     }
 
     @Override
-    public JsonArray discover(String page, String genres) {
+    public JsonArray discover(String page, String genres) { //? RESULTADOS DE LA LANDING PAGE
 
+        //* FIJAMOS QUE SEAN PELICULAS QUE HAYAN SALIDO YA
         final String RELEASE_DATE_LOWER_THAN = "2024-05-01"; // Final means CONSTANT - DATE FORMAT YYYY/MM/DD
+
+        LocalDate fecha = LocalDate.now();
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fecha_actual = fecha.format(formato);
 
         String API_URL = "https://api.themoviedb.org/3/discover/movie" +
                 "?include_adult=false" +
@@ -46,7 +54,6 @@ public class MovieDAOImplementation implements IMovieDAO {
         if (response.getStatusCodeValue() == 200) {
 
             String datos = response.getBody();
-            //return response;
 
             JsonParser parser = new JsonParser();
             JsonObject jsonObject = (JsonObject) parser.parse(datos);
