@@ -85,20 +85,26 @@ public class MovieServiceImplementation implements IMovieService {
 
         //? ORDENAMIENTO
 
-        if (orderByScore == null && orderByDate == null) { //* POR DEFECTO ORDENAMOS LOS RESULTADOS POR PUNTAJE DE MANERA DESCENDENTE
+        //* NOS ASEGURAMOS DE QUE LAS VARIABLES DE ORDENAMIENTO NO SEAN NULL
+        if (orderByScore == null) orderByScore = "False";
+        if (orderByDate == null) orderByDate = "False";
+        if (orderingScore == null) orderingScore = "desc";
+        if (orderingDate == null) orderingDate = "desc";
+
+        if (orderByScore.equals("False") && orderByDate.equals("False")) { //* POR DEFECTO ORDENAMOS LOS RESULTADOS POR PUNTAJE DE MANERA DESCENDENTE
             filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
             Collections.reverse(filteredMovies);
         }
-        else if (orderByScore == "True" && orderByDate == null) { //* ORDENAMIENTO POR PUNTAJE
+        else if (orderByScore.equals("True") && orderByDate.equals("False")) { //* ORDENAMIENTO POR PUNTAJE
             OrderByScore(orderingScore, filteredMovies);
         }
-        else if (orderByScore == null && orderByDate == "True") { //* ORDENAMIENTO POR FECHA DE LANZAMIENTO
+        else if (orderByScore.equals("False") && orderByDate.equals("True")) { //* ORDENAMIENTO POR FECHA DE LANZAMIENTO
             OrderByDate(orderingDate, filteredMovies);
         }
         else { //* ORDENAMIENTO POR VOTOS Y FECHA DE LANZAMIENTO (PRIMERO POR PUNTAJE Y DESPUES POR FECHA)
             OrderByScore(orderingScore, filteredMovies);
             OrderByDate(orderingDate, filteredMovies);
-            }
+        }
 
 
 
