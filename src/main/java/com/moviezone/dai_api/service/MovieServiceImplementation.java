@@ -23,29 +23,31 @@ public class MovieServiceImplementation implements IMovieService {
     @Autowired
     private IMovieDAO movieDAO;
 
-    public void getMovieDetails(int movieId) {
+    public void getMovieDetails(int movieId) { //! NO IMPLEMENTADO AUN
         System.out.println("Getting movie by id: " + movieId);
     }
 
     public List<MovieComponentDTO> discover(String page, String genres) {
 
+        //? SI NO HAY GENEROS, LOS PASAMOS COMO VACIO
         if (genres == null) genres = ""; // Genre formatting : <GenreID>%2C<GenreID>%2C>GenreID> - Example: 28%2C18 - GenreName to GenreId should be handled for frontend
-        List<MovieComponentDTO> result = new ArrayList<>();
 
+        //? OBTENEMOS LOS RESULTADOS DE LA LANDING
+        List<MovieComponentDTO> result = new ArrayList<>();
         JsonArray allMovies = movieDAO.discover(page, genres);
 
+        //! SI HUBO UN ERROR RETORNAMOS NULL
         if ( allMovies == null) return null; // if there was an error, return null.
 
+        //? CREADO DE DTOs Y CARGADO A LA LISTA FINAL DE LOS RESULTADOS
         for (int i = 0; i < allMovies.size(); i++) {
             JsonObject TMDBmovie = allMovies.get(i).getAsJsonObject();
-
-            //if (!TMDBmovie.get("media_type").getAsString().equals("movie")) continue; // If the media type is different from movie, skip the iteration (don't add it to the list)
 
             MovieComponentDTO newMovie = new MovieComponentDTO();
 
             int newMovieId = TMDBmovie.get("id").getAsInt(); // Get "ID" field from JSON
 
-            try { // If a posterPath doesn't exist, the movie is not added to the list
+            try { //* SI LA PELICULA NO TIENE POSTER, NO SE CARGA EN LA LISTA
                 String newMovieImagePosterPath = ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER, TMDBmovie.get("poster_path").getAsString()); // get "poster_path" field from JSON
 
                 newMovie.setMovieId(newMovieId);
@@ -60,24 +62,27 @@ public class MovieServiceImplementation implements IMovieService {
     @Override
     public List<MovieComponentDTO> search(String search, String orderByScore, String orderingScore, String orderByDate, String orderingDate) {
 
+        //? OBTENEMOS LOS RESULTADOS DE LA BUSQUEDA Y LOS AÑADIMOS A UNA LISTA
         List<MovieComponentDTO> result = new ArrayList<>();
 
         JsonArray allMovies = movieDAO.search(search);
 
         List<JsonObject> filteredMovies = new ArrayList<>();
 
-        if (allMovies == null) return null; // if there was an error, return null.
+        //! SI HUBO UN ERROR RETORNAMOS NULL
+        if (allMovies == null) return null;
         
 
         //? FILTRADO
 
-        for (JsonElement movie : allMovies) { //* FILTRADO DE PELICULAS CON MENOS DE 500 VOTOS
+        for (JsonElement movie : allMovies) {
             JsonObject TMDBmovie = movie.getAsJsonObject();
-            try {
+            try { //* SI EL MEDIA TYPE ES DISTINTO A PELICULA NO SUMAMOS A RESULTADOS (ES UNA SERIE O PERSONA)
                 if (!TMDBmovie.get("media_type").getAsString().equals("movie")) continue; // If the media type is different from "movie", skip the iteration (don't add it to the list)
             } catch (Exception ignored) {}
 
-            if (TMDBmovie.get("vote_count").getAsInt() < 200) continue;; // If the vote count is lower than 500, skip the iteration (don't add it to the list)
+            //* SI LA PELICULA TIENE MENOS DE 200 VOTOS NO LA SUMAMOS A LOS RESULTADOS
+            if (TMDBmovie.get("vote_count").getAsInt() < 200) continue;;
 
             filteredMovies.add(TMDBmovie);
         }
@@ -101,19 +106,19 @@ public class MovieServiceImplementation implements IMovieService {
         else if (orderByScore.equals("False") && orderByDate.equals("True")) { //* ORDENAMIENTO POR FECHA DE LANZAMIENTO
             OrderByDate(orderingDate, filteredMovies);
         }
-        else { //* ORDENAMIENTO POR VOTOS Y FECHA DE LANZAMIENTO (PRIMERO POR PUNTAJE Y DESPUES POR FECHA)
+        else { //* ORDENAMIENTO POR PUNTAJE Y FECHA DE LANZAMIENTO (PRIMERO POR PUNTAJE Y DESPUES POR FECHA)
             OrderByScore(orderingScore, filteredMovies);
             OrderByDate(orderingDate, filteredMovies);
         }
 
 
 
-        //? CREADO DE DTOS Y CARGADO A LA LISTA FINAL
+        //? CREADO DE DTOs Y CARGADO A LA LISTA FINAL DE LOS RESULTADOS
 
         for (JsonObject movie: filteredMovies){
             MovieComponentDTO newMovie = new MovieComponentDTO();
 
-            try { // If a posterPath doesn't exist, the movie is not added to the list
+            try { //* SI LA PELICULA NO TIENE POSTER, NO SE CARGA EN LA LISTA
 
                 String newMovieImagePosterPath = ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER, movie.get("poster_path").getAsString()); // get "poster_path" field from JSON
 
@@ -128,7 +133,7 @@ public class MovieServiceImplementation implements IMovieService {
     }
 
     private static void OrderByDate(String orderingDate, List<JsonObject> filteredMovies) {
-        if (orderingDate.equals("asc")) {
+        if (orderingDate.equals("asc")) { //* ORDENAMOS POR FECHA DE MANERA ASCENDENTE
             Collections.sort(filteredMovies, (o1, o2) -> {
 
                 LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -136,7 +141,7 @@ public class MovieServiceImplementation implements IMovieService {
 
                 return releaseDate1.compareTo(releaseDate2);
             });
-        } else {
+        } else { //* ORDENAMOS POR FECHA DE MANERA DESCENDENTE
             Collections.sort(filteredMovies, (o1, o2) -> {
 
                 LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -148,9 +153,9 @@ public class MovieServiceImplementation implements IMovieService {
     }
 
     private static void OrderByScore(String orderingScore, List<JsonObject> filteredMovies) {
-        if (orderingScore.equals("asc")) {
+        if (orderingScore.equals("asc")) { //* ORDENAMOS POR PUNTAJE DE MANERA ASCENDENTE
             filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
-        } else {
+        } else { //* ORDENAMOS POR PUNTAJE DE MANERA DESCENDENTE
             filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
             Collections.reverse(filteredMovies);
         }

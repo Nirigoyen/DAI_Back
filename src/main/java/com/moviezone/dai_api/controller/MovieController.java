@@ -50,7 +50,7 @@ public class MovieController {
         List<MovieComponentDTO> finalResult = null;
 
 
-        //? SI EL PARAMETRO DE BUSQUEDA ES 0, ENTONCES ESTAMOS EN LA LANDING PAGE
+        //? SI EL PARAMETRO DE BUSQUEDA ES NULL, ENTONCES ESTAMOS EN LA LANDING PAGE
         if (search == null){
 
             //* NOS ASEGURAMOS DE QUE "PAGE" ESTE ENTRE LOS LIMITES QUE SOPORTA TMDB
@@ -64,7 +64,7 @@ public class MovieController {
             finalResult = movieService.discover(page, genres);
         } else if (page == null) {
 
-            //* SI EL PARAMETRO DE PAGINA ES 0, ENTONCES ESTAMOS EN LA BUSQUEDA
+            //? SI EL PARAMETRO DE PAGINA ES NULL, ENTONCES ESTAMOS EN LA BUSQUEDA
             finalResult = movieService.search(search, orderByScore, orderingScore, orderByDate, orderingDate);
         }
 

@@ -36,8 +36,6 @@ public class UserController {
 
         if (userDTO == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        if (base64img == null) base64img = null; //! CHEQUEAR COMO HACERLO BIEN
-
         UserDTO result = userServiceImplementation.modifyUser(userDTO.getId(), userDTO, base64img);
 
         return new ResponseEntity<>(result, HttpStatus.OK);

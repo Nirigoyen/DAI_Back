@@ -29,7 +29,7 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
         currentUser.setLastName(userDTO.getLastName());
         currentUser.setEmail(userDTO.getEmail());
 
-        //? ACTUALIZAMOS LOS DATOS DEL USUARIO EN LA BASE DE DATOS
+        //? ACTUALIZAMOS LOS DATOS DEL USUARIO EN LA BASE DE DATOS (Y OBS SI FUERA NECESARIO)
         userDAO.updateUser(currentUser, base64Img);
 
         //? RETORNAMOS EL USUARIO ACTUALIZADO
