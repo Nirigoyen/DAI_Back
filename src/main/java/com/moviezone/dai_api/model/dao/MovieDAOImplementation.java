@@ -15,8 +15,6 @@ import java.time.format.DateTimeFormatter;
 @Repository
 public class MovieDAOImplementation implements IMovieDAO {
 
-    String TMDB_TOKEN = System.getenv("TMDB_TOKEN");
-
 
     public Movie getMovieDetails(int movieId) { //! NO IMPLEMENTADO
 
@@ -47,7 +45,7 @@ public class MovieDAOImplementation implements IMovieDAO {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  TMDB_TOKEN  );
+        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
@@ -83,7 +81,7 @@ public class MovieDAOImplementation implements IMovieDAO {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  TMDB_TOKEN  );
+        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
