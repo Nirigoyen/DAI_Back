@@ -26,7 +26,7 @@ import java.util.Date;
 @RequestMapping("/v1/auths")
 public class AuthenticationController {
     //private final int EXPIRATION_TIME = 864_000_000; // 10 days Y esto? xDD
-    private final int EXPIRATION_TIME = 60 * 5; // 5 minutos
+    private final int EXPIRATION_TIME = 60 * 1000 * 5; //* 1000 milisegundos ( 1 segundo ) * 60 ( PARA QUE DE 1 MINUTO ) * 5 ( PARA QUE DE 5 MINUTOS )
 
 
     @Autowired
