@@ -31,9 +31,7 @@ ENV SPRING_PROFILES_ACTIVE=dev
 
 # Expose port
 EXPOSE 8080
-EXPOSE 443
-EXPOSE 80
+
 
 # Run the application
-
 ENTRYPOINT ["java","-jar","app.jar"]
