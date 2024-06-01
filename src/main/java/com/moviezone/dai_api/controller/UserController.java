@@ -41,8 +41,8 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteUser(String userID){
+    @DeleteMapping()
+    public ResponseEntity<?> deleteUser(@RequestBody String userID){
         if (userID == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         userServiceImplementation.deleteById(userID);

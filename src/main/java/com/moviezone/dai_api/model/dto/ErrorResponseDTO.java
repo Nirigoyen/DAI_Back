@@ -1,10 +1,10 @@
-package com.moviezone.dai_api.utils;
+package com.moviezone.dai_api.model.dto;
 
-public class ErrorResponse {
+public class ErrorResponseDTO {
     private int errorCode;
     private String errorMessage;
 
-    public ErrorResponse(String errorMessage, int errorCode) {
+    public ErrorResponseDTO(String errorMessage, int errorCode) {
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
     }
