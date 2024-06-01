@@ -5,7 +5,7 @@ import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 
 
 import com.moviezone.dai_api.service.IMovieService;
-import com.moviezone.dai_api.utils.ErrorResponse;
+import com.moviezone.dai_api.model.dto.ErrorResponseDTO;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +38,11 @@ public class MovieController {
         //? SI EXISTE SEARCH, ESTAMOS EN LA BUSQUEDA
         //! SI EXISTEN AMBOS, RETORNAR UN BAD REQUEST
         if (page != null && search != null) return new ResponseEntity<>
-                (new ErrorResponse("Bad Request, both parameters sent", 4), HttpStatus.BAD_REQUEST);
+                (new ErrorResponseDTO("Bad Request, both parameters sent", 4), HttpStatus.BAD_REQUEST);
 
         //! SI NO EXISTE PAGE NI SEARCH, RETORNAR UN BAD REQUEST
         if (page == null && search == null) return new ResponseEntity<>
-                (new ErrorResponse("Bad Request, no parameters sent", 4), HttpStatus.BAD_REQUEST);
+                (new ErrorResponseDTO("Bad Request, no parameters sent", 4), HttpStatus.BAD_REQUEST);
 
 
 
@@ -73,7 +73,7 @@ public class MovieController {
             return new ResponseEntity<>(finalResult, HttpStatus.OK);
         }
         else {//* SI NO HAY RESULTADOS, RETORNAMOS UN NOT FOUND
-            return new ResponseEntity<>(new ErrorResponse("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ErrorResponseDTO("Resource Not Found.", 3), HttpStatus.NOT_FOUND);
         }
     }
 
