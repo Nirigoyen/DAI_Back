@@ -106,7 +106,7 @@ public class AuthenticationController {
 
         String userId = jsonObject.get("sub").getAsString();
 
-        if (userService.findUserById(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
+        if (userService.getUser(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
             UserDTO user = createUserDTO(jsonObject);
 
             userService.createUser(user);

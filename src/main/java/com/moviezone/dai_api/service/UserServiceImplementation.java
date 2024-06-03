@@ -44,7 +44,7 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
     }
 
     @Override
-    public UserDTO findUserById(String userId) {
+    public UserDTO getUser(String userId) {
         User user = userDAO.findUserById(userId);
         if (user != null) {
             UserDTO userDTO = new UserDTO();

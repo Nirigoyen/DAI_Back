@@ -50,6 +50,15 @@ public class UserController {
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getUser(@RequestParam String userID){
+        if (userID == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+        UserDTO result = userServiceImplementation.getUser(userID);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }
 
 
