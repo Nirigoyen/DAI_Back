@@ -11,4 +11,6 @@ public interface IMovieDAO {
     public JsonObject getMovieDetails(int movieId);
     public JsonArray discover(String page, String genres);
     public JsonArray search(String search);
+    public JsonArray getGenres(int movieId);
+    public List<Movie> getImages(int movieId);
 }

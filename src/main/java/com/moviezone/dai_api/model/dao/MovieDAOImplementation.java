@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
 @Repository
@@ -218,5 +219,38 @@ public class MovieDAOImplementation implements IMovieDAO {
             }
         }
         return finalResponse;
+    }
+
+    @Override
+    public JsonArray getGenres(int movieId) {
+
+        String URL = "https://api.themoviedb.org/3/movie/" +
+                movieId +
+                "/credits?language=es-AR";
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "application/json");
+        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(URL,HttpMethod.GET, entity, String.class);
+
+        if (response.getStatusCodeValue() == 200) {
+
+            String datos = response.getBody();
+            JsonParser parser = new JsonParser();
+            JsonObject jsonObject = (JsonObject) parser.parse(datos);
+            JsonArray cast = jsonObject.getAsJsonArray("cast");
+
+            return cast;
+        }
+        else
+            return null;
+    }
+
+    @Override
+    public List<Movie> getImages(int movieId) {
+        return List.of();
     }
 }
