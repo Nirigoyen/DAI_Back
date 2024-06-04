@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moviezone.dai_api.model.entity.Movie;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
@@ -28,8 +27,6 @@ public class MovieDAOImplementation implements IMovieDAO {
     public JsonArray discover(String page, String genres) { //? RESULTADOS DE LA LANDING PAGE
 
         //* FIJAMOS QUE SEAN PELICULAS QUE HAYAN SALIDO YA
-        final String RELEASE_DATE_LOWER_THAN = "2024-05-01"; // Final means CONSTANT - DATE FORMAT YYYY/MM/DD
-
         LocalDate fecha = LocalDate.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String fecha_actual = fecha.format(formato);
@@ -39,14 +36,14 @@ public class MovieDAOImplementation implements IMovieDAO {
                 "&include_video=false" +
                 "&language=es-AR" +
                 "&page=" + page +
-                "&release_date.lte=" + RELEASE_DATE_LOWER_THAN +
+                "&release_date.lte=" + fecha_actual +
                 "&sort_by=primary_release_date.desc&with_genres=" + genres;
 
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
@@ -82,7 +79,7 @@ public class MovieDAOImplementation implements IMovieDAO {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);

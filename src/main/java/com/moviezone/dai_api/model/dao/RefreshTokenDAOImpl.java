@@ -26,9 +26,11 @@ public class RefreshTokenDAOImpl implements IRefreshTokenDAO {
     public RefreshToken findByRefreshToken(String token) {
         Session currentSession = entityManager.unwrap(Session.class);
 
-        Query<RefreshToken> theQuery = currentSession.createQuery("FROM RefreshToken WHERE token=:token", RefreshToken.class);
-        theQuery.setParameter("token", token);
-        RefreshToken refreshToken = theQuery.uniqueResult();
+        RefreshToken refreshToken = currentSession.get(RefreshToken.class, token);
+
+//        Query<RefreshToken> theQuery = currentSession.createQuery("FROM RefreshToken WHERE token=:token", RefreshToken.class);
+//        theQuery.setParameter("token", token);
+//        RefreshToken refreshToken = theQuery.uniqueResult();
         return refreshToken;
     }
 
@@ -37,8 +39,10 @@ public class RefreshTokenDAOImpl implements IRefreshTokenDAO {
     public void delete(RefreshToken refreshToken) {
         Session currentSession = entityManager.unwrap(Session.class);
 
-        Query theQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE id=:id");
-        theQuery.setParameter("id", refreshToken.getId());
-        theQuery.executeUpdate();
+        currentSession.remove(refreshToken);
+
+//        Query theQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE id=:id");
+//        theQuery.setParameter("id", refreshToken.getId());
+//        theQuery.executeUpdate();
     }
 }

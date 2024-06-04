@@ -13,7 +13,6 @@ import com.moviezone.dai_api.service.IRefreshTokenService;
 import com.moviezone.dai_api.service.IUserService;
 import com.obs.services.ObsClient;
 import com.obs.services.ObsConfiguration;
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,17 +164,17 @@ public class AuthenticationController {
         ByteArrayResource byteArrayResource = restTemplateGet.getForObject(imgURL, ByteArrayResource.class);
 
         Bucket bucket = new Bucket();
-        bucket.setName(Dotenv.load().get("BUCKET_NAME"));
+        bucket.setName(System.getenv("BUCKET_NAME"));
 
         ObsConfiguration config = new ObsConfiguration();
-        config.setEndPoint(Dotenv.load().get("OBS_URL"));
+        config.setEndPoint(System.getenv("OBS_URL"));
 
         String userid = "profile-pictures/" + userJSON.get("sub").getAsString() + ".jpg";
 
         try {
             ObsClient obsClient = new ObsClient(config);
-            obsClient.putObject(Dotenv.load().get("BUCKET_NAME"), userid, new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
-            finalURL = Dotenv.load().get("OBS_URL") + userid;
+            obsClient.putObject(System.getenv("BUCKET_NAME"), userid, new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
+            finalURL = System.getenv("OBS_URL") + userid;
         }catch (Exception e){}
 
         return finalURL;
