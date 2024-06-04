@@ -40,7 +40,7 @@ public class AuthenticationController {
     private SecretKey secretKey;
 
     @DeleteMapping
-    ResponseEntity<?> logout(@RequestBody TokenDTO token)
+    public ResponseEntity<?> logout(@RequestBody TokenDTO token)
     {
         //! ESTO SE PUEDE HACER DE VARIAS MANERAS, ACA LE ESTAMOS PIDIENDO AL FRONT EL REFRESH TOKEN
         //! EN VEZ DEL TOKEN SE LE PODRIA PEDIR TAMBIEN EL USER ID
