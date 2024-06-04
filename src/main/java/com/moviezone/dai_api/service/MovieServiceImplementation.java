@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dao.IMovieDAO;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
+import com.moviezone.dai_api.model.dto.MovieDTO;
+import com.moviezone.dai_api.model.entity.Movie;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,24 @@ public class MovieServiceImplementation implements IMovieService {
     @Autowired
     private IMovieDAO movieDAO;
 
-    public void getMovieDetails(int movieId) { //! NO IMPLEMENTADO AUN
-        System.out.println("Getting movie by id: " + movieId);
+    public MovieDTO getMovieDetails(int movieId) { //! NO IMPLEMENTADO AUN
+
+        JsonObject movie = movieDAO.getMovieDetails(movieId);
+
+        MovieDTO movieDetails = new MovieDTO();
+
+        movieDetails.setMovieId(Integer.parseInt(movie.get("id").toString())); //* TAL VEZ CAMBIARLO A STRING?
+        movieDetails.setMovieTitle(movie.get("original_title").toString());
+        movieDetails.setMovieOverview(movie.get("overview").toString());
+//        movieDetails.setMovieCertification();
+//        movieDetails.setMovieRuntime();
+//        movieDetails.setMovieReleaseDate();
+//        movieDetails.setMovieTrailerYTKey();
+//        movieDetails.setMovieUserRating();
+//        movieDetails.setMovieVoteAverage();
+
+        //movieDetails.setMovieTitle();
+        return null;
     }
 
     public List<MovieComponentDTO> discover(String page, String genres) {

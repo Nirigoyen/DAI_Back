@@ -1,13 +1,14 @@
 package com.moviezone.dai_api.model.dao;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dto.MovieDTO;
 import com.moviezone.dai_api.model.entity.Movie;
 
 import java.util.List;
 
 public interface IMovieDAO {
-    public Movie getMovieDetails(int movieId);
+    public JsonObject getMovieDetails(int movieId);
     public JsonArray discover(String page, String genres);
     public JsonArray search(String search);
 }

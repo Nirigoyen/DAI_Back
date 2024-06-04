@@ -1,5 +1,6 @@
 package com.moviezone.dai_api.model.dao;
 
+import com.google.api.client.json.Json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -17,11 +18,32 @@ import java.time.format.DateTimeFormatter;
 public class MovieDAOImplementation implements IMovieDAO {
 
 
-    public Movie getMovieDetails(int movieId) { //! NO IMPLEMENTADO
+    public JsonObject getMovieDetails(int movieId) { //! NO IMPLEMENTADO
 
-        Movie movie = new Movie();
+        String API_URL = "https://api.themoviedb.org/3/movie/" +
+                movieId +
+                "?language=es-AR";
 
-        return movie;
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "application/json");
+        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
+
+        if (response.getStatusCodeValue() == 200) {
+
+            String datos = response.getBody();
+
+            JsonParser parser = new JsonParser();
+            JsonObject movieJSON = (JsonObject) parser.parse(datos);
+
+            return movieJSON;
+        }
+        else
+            return null;
     }
 
     @Override
@@ -39,7 +61,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                 "&include_video=false" +
                 "&language=es-AR" +
                 "&page=" + page +
-                "&release_date.lte=" + RELEASE_DATE_LOWER_THAN +
+                "&release_date.lte=" + fecha_actual +
                 "&sort_by=primary_release_date.desc&with_genres=" + genres;
 
 
