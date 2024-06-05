@@ -16,8 +16,7 @@ import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
+import com.moviezone.dai_api.config.CorsFilter;
 import javax.crypto.SecretKey;
 import java.nio.channels.Channel;
 
@@ -27,33 +26,20 @@ import java.nio.channels.Channel;
 public class SecurityConfig {
 
 
+    @Autowired
+    private CorsFilter corsFilter;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(
                         (authz) -> authz.anyRequest().authenticated())
                 .addFilterBefore(jwtAuth(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults());
 
         return http.build();
-    }
-
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("Authorization");
-        config.addAllowedHeader("Content-Type");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("OPTIONS");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
     }
 
     @Bean
