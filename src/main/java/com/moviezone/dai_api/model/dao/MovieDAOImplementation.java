@@ -245,12 +245,58 @@ public class MovieDAOImplementation implements IMovieDAO {
 
             return cast;
         }
-        else
-            return null;
+        else return null;
     }
 
     @Override
-    public List<Movie> getImages(int movieId) {
-        return List.of();
+    public JsonArray getImages(int movieId) {
+
+        String URL = "https://api.themoviedb.org/3/movie/" +
+                movieId +
+                "/images";
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "application/json");
+        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(URL,HttpMethod.GET, entity, String.class);
+
+        if (response.getStatusCodeValue() == 200) {
+
+            String datos = response.getBody();
+            JsonParser parser = new JsonParser();
+            JsonArray cast = (JsonArray) parser.parse(datos);
+            return cast;
+        }
+        else return null;
     }
-}
+
+    @Override
+    public JsonArray getCast(int movieId) {
+
+        String URL = "https://api.themoviedb.org/3/movie/" +
+                movieId +
+                "/credits?language=es-AR";
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("accept", "application/json");
+            headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+            HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(URL,HttpMethod.GET, entity, String.class);
+
+            if (response.getStatusCodeValue() == 200) {
+
+                String datos = response.getBody();
+                JsonParser parser = new JsonParser();
+                JsonObject jsonObject = (JsonObject) parser.parse(datos);
+                JsonArray images = jsonObject.getAsJsonArray("backdrops");
+                return images;
+
+            }
+            else return null;
+        }
+    }

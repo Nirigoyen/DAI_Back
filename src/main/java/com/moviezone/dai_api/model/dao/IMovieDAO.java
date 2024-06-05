@@ -1,5 +1,6 @@
 package com.moviezone.dai_api.model.dao;
 
+import com.google.api.client.json.Json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dto.MovieDTO;
@@ -12,5 +13,6 @@ public interface IMovieDAO {
     public JsonArray discover(String page, String genres);
     public JsonArray search(String search);
     public JsonArray getGenres(int movieId);
-    public List<Movie> getImages(int movieId);
+    public JsonArray getImages(int movieId);
+    public JsonArray getCast(int movieId);
 }
