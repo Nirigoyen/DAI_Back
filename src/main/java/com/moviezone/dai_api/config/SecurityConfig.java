@@ -26,7 +26,7 @@ public class SecurityConfig {
                         (authz) -> authz.anyRequest().authenticated())
                 .addFilterBefore(jwtAuth(), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults());
+                .cors(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
