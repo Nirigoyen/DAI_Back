@@ -32,7 +32,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
                 .addFilterBefore(jwtAuth(), UsernamePasswordAuthenticationFilter.class)
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable());
         return http.build();
     }
 
