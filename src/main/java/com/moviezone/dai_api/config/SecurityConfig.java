@@ -32,15 +32,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.authorizeHttpRequests(
-                        (authz) -> authz.anyRequest().authenticated())
-                .addFilterBefore(jwtAuth(), UsernamePasswordAuthenticationFilter.class)
+        http.authorizeHttpRequests((authz) ->
+                        authz.requestMatchers("/v1/auths", "/v1/auths/**", "/v1/health/**").permitAll()
+                                .anyRequest().authenticated())
                 .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults());
-
+                .addFilterBefore(jwtAuth(), UsernamePasswordAuthenticationFilter.class)
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable());
         return http.build();
     }
+
 
     @Bean
     public JWTAuthFilter jwtAuth(){
