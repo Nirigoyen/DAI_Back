@@ -61,7 +61,7 @@ public class AuthenticationController {
 
         //* CHEQUEAMOS SI ES VALIDO, SI NO LO ES TIRA ERROR POR ESO EN UN BLOQUE TRY CATCH
         try {
-           persistedRefreshToken =  refreshTokenService.verifyRefreshTokenExpiration(persistedRefreshToken);
+            persistedRefreshToken =  refreshTokenService.verifyRefreshTokenExpiration(persistedRefreshToken);
 
             //* CREAMOS OTRO JWT ACCESS TOKEN CON EL ID DEL USUARIO
             String token = Jwts.builder()
