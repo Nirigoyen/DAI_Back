@@ -26,51 +26,51 @@ public class MovieServiceImplementation implements IMovieService {
 
     public MovieDTO getMovieDetails(int movieId) { //! NO IMPLEMENTADO AUN
 
-        //? OBTENEMOS EL JSON CON LOS DATOS DE LA PELICULA
-        JsonObject movie = movieDAO.getMovieDetails(movieId);
-
-        MovieDTO movieDetails = new MovieDTO();
-
-        //? SETEAMOS LOS DATOS DE LA PELICULA
-        //* DATOS BASICOS
-        movieDetails.setMovieId(Integer.parseInt(movie.get("id").toString())); //* TAL VEZ CAMBIARLO A STRING?
-        movieDetails.setMovieTitle(movie.get("original_title").toString());
-        movieDetails.setMovieReleaseDate(movie.get("release_date").toString());
-        movieDetails.setMovieCertification(movie.get("certification").toString());
-        movieDetails.setMovieOverview(movie.get("overview").toString());
-        movieDetails.setMovieRuntime(movie.get("runtime").getAsInt());
-        movieDetails.setMovieVoteAverage(Float.parseFloat(movie.get("vote_average").toString()));
-
-        //* GENEROS
-        List<GenreDTO> genres = new ArrayList<>();
-
-        JsonArray genresArray = movie.get("genres").getAsJsonArray();
-        for (JsonElement genre : genresArray) {
-            JsonObject genreObject = genre.getAsJsonObject();
-            genres.add(new GenreDTO(genreObject.get("id").getAsInt(), genreObject.get("name").getAsString()));
-        }
-        movieDetails.setMovieGenres(genres);
-
-        //* CAST
-        List<CastDTO> cast = new ArrayList<>();
-
-        JsonArray castArray = movieDAO.getCast(movieId);
-
-        //JsonArray castArray = movie.get("cast").getAsJsonArray();
-        for (JsonElement actor : castArray) {
-            JsonObject actorObject = actor.getAsJsonObject();
-            //cast.add(new CastDTO(actorObject.get("name").getAsString(), actorObject.get("character").getAsString()));
-        }
-        movieDetails.setMovieCast(cast);
-
-        //* IMAGENES
-        List<MovieImageDTO> images = new ArrayList<>();
-
-        JsonArray imagesArray = movieDAO.getImages(movieId);
-
-
-        //* movieDetails.setMovieTrailerYTKey(); NO SE QUE ES
-        //! movieDetails.setMovieUserRating(); NO IMPLEMENTADO
+//        //? OBTENEMOS EL JSON CON LOS DATOS DE LA PELICULA
+//        JsonObject movie = movieDAO.getMovieDetails(movieId);
+//
+//        MovieDTO movieDetails = new MovieDTO();
+//
+//        //? SETEAMOS LOS DATOS DE LA PELICULA
+//        //* DATOS BASICOS
+//        movieDetails.setMovieId(Integer.parseInt(movie.get("id").toString())); //* TAL VEZ CAMBIARLO A STRING?
+//        movieDetails.setMovieTitle(movie.get("original_title").toString());
+//        movieDetails.setMovieReleaseDate(movie.get("release_date").toString());
+//        movieDetails.setMovieCertification(movie.get("certification").toString());
+//        movieDetails.setMovieOverview(movie.get("overview").toString());
+//        movieDetails.setMovieRuntime(movie.get("runtime").getAsInt());
+//        movieDetails.setMovieVoteAverage(Float.parseFloat(movie.get("vote_average").toString()));
+//
+//        //* GENEROS
+//        List<GenreDTO> genres = new ArrayList<>();
+//
+//        JsonArray genresArray = movie.get("genres").getAsJsonArray();
+//        for (JsonElement genre : genresArray) {
+//            JsonObject genreObject = genre.getAsJsonObject();
+//            genres.add(new GenreDTO(genreObject.get("id").getAsInt(), genreObject.get("name").getAsString()));
+//        }
+//        movieDetails.setMovieGenres(genres);
+//
+//        //* CAST
+//        List<CastDTO> cast = new ArrayList<>();
+//
+//        JsonArray castArray = movieDAO.getCast(movieId);
+//
+//        //JsonArray castArray = movie.get("cast").getAsJsonArray();
+//        for (JsonElement actor : castArray) {
+//            JsonObject actorObject = actor.getAsJsonObject();
+//            //cast.add(new CastDTO(actorObject.get("name").getAsString(), actorObject.get("character").getAsString()));
+//        }
+//        movieDetails.setMovieCast(cast);
+//
+//        //* IMAGENES
+//        List<MovieImageDTO> images = new ArrayList<>();
+//
+//        JsonArray imagesArray = movieDAO.getImages(movieId);
+//
+//
+//        //* movieDetails.setMovieTrailerYTKey(); NO SE QUE ES
+//        //! movieDetails.setMovieUserRating(); NO IMPLEMENTADO
 
         return null;
     }
