@@ -3,8 +3,8 @@ package com.moviezone.dai_api.model.dao;
 import com.moviezone.dai_api.model.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
@@ -45,7 +45,10 @@ public class UserDAOImplementation implements IUserDAO{
     @Transactional
     public void deleteUser(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
-        currentSession.remove(findUserById(userId));
+
+        Query theQuery = currentSession.createQuery("DELETE FROM User WHERE userId=:id");
+        theQuery.setParameter("id", userId);
+        theQuery.executeUpdate();
     }
 
     @Override

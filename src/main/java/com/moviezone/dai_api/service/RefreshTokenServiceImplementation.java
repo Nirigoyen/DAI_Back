@@ -48,4 +48,14 @@ public class RefreshTokenServiceImplementation implements IRefreshTokenService{
     public void delete(RefreshToken refreshToken) {
         refreshTokenDAO.delete(refreshToken);
     }
+
+    @Override
+    public boolean findByUser(String userId) {
+        return refreshTokenDAO.findByUser(userId);
+    }
+
+    @Override
+    public void deleteByUser(String userId) {
+        refreshTokenDAO.deleteByUser(userId);
+    }
 }

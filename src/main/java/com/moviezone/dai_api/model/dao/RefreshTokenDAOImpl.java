@@ -1,6 +1,7 @@
 package com.moviezone.dai_api.model.dao;
 
 import com.moviezone.dai_api.model.entity.RefreshToken;
+import com.moviezone.dai_api.model.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Session;
@@ -26,11 +27,11 @@ public class RefreshTokenDAOImpl implements IRefreshTokenDAO {
     public RefreshToken findByRefreshToken(String token) {
         Session currentSession = entityManager.unwrap(Session.class);
 
-        RefreshToken refreshToken = currentSession.get(RefreshToken.class, token);
+        //RefreshToken refreshToken = currentSession.get(RefreshToken.class, token);
 
-//        Query<RefreshToken> theQuery = currentSession.createQuery("FROM RefreshToken WHERE token=:token", RefreshToken.class);
-//        theQuery.setParameter("token", token);
-//        RefreshToken refreshToken = theQuery.uniqueResult();
+        Query<RefreshToken> theQuery = currentSession.createQuery("FROM RefreshToken WHERE token=:token", RefreshToken.class);
+        theQuery.setParameter("token", token);
+        RefreshToken refreshToken = theQuery.uniqueResult();
         return refreshToken;
     }
 
@@ -39,10 +40,34 @@ public class RefreshTokenDAOImpl implements IRefreshTokenDAO {
     public void delete(RefreshToken refreshToken) {
         Session currentSession = entityManager.unwrap(Session.class);
 
-        currentSession.remove(refreshToken);
+        //currentSession.remove(refreshToken);
 
-//        Query theQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE id=:id");
-//        theQuery.setParameter("id", refreshToken.getId());
-//        theQuery.executeUpdate();
+        Query theQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE id=:id");
+        theQuery.setParameter("id", refreshToken.getId());
+        theQuery.executeUpdate();
     }
+
+    @Override
+    @Transactional
+    public boolean findByUser(String userId) {
+        Session currentSession = entityManager.unwrap(Session.class);
+
+        Query<User> theQuery = currentSession.createQuery("FROM RefreshToken WHERE user.userId=:userId", User.class);
+        theQuery.setParameter("userId", userId);
+        User user = theQuery.uniqueResult();
+
+        return user != null;
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUser(String userId) {
+        Session currentSession = entityManager.unwrap(Session.class);
+
+        Query theQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE user.userId=:userId");
+        theQuery.setParameter("userId", userId);
+        theQuery.executeUpdate();
+    }
+
 }

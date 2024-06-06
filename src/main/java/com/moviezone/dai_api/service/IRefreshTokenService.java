@@ -7,5 +7,7 @@ public interface IRefreshTokenService {
     public RefreshToken findByRefreshToken(String token);
     public RefreshToken verifyRefreshTokenExpiration(RefreshToken refreshToken);
     public void delete(RefreshToken refreshToken);
+    public boolean findByUser(String userId);
+    public void deleteByUser(String userId);
 
 }

@@ -110,6 +110,9 @@ public class AuthenticationController {
 
             userService.createUser(user);
         }
+        else if (refreshTokenService.findByUser(userId)){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
+            refreshTokenService.deleteByUser(userId);
+        }
 
 
         //String givenNameTest = "TheMaxcraft1"; TEST
