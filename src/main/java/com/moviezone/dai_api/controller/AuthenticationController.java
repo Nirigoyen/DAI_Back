@@ -114,7 +114,6 @@ public class AuthenticationController {
             refreshTokenService.deleteByUser(userId);
         }
 
-
         //String givenNameTest = "TheMaxcraft1"; TEST
 
         //* ACCESS Token ( JWT )

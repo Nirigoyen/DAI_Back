@@ -65,9 +65,9 @@ public class RefreshTokenDAOImpl implements IRefreshTokenDAO {
     public void deleteByUser(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
 
-        Query theQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE user.userId=:userId");
+        Query theQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE user=:userId");
         theQuery.setParameter("userId", userId);
         theQuery.executeUpdate();
     }
-
+    
 }
