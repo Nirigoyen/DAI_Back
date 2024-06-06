@@ -15,4 +15,5 @@ public interface IMovieDAO {
     public JsonArray getGenres(int movieId);
     public JsonArray getImages(int movieId);
     public JsonArray getCast(int movieId);
+    public String getTrailer(int movieId);
 }

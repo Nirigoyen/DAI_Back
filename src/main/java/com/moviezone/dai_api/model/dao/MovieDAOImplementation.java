@@ -2,6 +2,7 @@ package com.moviezone.dai_api.model.dao;
 
 import com.google.api.client.json.Json;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moviezone.dai_api.model.entity.Movie;
@@ -252,8 +253,8 @@ public class MovieDAOImplementation implements IMovieDAO {
     public JsonArray getImages(int movieId) {
 
         String URL = "https://api.themoviedb.org/3/movie/" +
-                movieId +
-                "/images";
+                movieId+
+                "/images?include_image_language=en%2C%20es%2C%20null";
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -267,8 +268,9 @@ public class MovieDAOImplementation implements IMovieDAO {
 
             String datos = response.getBody();
             JsonParser parser = new JsonParser();
-            JsonArray cast = (JsonArray) parser.parse(datos);
-            return cast;
+            JsonObject result = (JsonObject) parser.parse(datos);
+            JsonArray images = result.get("backdrops").getAsJsonArray();
+            return images;
         }
         else return null;
     }
@@ -299,4 +301,37 @@ public class MovieDAOImplementation implements IMovieDAO {
             }
             else return null;
         }
+
+    @Override
+    public String getTrailer(int movieId) {
+
+        String URL = "https://api.themoviedb.org/3/movie/" +
+                movieId+
+                "/videos?language=es-AR";
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "application/json");
+        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(URL,HttpMethod.GET, entity, String.class);
+
+        if (response.getStatusCodeValue() == 200) {
+
+            String datos = response.getBody();
+            JsonParser parser = new JsonParser();
+            JsonObject jsonObject = (JsonObject) parser.parse(datos);
+            JsonArray videos = jsonObject.getAsJsonArray("results");
+
+            for (JsonElement video : videos) {
+                JsonObject result = video.getAsJsonObject();
+
+                if (result.get("type").getAsString().equals("Trailer")) {
+                    return "https://www.youtube.com/watch?v=" + result.get("key").getAsString();
+                }
+            }
+        }
+return null;
     }
+}
