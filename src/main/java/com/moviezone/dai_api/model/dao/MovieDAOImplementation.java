@@ -161,6 +161,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                         allMovies = jsonObject.getAsJsonArray("results");
 
                         finalResponse.addAll(allMovies);
+                        savedResults.addAll(allMovies);
                     }
                 }
             }
