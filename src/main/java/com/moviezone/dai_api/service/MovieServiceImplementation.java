@@ -82,7 +82,8 @@ public class MovieServiceImplementation implements IMovieService {
             } catch (Exception ignored) {}
 
             //* SI LA PELICULA TIENE MENOS DE 200 VOTOS NO LA SUMAMOS A LOS RESULTADOS
-            if (TMDBmovie.get("vote_count").getAsInt() < 200) continue;;
+            if (TMDBmovie.get("vote_count") == null) continue;
+            else if (TMDBmovie.get("vote_count").getAsInt() < 200) continue;
 
             filteredMovies.add(TMDBmovie);
         }
