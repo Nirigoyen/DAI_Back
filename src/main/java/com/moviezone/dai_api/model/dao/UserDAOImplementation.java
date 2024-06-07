@@ -1,5 +1,6 @@
 package com.moviezone.dai_api.model.dao;
 
+import com.moviezone.dai_api.model.entity.RefreshToken;
 import com.moviezone.dai_api.model.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -28,9 +29,14 @@ public class UserDAOImplementation implements IUserDAO{
     public User findUserById(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
 
-        User user = currentSession.get(User.class, userId);
-
+        Query<User> theQuery = currentSession.createQuery("FROM User WHERE userId=:userId", User.class);
+        theQuery.setParameter("userId", userId);
+        User user = theQuery.uniqueResult();
         return user;
+
+//        User user = currentSession.get(User.class, userId);
+//
+//        return user;
     }
 
     @Override
@@ -52,6 +58,7 @@ public class UserDAOImplementation implements IUserDAO{
     }
 
     @Override
+    @Transactional
     public void updateUser(User user, String base64Img) {
 
         //? ACTUALIZAMOS LOS DATOS DEL USER EN LA BASE DE DATOS

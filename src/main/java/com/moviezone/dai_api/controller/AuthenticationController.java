@@ -114,12 +114,16 @@ public class AuthenticationController {
             refreshTokenService.deleteByUser(userId);
         }
 
-        //String givenNameTest = "TheMaxcraft1"; TEST
+//        if (refreshTokenService.findByUser("1")){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
+//            refreshTokenService.deleteByUser("1");
+//        }
+
+//        String givenNameTest = "TheMaxcraft1"; // TEST
 
         //* ACCESS Token ( JWT )
         String token = Jwts.builder()
                 .setSubject(jsonObject.get("given_name").toString())
-//                .setSubject(givenNameTest) TEST
+//                .setSubject(givenNameTest) //TEST
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -127,7 +131,7 @@ public class AuthenticationController {
 
         //* REFRESH Token
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId);
-        //RefreshToken refreshToken = refreshTokenService.createRefreshToken("1"); TEST
+//        RefreshToken refreshToken = refreshTokenService.createRefreshToken("1"); //TEST
 
         //* Creamos el DTO para devolver ACCESS y REFRESH tokens
         AuthResponseDTO loginResponse = new AuthResponseDTO();
