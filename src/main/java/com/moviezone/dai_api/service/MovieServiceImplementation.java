@@ -60,7 +60,7 @@ public class MovieServiceImplementation implements IMovieService {
     }
 
     @Override
-    public List<MovieComponentDTO> search(String search, String orderByScore, String orderingScore, String orderByDate, String orderingDate) {
+    public List<MovieComponentDTO> search(String page, String search, String orderByScore, String orderingScore, String orderByDate, String orderingDate) {
 
         //? OBTENEMOS LOS RESULTADOS DE LA BUSQUEDA Y LOS AÑADIMOS A UNA LISTA
         List<MovieComponentDTO> result = new ArrayList<>();
@@ -130,7 +130,18 @@ public class MovieServiceImplementation implements IMovieService {
 
             } catch (Exception ignored) {}
         }
-        return result;
+
+        //? PAGINADO
+
+        List<MovieComponentDTO> moviePage = getPartition(result, Integer.parseInt(page) - 1);
+
+        return moviePage;
+    }
+
+    private static List<MovieComponentDTO> getPartition(List<MovieComponentDTO> list, int partitionIndex) {
+        int startIndex = partitionIndex * 40;
+        int endIndex = Math.min(startIndex + 40, list.size());
+        return list.subList(startIndex, endIndex);
     }
 
     private static void OrderByDate(String orderingDate, List<JsonObject> filteredMovies) {
