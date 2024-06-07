@@ -139,8 +139,9 @@ public class MovieServiceImplementation implements IMovieService {
     }
 
     private static List<MovieComponentDTO> getPartition(List<MovieComponentDTO> list, int partitionIndex) {
-        int startIndex = partitionIndex * 40;
-        int endIndex = Math.min(startIndex + 40, list.size());
+        int pageSize = 39;
+        int startIndex = partitionIndex * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, list.size());
         return list.subList(startIndex, endIndex);
     }
 
