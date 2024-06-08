@@ -7,12 +7,12 @@ public class TokenEncrypter {
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public static String encryptToken(String token, String salt) {
-        String saltedToken = token + salt + Dotenv.load().get("PEPPER");
+        String saltedToken = token + salt + System.getenv("PEPPER");
         return encoder.encode(saltedToken);
     }
 
     public static boolean matches(String rawToken, String encodedToken, String salt) {
-        String saltedToken = rawToken + salt + Dotenv.load().get("PEPPER");
+        String saltedToken = rawToken + salt + System.getenv("PEPPER");
         return encoder.matches(saltedToken, encodedToken);
     }
 }

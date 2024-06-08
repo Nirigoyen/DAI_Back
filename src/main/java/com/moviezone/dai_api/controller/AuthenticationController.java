@@ -101,51 +101,51 @@ public class AuthenticationController {
 
         final String GOOGLE_TOKEN_VALIDATION_URL = "https://oauth2.googleapis.com/tokeninfo?id_token=" + googleToken.getToken(); // Should change this https://developers.google.com/identity/sign-in/web/backend-auth?hl=es-419
 
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("accept", "application/json");
-//        HttpEntity<String> entity = new HttpEntity<String>(headers);
-//
-//        ResponseEntity<String> response = restTemplate.exchange(GOOGLE_TOKEN_VALIDATION_URL, HttpMethod.GET, entity, String.class);
-//
-//        if (response.getStatusCode() != HttpStatus.OK)
-//            return new ResponseEntity<>(new ErrorResponseDTO("INVALID GOOGLE ACCOUNT", 1), HttpStatus.CONFLICT); // Si el token es invalido no devolver JWT
-//
-//        String data = response.getBody();
-//
-//        JsonParser parser = new JsonParser();
-//        JsonObject jsonObject = (JsonObject) parser.parse(data);
-//
-//        String userId = jsonObject.get("sub").getAsString();
-//
-//        if (userService.getUser(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
-//            UserDTO user = createUserDTO(jsonObject);
-//
-//            userService.createUser(user);
-//        }
-//        else if (refreshTokenService.findByUser(userId) != null){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
-//            refreshTokenService.deleteByUser(userId);
-//        }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "application/json");
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        //TEST
-        if (refreshTokenService.findByUser("1") != null){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
-            refreshTokenService.deleteByUser("1");
+        ResponseEntity<String> response = restTemplate.exchange(GOOGLE_TOKEN_VALIDATION_URL, HttpMethod.GET, entity, String.class);
+
+        if (response.getStatusCode() != HttpStatus.OK)
+            return new ResponseEntity<>(new ErrorResponseDTO("INVALID GOOGLE ACCOUNT", 1), HttpStatus.CONFLICT); // Si el token es invalido no devolver JWT
+
+        String data = response.getBody();
+
+        JsonParser parser = new JsonParser();
+        JsonObject jsonObject = (JsonObject) parser.parse(data);
+
+        String userId = jsonObject.get("sub").getAsString();
+
+        if (userService.getUser(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
+            UserDTO user = createUserDTO(jsonObject);
+
+            userService.createUser(user);
+        }
+        else if (refreshTokenService.findByUser(userId) != null){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
+            refreshTokenService.deleteByUser(userId);
         }
 
-        String givenNameTest = "TheMaxcraft1"; // TEST
+        //TEST
+//        if (refreshTokenService.findByUser("1") != null){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
+//            refreshTokenService.deleteByUser("1");
+//        }
+
+//        String givenNameTest = "TheMaxcraft1"; // TEST
 
         //* ACCESS Token ( JWT )
         String accessToken = Jwts.builder()
-//                .setSubject(jsonObject.get("given_name").toString())
-                .setSubject(givenNameTest) //TEST
+                .setSubject(jsonObject.get("given_name").toString())
+//                .setSubject(givenNameTest) //TEST
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
 
         //* CREAMOS EL REFRESH TOKEN ( ENCRIPTAMOS AMBOS TOKENS )| ESTO DEVUELVE EL DTO PARA RETORNAR
-//        AuthResponseDTO loginResponse = refreshTokenService.createRefreshToken(userId, accessToken);
-        AuthResponseDTO loginResponse = refreshTokenService.createRefreshToken("1", accessToken); //TEST
+        AuthResponseDTO loginResponse = refreshTokenService.createRefreshToken(userId, accessToken);
+//        AuthResponseDTO loginResponse = refreshTokenService.createRefreshToken("1", accessToken); //TEST
 
         //* DEVOLVEMOS LA RESPUESTA
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
