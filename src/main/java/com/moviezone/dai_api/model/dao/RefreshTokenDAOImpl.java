@@ -49,14 +49,14 @@ public class RefreshTokenDAOImpl implements IRefreshTokenDAO {
 
     @Override
     @Transactional
-    public boolean findByUser(String userId) {
+    public RefreshToken findByUser(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
 
         Query<RefreshToken> theQuery = currentSession.createQuery("FROM RefreshToken WHERE user.userId=:userId", RefreshToken.class);
         theQuery.setParameter("userId", userId);
         RefreshToken refreshToken = theQuery.uniqueResult();
 
-        return refreshToken != null;
+        return refreshToken;
 
     }
 
