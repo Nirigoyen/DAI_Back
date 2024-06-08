@@ -62,7 +62,7 @@ public class MovieController {
             finalResult = movieService.discover(page, genres);
         } else {
 
-            //? SI EL PARAMETRO DE PAGINA ES NULL, ENTONCES ESTAMOS EN LA BUSQUEDA
+            //? SI NO, ENTONCES ESTAMOS EN LA BUSQUEDA
             finalResult = movieService.search(page, search, orderByScore, orderingScore, orderByDate, orderingDate);
         }
 
