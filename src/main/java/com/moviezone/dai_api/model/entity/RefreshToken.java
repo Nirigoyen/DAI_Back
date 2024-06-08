@@ -12,6 +12,7 @@ public class RefreshToken {
     private int id;
     private String token;
     private String accessToken;
+    private String salt;
     private Instant expiresAt;
 
     //* Relations
@@ -67,5 +68,13 @@ public class RefreshToken {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }

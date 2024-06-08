@@ -4,13 +4,11 @@ package com.moviezone.dai_api.controller;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.huaweicloud.sdk.obs.v1.model.Bucket;
-import com.moviezone.dai_api.model.dto.AuthResponseDTO;
-import com.moviezone.dai_api.model.dto.ErrorResponseDTO;
-import com.moviezone.dai_api.model.dto.TokenDTO;
-import com.moviezone.dai_api.model.dto.UserDTO;
+import com.moviezone.dai_api.model.dto.*;
 import com.moviezone.dai_api.model.entity.RefreshToken;
 import com.moviezone.dai_api.service.IRefreshTokenService;
 import com.moviezone.dai_api.service.IUserService;
+import com.moviezone.dai_api.utils.TokenEncrypter;
 import com.obs.services.ObsClient;
 import com.obs.services.ObsConfiguration;
 import io.jsonwebtoken.Jwts;
@@ -51,10 +49,13 @@ public class AuthenticationController {
 
 
     @PutMapping("")
-    ResponseEntity<?> refreshToken(@RequestBody TokenDTO refreshToken){
+    ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDTO requestDTO){
+
+        //* SI FALTA ALGuN DATO -> BAD REQUEST
+        if(requestDTO.getRefreshToken() == null || requestDTO.getaccessToken() == null || requestDTO.getUserId() == null ){return new ResponseEntity<>(new ErrorResponseDTO("FALTA ALGUN DATO", 7), HttpStatus.BAD_REQUEST);}
 
         //* Buscamos si el REFRESH TOKEN que nos pasan esta en la DB
-        RefreshToken persistedRefreshToken = refreshTokenService.findByRefreshToken(refreshToken.getToken());
+        RefreshToken persistedRefreshToken = refreshTokenService.findByUser(requestDTO.getUserId());
 
         //* Si el refresh token no existe en la DB devolvemos bad request ( DESDE EL FRONT DEBERAIN DESLOGGEAR )
         if(persistedRefreshToken == null){ return new ResponseEntity<>(new ErrorResponseDTO("El REFRESH TOKEN no existe", 2), HttpStatus.BAD_REQUEST);}
@@ -63,6 +64,17 @@ public class AuthenticationController {
         try {
             persistedRefreshToken =  refreshTokenService.verifyRefreshTokenExpiration(persistedRefreshToken);
 
+            //* CHEQUEAMOS SI EL ACCESS TOKEN MATCHEA CON EL DE LA BD
+            if(!TokenEncrypter.matches(requestDTO.getaccessToken(), persistedRefreshToken.getAccessToken(), persistedRefreshToken.getSalt())){
+                return new ResponseEntity<>(new ErrorResponseDTO("ACCESS TOKEN NO VALIDO", 4), HttpStatus.FORBIDDEN);
+            }
+
+            //* CHEQUEAMOS SI EL REFRESH TOKEN MATCHEA CON EL DE LA BD
+            if(!TokenEncrypter.matches(requestDTO.getRefreshToken(), persistedRefreshToken.getToken(), persistedRefreshToken.getSalt())){
+                return new ResponseEntity<>(new ErrorResponseDTO("REFRESH TOKEN NO VALIDO", 4), HttpStatus.FORBIDDEN);
+            }
+
+            //? SI ESTA OK PROSEGUIMOS.
 
             //* CREAMOS OTRO JWT ACCESS TOKEN CON EL ID DEL USUARIO
             String accessToken = Jwts.builder()
@@ -72,11 +84,8 @@ public class AuthenticationController {
                     .signWith(secretKey, SignatureAlgorithm.HS256)
                     .compact();
 
-            //* CREAMOS OTRO REFRESH TOKEN
-            RefreshToken newRefreshToken = refreshTokenService.updateRefreshToken(persistedRefreshToken, accessToken);
-
-            //* CREAMOS EL DTO PARA DEVOLVER EL ACCESS TOKEN Y EL NUEVO REFRESH TOKEN
-            AuthResponseDTO authResponseDTO = new AuthResponseDTO(accessToken, newRefreshToken.getToken());
+            //* CREAMOS OTRO REFRESH TOKEN, ESTO NOS DEVUELVE EL DTO CON LOS DOS NUEVOS TOKENS
+            AuthResponseDTO authResponseDTO = refreshTokenService.updateRefreshToken(persistedRefreshToken, accessToken);
 
             return new ResponseEntity<>(authResponseDTO, HttpStatus.OK);
         } catch (Exception ex){
@@ -92,56 +101,51 @@ public class AuthenticationController {
 
         final String GOOGLE_TOKEN_VALIDATION_URL = "https://oauth2.googleapis.com/tokeninfo?id_token=" + googleToken.getToken(); // Should change this https://developers.google.com/identity/sign-in/web/backend-auth?hl=es-419
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("accept", "application/json");
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(GOOGLE_TOKEN_VALIDATION_URL, HttpMethod.GET, entity, String.class);
-
-        if (response.getStatusCode() != HttpStatus.OK)
-            return new ResponseEntity<>(new ErrorResponseDTO("INVALID GOOGLE ACCOUNT", 1), HttpStatus.CONFLICT); // Si el token es invalido no devolver JWT
-
-        String data = response.getBody();
-
-        JsonParser parser = new JsonParser();
-        JsonObject jsonObject = (JsonObject) parser.parse(data);
-
-        String userId = jsonObject.get("sub").getAsString();
-
-        if (userService.getUser(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
-            UserDTO user = createUserDTO(jsonObject);
-
-            userService.createUser(user);
-        }
-        else if (refreshTokenService.findByUser(userId)){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
-            refreshTokenService.deleteByUser(userId);
-        }
-
-//        TEST
-//        if (refreshTokenService.findByUser("1")){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
-//            refreshTokenService.deleteByUser("1");
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("accept", "application/json");
+//        HttpEntity<String> entity = new HttpEntity<String>(headers);
+//
+//        ResponseEntity<String> response = restTemplate.exchange(GOOGLE_TOKEN_VALIDATION_URL, HttpMethod.GET, entity, String.class);
+//
+//        if (response.getStatusCode() != HttpStatus.OK)
+//            return new ResponseEntity<>(new ErrorResponseDTO("INVALID GOOGLE ACCOUNT", 1), HttpStatus.CONFLICT); // Si el token es invalido no devolver JWT
+//
+//        String data = response.getBody();
+//
+//        JsonParser parser = new JsonParser();
+//        JsonObject jsonObject = (JsonObject) parser.parse(data);
+//
+//        String userId = jsonObject.get("sub").getAsString();
+//
+//        if (userService.getUser(userId) == null){ // Si El usuario no esta en nuestra BD registrarlo
+//            UserDTO user = createUserDTO(jsonObject);
+//
+//            userService.createUser(user);
+//        }
+//        else if (refreshTokenService.findByUser(userId) != null){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
+//            refreshTokenService.deleteByUser(userId);
 //        }
 
-//        String givenNameTest = "TheMaxcraft1"; // TEST
+        //TEST
+        if (refreshTokenService.findByUser("1") != null){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
+            refreshTokenService.deleteByUser("1");
+        }
+
+        String givenNameTest = "TheMaxcraft1"; // TEST
 
         //* ACCESS Token ( JWT )
         String accessToken = Jwts.builder()
-                .setSubject(jsonObject.get("given_name").toString())
-//                .setSubject(givenNameTest) //TEST
+//                .setSubject(jsonObject.get("given_name").toString())
+                .setSubject(givenNameTest) //TEST
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
 
-        //* REFRESH Token
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId, accessToken);
-//        RefreshToken refreshToken = refreshTokenService.createRefreshToken("1", accessToken); //TEST
-
-        //* Creamos el DTO para devolver ACCESS y REFRESH tokens
-        AuthResponseDTO loginResponse = new AuthResponseDTO();
-        loginResponse.setAccessToken(accessToken);
-        loginResponse.setRefreshToken(refreshToken.getToken());
+        //* CREAMOS EL REFRESH TOKEN ( ENCRIPTAMOS AMBOS TOKENS )| ESTO DEVUELVE EL DTO PARA RETORNAR
+//        AuthResponseDTO loginResponse = refreshTokenService.createRefreshToken(userId, accessToken);
+        AuthResponseDTO loginResponse = refreshTokenService.createRefreshToken("1", accessToken); //TEST
 
         //* DEVOLVEMOS LA RESPUESTA
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
