@@ -11,6 +11,7 @@ import com.moviezone.dai_api.service.IUserService;
 import com.moviezone.dai_api.utils.TokenEncrypter;
 import com.obs.services.ObsClient;
 import com.obs.services.ObsConfiguration;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +50,17 @@ public class AuthenticationController {
 
 
     @PutMapping("")
-    ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDTO requestDTO){
+    ResponseEntity<?> refreshToken(@RequestBody AuthResponseDTO requestDTO){
 
         //* SI FALTA ALGuN DATO -> BAD REQUEST
-        if(requestDTO.getRefreshToken() == null || requestDTO.getaccessToken() == null || requestDTO.getUserId() == null ){return new ResponseEntity<>(new ErrorResponseDTO("FALTA ALGUN DATO", 7), HttpStatus.BAD_REQUEST);}
+        if(requestDTO.getRefreshToken() == null || requestDTO.getAccessToken() == null ){return new ResponseEntity<>(new ErrorResponseDTO("FALTA ALGUN DATO", 7), HttpStatus.BAD_REQUEST);}
+
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(requestDTO.getAccessToken()).getBody();
+        String userId = claims.getSubject();
 
         //* Buscamos si el REFRESH TOKEN que nos pasan esta en la DB
-        RefreshToken persistedRefreshToken = refreshTokenService.findByUser(requestDTO.getUserId());
+        RefreshToken persistedRefreshToken = refreshTokenService.findByUser(userId);
+
 
         //* Si el refresh token no existe en la DB devolvemos bad request ( DESDE EL FRONT DEBERAIN DESLOGGEAR )
         if(persistedRefreshToken == null){ return new ResponseEntity<>(new ErrorResponseDTO("El REFRESH TOKEN no existe", 2), HttpStatus.BAD_REQUEST);}
@@ -65,7 +70,7 @@ public class AuthenticationController {
             persistedRefreshToken =  refreshTokenService.verifyRefreshTokenExpiration(persistedRefreshToken);
 
             //* CHEQUEAMOS SI EL ACCESS TOKEN MATCHEA CON EL DE LA BD
-            if(!TokenEncrypter.matches(requestDTO.getaccessToken(), persistedRefreshToken.getAccessToken(), persistedRefreshToken.getSalt())){
+            if(!TokenEncrypter.matches(requestDTO.getAccessToken(), persistedRefreshToken.getAccessToken(), persistedRefreshToken.getSalt())){
                 return new ResponseEntity<>(new ErrorResponseDTO("ACCESS TOKEN NO VALIDO", 4), HttpStatus.FORBIDDEN);
             }
 
@@ -133,11 +138,11 @@ public class AuthenticationController {
 //        }
 
 //        String givenNameTest = "TheMaxcraft1"; // TEST
+//        String userId = "1";
 
         //* ACCESS Token ( JWT )
         String accessToken = Jwts.builder()
-                .setSubject(jsonObject.get("given_name").toString())
-//                .setSubject(givenNameTest) //TEST
+                .setSubject(userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
