@@ -66,7 +66,6 @@ public class MovieServiceImplementation implements IMovieService {
         List<MovieComponentDTO> result = new ArrayList<>();
 
         JsonArray allMovies = movieDAO.search(search);
-
         List<JsonObject> filteredMovies = new ArrayList<>();
 
         //! SI HUBO UN ERROR RETORNAMOS NULL
@@ -132,6 +131,11 @@ public class MovieServiceImplementation implements IMovieService {
         }
 
         //? PAGINADO
+//        System.err.println(result);
+//        System.err.println(result.size());
+//        System.err.println(Math.ceil((double) result.size() / 39));
+
+        if (Math.ceil((double) result.size() / 39) < Integer.parseInt(page)) return new ArrayList<MovieComponentDTO>();
 
         List<MovieComponentDTO> moviePage = getPartition(result, Integer.parseInt(page) - 1);
 
@@ -142,6 +146,10 @@ public class MovieServiceImplementation implements IMovieService {
         int pageSize = 39;
         int startIndex = partitionIndex * pageSize;
         int endIndex = Math.min(startIndex + pageSize, list.size());
+
+        List<MovieComponentDTO> aux = new ArrayList<>();
+        aux.addAll(list);
+
         return list.subList(startIndex, endIndex);
     }
 

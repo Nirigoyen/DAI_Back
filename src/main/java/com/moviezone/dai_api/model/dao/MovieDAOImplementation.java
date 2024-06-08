@@ -134,6 +134,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                     //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
 
                     finalResponse.addAll(allMovies);
+                    savedResults.addAll(allMovies);
                 }
 
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS. COLOCAMOS UN MAXIMO DE 6 PAGINAS (120 RESULTADOS).
@@ -188,6 +189,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                     //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
 
                     finalResponse.addAll(allMovies);
+                    savedResults.addAll(allMovies);
                 }
 
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS. COLOCAMOS UN MAXIMO DE 6 PAGINAS (120 RESULTADOS).
