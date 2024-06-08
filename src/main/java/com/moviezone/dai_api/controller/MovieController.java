@@ -47,8 +47,9 @@ public class MovieController {
         List<MovieComponentDTO> finalResult = null;
 
 
+
         //? SI EL PARAMETRO DE BUSQUEDA ES NULL, ENTONCES ESTAMOS EN LA LANDING PAGE
-        if (search == null){
+        if (search == null || search.isEmpty()){
 
             //* NOS ASEGURAMOS DE QUE "PAGE" ESTE ENTRE LOS LIMITES QUE SOPORTA TMDB
             if (Integer.parseInt(page) < 1) page = "1"; // if page is less than 1 return page 1
