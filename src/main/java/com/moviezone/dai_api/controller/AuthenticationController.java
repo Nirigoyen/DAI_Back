@@ -63,16 +63,20 @@ public class AuthenticationController {
         try {
             persistedRefreshToken =  refreshTokenService.verifyRefreshTokenExpiration(persistedRefreshToken);
 
+
             //* CREAMOS OTRO JWT ACCESS TOKEN CON EL ID DEL USUARIO
-            String token = Jwts.builder()
+            String accessToken = Jwts.builder()
                     .setSubject(persistedRefreshToken.getUser().getId())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                     .signWith(secretKey, SignatureAlgorithm.HS256)
                     .compact();
 
-            //* CREAMOS EL DTO PARA DEVOLVER EL TOKEN Y EL MISMO REFRESH TOKEN
-            AuthResponseDTO authResponseDTO = new AuthResponseDTO(token, persistedRefreshToken.getToken());
+            //* CREAMOS OTRO REFRESH TOKEN
+            RefreshToken newRefreshToken = refreshTokenService.updateRefreshToken(persistedRefreshToken, accessToken);
+
+            //* CREAMOS EL DTO PARA DEVOLVER EL ACCESS TOKEN Y EL NUEVO REFRESH TOKEN
+            AuthResponseDTO authResponseDTO = new AuthResponseDTO(accessToken, newRefreshToken.getToken());
 
             return new ResponseEntity<>(authResponseDTO, HttpStatus.OK);
         } catch (Exception ex){
@@ -114,6 +118,7 @@ public class AuthenticationController {
             refreshTokenService.deleteByUser(userId);
         }
 
+//        TEST
 //        if (refreshTokenService.findByUser("1")){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
 //            refreshTokenService.deleteByUser("1");
 //        }
@@ -121,7 +126,7 @@ public class AuthenticationController {
 //        String givenNameTest = "TheMaxcraft1"; // TEST
 
         //* ACCESS Token ( JWT )
-        String token = Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setSubject(jsonObject.get("given_name").toString())
 //                .setSubject(givenNameTest) //TEST
                 .setIssuedAt(new Date())
@@ -130,12 +135,12 @@ public class AuthenticationController {
                 .compact();
 
         //* REFRESH Token
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId);
-//        RefreshToken refreshToken = refreshTokenService.createRefreshToken("1"); //TEST
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId, accessToken);
+//        RefreshToken refreshToken = refreshTokenService.createRefreshToken("1", accessToken); //TEST
 
         //* Creamos el DTO para devolver ACCESS y REFRESH tokens
         AuthResponseDTO loginResponse = new AuthResponseDTO();
-        loginResponse.setAccessToken(token);
+        loginResponse.setAccessToken(accessToken);
         loginResponse.setRefreshToken(refreshToken.getToken());
 
         //* DEVOLVEMOS LA RESPUESTA

@@ -11,6 +11,7 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String token;
+    private String accessToken;
     private Instant expiresAt;
 
     //* Relations
@@ -58,5 +59,13 @@ public class RefreshToken {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }
