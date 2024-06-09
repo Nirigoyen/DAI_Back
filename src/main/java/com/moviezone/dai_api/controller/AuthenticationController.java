@@ -168,7 +168,7 @@ public class AuthenticationController {
 
         if (userJSON.has("family_name")) user.setLastName(userJSON.get("family_name").getAsString());
 
-        if (userJSON.has("picture")) user.setProfilePictureURL(uploadImage(userJSON));
+        if (userJSON.has("photo")) user.setProfilePictureURL(uploadImage(userJSON));
 
         return user;
     }
@@ -177,7 +177,7 @@ public class AuthenticationController {
 
         String finalURL = "";
 
-        String imgURL = userJSON.get("picture").getAsString();
+        String imgURL = userJSON.get("photo").getAsString();
 
         RestTemplate restTemplateGet = new RestTemplate();
 

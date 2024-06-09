@@ -78,13 +78,14 @@ public class UserDAOImplementation implements IUserDAO{
         //? ACTUALIZAMOS LA IMAGEN DE PERFIL EN EL OBS
         RestTemplate restTemplate = new RestTemplate();
 
+        String URL = "https://dai-obs.obs.la-south-2.myhuaweicloud.com/";
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
-        formData.add("key", user.getId() + ".jpg");
+        formData.add("key", "profile-pictures/" + user.getId() + ".jpg");
 
-        System.err.println("ARRIBA DE LA DECODIFICACION");
 
         //! SACAMOS LA METADATA DE LA BASEIMG ( data:image/jpg;base64, )
         String partSeparator = ",";
@@ -101,17 +102,14 @@ public class UserDAOImplementation implements IUserDAO{
             }
         };
 
-        System.err.println("ABAJO DE LA DECODIFICACION");
 
         formData.add("file", imgResource);
 
         HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(formData, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(user.getProfilePicture(), HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.POST, entity, String.class);
 
-        //ResponseEntity<String> response = restTemplate.exchange(user.getProfilePicture(), HttpMethod.POST, entity, String.class);
 
-        System.err.println("SE MANDO LA IMG");
     }
 
 }

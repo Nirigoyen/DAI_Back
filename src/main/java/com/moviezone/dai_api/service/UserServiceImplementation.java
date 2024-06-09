@@ -34,9 +34,10 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
         //? ACTUALIZAMOS LOS DATOS DEL USUARIO EN LA BASE DE DATOS (Y OBS SI FUERA NECESARIO)
         userDAO.updateUser(currentUser, base64Img);
 
+
         //? RETORNAMOS EL USUARIO ACTUALIZADO
         return new UserDTO(currentUser.getId(), currentUser.getUsername(), currentUser.getName(),
-                currentUser.getLastName(), currentUser.getEmail());
+                currentUser.getLastName(), currentUser.getEmail(), currentUser.getProfilePicture());
     }
 
 
