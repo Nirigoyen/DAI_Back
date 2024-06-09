@@ -52,6 +52,12 @@ public class UserDAOImplementation implements IUserDAO{
     public void deleteUser(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
 
+        System.err.println(userId);
+
+        Query DeleteRefreshTokenQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE user.userId=:id");
+        DeleteRefreshTokenQuery.setParameter("id", userId);
+        DeleteRefreshTokenQuery.executeUpdate();
+
         Query theQuery = currentSession.createQuery("DELETE FROM User WHERE userId=:id");
         theQuery.setParameter("id", userId);
         theQuery.executeUpdate();
