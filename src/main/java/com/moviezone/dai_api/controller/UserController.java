@@ -45,11 +45,11 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping()
-    public ResponseEntity<?> deleteUser(@RequestBody String userID){
-        if (userID == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable String userId){
+        if (userId == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        userServiceImplementation.deleteById(userID);
+        userServiceImplementation.deleteById(userId);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
