@@ -52,6 +52,7 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
             UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
             userDTO.setName(user.getName());
+            userDTO.setUsername(user.getUsername());
             userDTO.setLastName(user.getLastName());
             userDTO.setEmail(user.getEmail());
             userDTO.setProfilePictureURL(user.getProfilePicture());
