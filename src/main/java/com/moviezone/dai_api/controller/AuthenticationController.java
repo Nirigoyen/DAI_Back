@@ -168,7 +168,7 @@ public class AuthenticationController {
 
         if (userJSON.has("family_name")) user.setLastName(userJSON.get("family_name").getAsString());
 
-        if (userJSON.has("photo")) user.setProfilePictureURL(uploadImage(userJSON));
+        if (userJSON.has("picture")) user.setProfilePictureURL(uploadImage(userJSON));
 
         return user;
     }
@@ -177,7 +177,7 @@ public class AuthenticationController {
 
         String finalURL = "";
 
-        String imgURL = userJSON.get("photo").getAsString();
+        String imgURL = userJSON.get("picture").getAsString();
 
         RestTemplate restTemplateGet = new RestTemplate();
 
@@ -187,7 +187,7 @@ public class AuthenticationController {
         bucket.setName(System.getenv("BUCKET_NAME"));
 
         ObsConfiguration config = new ObsConfiguration();
-        config.setEndPoint(System.getenv("OBS_URL"));
+        config.setEndPoint(System.getenv("OBS_ENDPOINT"));
 
         String userid = "profile-pictures/" + userJSON.get("sub").getAsString() + ".jpg";
 
