@@ -4,6 +4,7 @@ package com.moviezone.dai_api.controller;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 
 
+import com.moviezone.dai_api.model.dto.MovieDTO;
 import com.moviezone.dai_api.service.IMovieService;
 import com.moviezone.dai_api.model.dto.ErrorResponseDTO;
 
@@ -23,6 +24,17 @@ public class MovieController {
 
     @Autowired
     private IMovieService movieService;
+
+    @GetMapping("/{MovieId}")
+    public ResponseEntity<?> movieDetails(String movieId){
+
+        if (movieId == null) return new ResponseEntity<>("Movie ID not specified.", HttpStatus.BAD_REQUEST);
+
+        MovieDTO movieDetails = movieService.getMovieDetails(Integer.parseInt(movieId));
+
+
+        return new ResponseEntity<>(movieDetails, HttpStatus.OK);
+    }
 
     @GetMapping(value = "")
     public ResponseEntity<?> discover(@RequestParam(name = "page", required = false) String page,

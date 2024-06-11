@@ -26,6 +26,7 @@ import java.nio.channels.Channel;
 public class SecurityConfig {
 
 
+
     @Autowired
     private CorsFilter corsFilter;
 
@@ -58,4 +59,5 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer(){
         return (web -> web.ignoring().requestMatchers("v1/auths", "v1/auths/**", "v1/health"));
     }
+
 }

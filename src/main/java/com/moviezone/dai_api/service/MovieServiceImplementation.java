@@ -4,7 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dao.IMovieDAO;
-import com.moviezone.dai_api.model.dto.MovieComponentDTO;
+import com.moviezone.dai_api.model.dto.*;
+import com.moviezone.dai_api.model.entity.Movie;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,88 @@ public class MovieServiceImplementation implements IMovieService {
     @Autowired
     private IMovieDAO movieDAO;
 
-    public void getMovieDetails(int movieId) { //! NO IMPLEMENTADO AUN
-        System.out.println("Getting movie by id: " + movieId);
+    public MovieDTO getMovieDetails(int movieId) { //! NO IMPLEMENTADO AUN
+
+        //? OBTENEMOS EL JSON CON LOS DATOS DE LA PELICULA
+        JsonObject movie = movieDAO.getMovieDetails(movieId);
+
+        MovieDTO movieDetails = new MovieDTO();
+
+        //? SETEAMOS LOS DATOS DE LA PELICULA
+        //* DATOS BASICOS
+        movieDetails.setMovieId(Integer.parseInt(movie.get("id").toString())); //* TAL VEZ CAMBIARLO A STRING?
+        movieDetails.setMovieTitle(movie.get("original_title").toString());
+        movieDetails.setMovieReleaseDate(movie.get("release_date").toString());
+        movieDetails.setMovieCertification(movie.get("certification").toString());
+        movieDetails.setMovieOverview(movie.get("overview").toString());
+        movieDetails.setMovieRuntime(movie.get("runtime").getAsInt());
+        movieDetails.setMovieVoteAverage(Float.parseFloat(movie.get("vote_average").toString()));
+
+        //* GENEROS
+        List<GenreDTO> genres = new ArrayList<>();
+
+        JsonArray genresArray = movie.get("genres").getAsJsonArray();
+        for (JsonElement genre : genresArray) {
+            JsonObject genreObject = genre.getAsJsonObject();
+            genres.add(new GenreDTO(genreObject.get("id").getAsInt(), genreObject.get("name").getAsString()));
+        }
+        movieDetails.setMovieGenres(genres);
+
+        //* CAST
+        List<CastDTO> cast = new ArrayList<>();
+
+        JsonArray castArray = movieDAO.getCast(movieId);
+
+
+        //* PARSEO DE ACTORES A DTOs
+        for (JsonElement actor : castArray) {
+            JsonObject actorObject = actor.getAsJsonObject();
+            if (actorObject.get("known_for_department").getAsString().equals("Acting") &&
+                    actorObject.get("popularity").getAsDouble() >= 10) { //* FILTRAMOS SOLO ACTORES CON +10 DE POPULARIDAD
+
+                CastDTO castDTO = new CastDTO();
+                castDTO.setFullName(actorObject.get("name").getAsString());
+                castDTO.setCharacter(actorObject.get("character").getAsString());
+                try { //* SI EL ACTOR NO TIENE IMAGEN, NO SE CARGA EN LA LISTA
+                    castDTO.setProfilePath(ImageLinks.imageTypeToLink(IMAGE_TYPE.PROFILE, actorObject.get("profile_path").getAsString()));
+                    cast.add(castDTO);
+                } catch (Exception ignored) {}
+            }
+        }
+        movieDetails.setMovieCast(cast);
+
+
+        //* IMAGENES
+        List<MovieImageDTO> images = new ArrayList<>();
+
+        JsonArray imagesArray = movieDAO.getImages(movieId);
+
+        //* PARSEO DE IMAGENES
+
+        for (JsonElement imageJson : imagesArray){
+            JsonObject imageObject = imageJson.getAsJsonObject();
+            MovieImageDTO imageDTO = new MovieImageDTO();
+
+            imageDTO.setImageHeight(imageObject.get("height").getAsInt());
+            imageDTO.setImageWidth(imageObject.get("width").getAsInt());
+
+            try {//* SI LA IMAGEN NO TIENE PATH, NO SE CARGA EN LA LISTA
+                imageDTO.setImagePath(ImageLinks.imageTypeToLink(IMAGE_TYPE.BACKDROP, imageObject.get("sile_path").getAsString()));
+                images.add(imageDTO);
+            }catch (Exception ignored){}
+
+        }
+
+        //* TRAILER YT
+         movieDetails.setMovieTrailerYTKey(movieDAO.getTrailer(movieId));
+
+
+         //! movieDetails.setMovieUserRating(); NO IMPLEMENTADO
+
+
+        //! CHEQUEAR ERRORES PARA CADA UNO DE LOS LLAMADOS
+
+        return movieDetails;
     }
 
     public List<MovieComponentDTO> discover(String page, String genres) {

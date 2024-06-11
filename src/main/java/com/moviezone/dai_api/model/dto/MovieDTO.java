@@ -6,30 +6,38 @@ import java.util.List;
 //! NO IMPLEMENTADO, SIRVE PARA EL DETALLE DE PELICULAS
 public class MovieDTO {
     private int movieId;
-    private int movieRuntime;
-    private int movieUserRating;
-    private float movieVoteAverage;
     private String movieTitle;
     private String movieReleaseDate;
     private String movieCertification;
+    private List<GenreDTO> movieGenres;
     private String movieOverview;
+    private int movieRuntime;
+    private float movieVoteAverage;
+    private int movieUserRating;
     private String movieTrailerYTKey;
-    private List<String> movieGenres;
+    private List<CastDTO> movieCast;
     private List<MovieImageDTO> movieImages;
 
     public MovieDTO() {
     }
 
-    public MovieDTO(int movieId, int movieRuntime, int movieUserRating, float movieVoteAverage, String movieTitle, String movieReleaseDate, String movieCertification, String movieOverview, String movieTrailerYTKey) {
+
+    public MovieDTO(int movieId, String movieTitle, String movieReleaseDate, String movieCertification,
+                    List<GenreDTO> movieGenres, String movieOverview, int movieRuntime, float movieVoteAverage,
+                    int movieUserRating, String movieTrailerYTKey, List<CastDTO> movieCast, List<MovieImageDTO> movieImages) {
+
         this.movieId = movieId;
-        this.movieRuntime = movieRuntime;
-        this.movieUserRating = movieUserRating;
-        this.movieVoteAverage = movieVoteAverage;
         this.movieTitle = movieTitle;
         this.movieReleaseDate = movieReleaseDate;
         this.movieCertification = movieCertification;
+        this.movieGenres = movieGenres;
         this.movieOverview = movieOverview;
+        this.movieRuntime = movieRuntime;
+        this.movieVoteAverage = movieVoteAverage;
+        this.movieUserRating = movieUserRating;
         this.movieTrailerYTKey = movieTrailerYTKey;
+        this.movieCast = movieCast;
+        this.movieImages = movieImages;
     }
 
     public int getMovieRuntime() {
@@ -102,5 +110,29 @@ public class MovieDTO {
 
     public void setMovieId(int movieId) {
         this.movieId = movieId;
+    }
+
+    public List<GenreDTO> getMovieGenres() {
+        return movieGenres;
+    }
+
+    public void setMovieGenres(List<GenreDTO> movieGenres) {
+        this.movieGenres = movieGenres;
+    }
+
+    public List<CastDTO> getMovieCast() {
+        return movieCast;
+    }
+
+    public void setMovieCast(List<CastDTO> movieCast) {
+        this.movieCast = movieCast;
+    }
+
+    public List<MovieImageDTO> getMovieImages() {
+        return movieImages;
+    }
+
+    public void setMovieImages(List<MovieImageDTO> movieImages) {
+        this.movieImages = movieImages;
     }
 }
