@@ -3,7 +3,9 @@ package com.moviezone.dai_api.controller;
 
 
 
+import com.moviezone.dai_api.model.dto.ErrorResponseDTO;
 import com.moviezone.dai_api.model.dto.UserDTO;
+import com.moviezone.dai_api.model.dto.UserEditableDTO;
 import com.moviezone.dai_api.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -32,30 +34,32 @@ public class UserController {
 
 
     @PatchMapping
-    public ResponseEntity<?> modifyUser(@RequestBody UserDTO userDTO, @RequestBody String base64img){
+    public ResponseEntity<?> modifyUser(@RequestBody UserEditableDTO userDTO) {
 
         if (userDTO == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        UserDTO result = userServiceImplementation.modifyUser(userDTO.getId(), userDTO, base64img);
+        if (userDTO.getBase64img().equals("")) userDTO.setBase64img(null);
+
+        UserDTO result = userServiceImplementation.modifyUser(userDTO.getId(), userDTO, userDTO.getBase64img());
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping()
-    public ResponseEntity<?> deleteUser(@RequestBody String userID){
-        if (userID == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable String userId){
+        if (userId == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        userServiceImplementation.deleteById(userID);
+        userServiceImplementation.deleteById(userId);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
-    public ResponseEntity<?> getUser(@RequestParam String userID){
-        if (userID == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    @GetMapping(value="/{userId}")
+    public ResponseEntity<?> getUser(@PathVariable String userId){
+        if (userId == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        UserDTO result = userServiceImplementation.getUser(userID);
-
+        UserDTO result = userServiceImplementation.getUser(userId);
+        if (result == null ) return new ResponseEntity<>(new ErrorResponseDTO("USER NOT FOUND",1), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

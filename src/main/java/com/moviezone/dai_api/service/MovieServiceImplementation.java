@@ -141,13 +141,12 @@ public class MovieServiceImplementation implements IMovieService {
     }
 
     @Override
-    public List<MovieComponentDTO> search(String search, String orderByScore, String orderingScore, String orderByDate, String orderingDate) {
+    public List<MovieComponentDTO> search(String page, String search, String orderByScore, String orderingScore, String orderByDate, String orderingDate) {
 
         //? OBTENEMOS LOS RESULTADOS DE LA BUSQUEDA Y LOS AÑADIMOS A UNA LISTA
         List<MovieComponentDTO> result = new ArrayList<>();
 
         JsonArray allMovies = movieDAO.search(search);
-
         List<JsonObject> filteredMovies = new ArrayList<>();
 
         //! SI HUBO UN ERROR RETORNAMOS NULL
@@ -163,7 +162,8 @@ public class MovieServiceImplementation implements IMovieService {
             } catch (Exception ignored) {}
 
             //* SI LA PELICULA TIENE MENOS DE 200 VOTOS NO LA SUMAMOS A LOS RESULTADOS
-            if (TMDBmovie.get("vote_count").getAsInt() < 200) continue;;
+            if (TMDBmovie.get("vote_count") == null) continue;
+            else if (TMDBmovie.get("vote_count").getAsInt() < 200) continue;
 
             filteredMovies.add(TMDBmovie);
         }
@@ -210,7 +210,28 @@ public class MovieServiceImplementation implements IMovieService {
 
             } catch (Exception ignored) {}
         }
-        return result;
+
+        //? PAGINADO
+//        System.err.println(result);
+//        System.err.println(result.size());
+//        System.err.println(Math.ceil((double) result.size() / 39));
+
+        if (Math.ceil((double) result.size() / 39) < Integer.parseInt(page)) return new ArrayList<MovieComponentDTO>();
+
+        List<MovieComponentDTO> moviePage = getPartition(result, Integer.parseInt(page) - 1);
+
+        return moviePage;
+    }
+
+    private static List<MovieComponentDTO> getPartition(List<MovieComponentDTO> list, int partitionIndex) {
+        int pageSize = 39;
+        int startIndex = partitionIndex * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, list.size());
+
+        List<MovieComponentDTO> aux = new ArrayList<>();
+        aux.addAll(list);
+
+        return list.subList(startIndex, endIndex);
     }
 
     private static void OrderByDate(String orderingDate, List<JsonObject> filteredMovies) {

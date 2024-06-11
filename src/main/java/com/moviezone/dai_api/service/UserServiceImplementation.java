@@ -2,6 +2,7 @@ package com.moviezone.dai_api.service;
 
 import com.moviezone.dai_api.model.dao.UserDAOImplementation;
 import com.moviezone.dai_api.model.dto.UserDTO;
+import com.moviezone.dai_api.model.dto.UserEditableDTO;
 import com.moviezone.dai_api.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
     }
 
     @Override
-    public UserDTO modifyUser(String userId, UserDTO userDTO, String base64Img) {
+    public UserDTO modifyUser(String userId, UserEditableDTO userDTO, String base64Img) {
 
         //? OBTENEMOS EL USUARIO ACTUAL Y ACTUALIZAMOS SUS DATOS
         User currentUser = userDAO.findUserById(userId);
@@ -29,12 +30,14 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
         currentUser.setLastName(userDTO.getLastName());
         currentUser.setEmail(userDTO.getEmail());
 
+        System.out.println(currentUser);
         //? ACTUALIZAMOS LOS DATOS DEL USUARIO EN LA BASE DE DATOS (Y OBS SI FUERA NECESARIO)
         userDAO.updateUser(currentUser, base64Img);
 
+
         //? RETORNAMOS EL USUARIO ACTUALIZADO
         return new UserDTO(currentUser.getId(), currentUser.getUsername(), currentUser.getName(),
-                currentUser.getLastName(), currentUser.getEmail());
+                currentUser.getLastName(), currentUser.getEmail(), currentUser.getProfilePicture());
     }
 
 
@@ -50,6 +53,7 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
             UserDTO userDTO = new UserDTO();
             userDTO.setId(user.getId());
             userDTO.setName(user.getName());
+            userDTO.setUsername(user.getUsername());
             userDTO.setLastName(user.getLastName());
             userDTO.setEmail(user.getEmail());
             userDTO.setProfilePictureURL(user.getProfilePicture());

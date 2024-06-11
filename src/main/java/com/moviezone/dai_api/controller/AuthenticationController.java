@@ -4,16 +4,14 @@ package com.moviezone.dai_api.controller;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.huaweicloud.sdk.obs.v1.model.Bucket;
-import com.moviezone.dai_api.model.dto.AuthResponseDTO;
-import com.moviezone.dai_api.model.dto.ErrorResponseDTO;
-import com.moviezone.dai_api.model.dto.TokenDTO;
-import com.moviezone.dai_api.model.dto.UserDTO;
+import com.moviezone.dai_api.model.dto.*;
 import com.moviezone.dai_api.model.entity.RefreshToken;
 import com.moviezone.dai_api.service.IRefreshTokenService;
 import com.moviezone.dai_api.service.IUserService;
+import com.moviezone.dai_api.utils.TokenEncrypter;
 import com.obs.services.ObsClient;
 import com.obs.services.ObsConfiguration;
-import io.github.cdimascio.dotenv.Dotenv;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ import java.util.Date;
 @RequestMapping("/v1/auths")
 public class AuthenticationController {
 //    private final int EXPIRATION_TIME = 60 * 1000 * 5; //* 1000 milisegundos ( 1 segundo ) * 60 ( PARA QUE DE 1 MINUTO ) * 5 ( PARA QUE DE 5 MINUTOS )
-    private final int EXPIRATION_TIME = 60 * 1000 * 2; //* 1000 milisegundos ( 1 segundo ) * 60 ( PARA QUE DE 1 MINUTO ) * 2 ( PARA QUE DE 2 MINUTOS )
+    private final int EXPIRATION_TIME = 60 * 1000 * 20; //* 20 minutos
 
 
     @Autowired
@@ -41,39 +39,59 @@ public class AuthenticationController {
     private SecretKey secretKey;
 
     @DeleteMapping
-    ResponseEntity<?> logout(@RequestBody TokenDTO token)
+    public ResponseEntity<?> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token)
     {
-        //! ESTO SE PUEDE HACER DE VARIAS MANERAS, ACA LE ESTAMOS PIDIENDO AL FRONT EL REFRESH TOKEN
-        //! EN VEZ DEL TOKEN SE LE PODRIA PEDIR TAMBIEN EL USER ID
-        RefreshToken refreshToken = refreshTokenService.findByRefreshToken(token.getToken());
-        refreshTokenService.delete(refreshToken);
+        token = token.substring(7); //* AGARRAMOS EL ACCESS TOKEN
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        String userId = claims.getSubject();
+
+        refreshTokenService.deleteByUser(userId);
         return new ResponseEntity<>("Successful logout", HttpStatus.NO_CONTENT);
     }
 
 
     @PutMapping("")
-    ResponseEntity<?> refreshToken(@RequestBody TokenDTO refreshToken){
+    ResponseEntity<?> refreshToken(@RequestBody AuthResponseDTO requestDTO){
+
+        //* SI FALTA ALGuN DATO -> BAD REQUEST
+        if(requestDTO.getRefreshToken() == null || requestDTO.getAccessToken() == null ){return new ResponseEntity<>(new ErrorResponseDTO("FALTA ALGUN DATO", 7), HttpStatus.BAD_REQUEST);}
+
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(requestDTO.getAccessToken()).getBody();
+        String userId = claims.getSubject();
 
         //* Buscamos si el REFRESH TOKEN que nos pasan esta en la DB
-        RefreshToken persistedRefreshToken = refreshTokenService.findByRefreshToken(refreshToken.getToken());
+        RefreshToken persistedRefreshToken = refreshTokenService.findByUser(userId);
+
 
         //* Si el refresh token no existe en la DB devolvemos bad request ( DESDE EL FRONT DEBERAIN DESLOGGEAR )
         if(persistedRefreshToken == null){ return new ResponseEntity<>(new ErrorResponseDTO("El REFRESH TOKEN no existe", 2), HttpStatus.BAD_REQUEST);}
 
         //* CHEQUEAMOS SI ES VALIDO, SI NO LO ES TIRA ERROR POR ESO EN UN BLOQUE TRY CATCH
         try {
-           persistedRefreshToken =  refreshTokenService.verifyRefreshTokenExpiration(persistedRefreshToken);
+            persistedRefreshToken =  refreshTokenService.verifyRefreshTokenExpiration(persistedRefreshToken);
+
+            //* CHEQUEAMOS SI EL ACCESS TOKEN MATCHEA CON EL DE LA BD
+            if(!TokenEncrypter.matches(requestDTO.getAccessToken(), persistedRefreshToken.getAccessToken(), persistedRefreshToken.getSalt())){
+                return new ResponseEntity<>(new ErrorResponseDTO("ACCESS TOKEN NO VALIDO", 4), HttpStatus.FORBIDDEN);
+            }
+
+            //* CHEQUEAMOS SI EL REFRESH TOKEN MATCHEA CON EL DE LA BD
+            if(!TokenEncrypter.matches(requestDTO.getRefreshToken(), persistedRefreshToken.getToken(), persistedRefreshToken.getSalt())){
+                return new ResponseEntity<>(new ErrorResponseDTO("REFRESH TOKEN NO VALIDO", 4), HttpStatus.FORBIDDEN);
+            }
+
+            //? SI ESTA OK PROSEGUIMOS.
 
             //* CREAMOS OTRO JWT ACCESS TOKEN CON EL ID DEL USUARIO
-            String token = Jwts.builder()
+            String accessToken = Jwts.builder()
                     .setSubject(persistedRefreshToken.getUser().getId())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                     .signWith(secretKey, SignatureAlgorithm.HS256)
                     .compact();
 
-            //* CREAMOS EL DTO PARA DEVOLVER EL TOKEN Y EL MISMO REFRESH TOKEN
-            AuthResponseDTO authResponseDTO = new AuthResponseDTO(token, persistedRefreshToken.getToken());
+            //* CREAMOS OTRO REFRESH TOKEN, ESTO NOS DEVUELVE EL DTO CON LOS DOS NUEVOS TOKENS
+            AuthResponseDTO authResponseDTO = refreshTokenService.updateRefreshToken(persistedRefreshToken, accessToken);
 
             return new ResponseEntity<>(authResponseDTO, HttpStatus.OK);
         } catch (Exception ex){
@@ -111,27 +129,29 @@ public class AuthenticationController {
 
             userService.createUser(user);
         }
+        else if (refreshTokenService.findByUser(userId) != null){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
+            refreshTokenService.deleteByUser(userId);
+        }
 
+        //TEST
+//        if (refreshTokenService.findByUser("1") != null){ // Si el usuario ya esta registrado y tiene un refresh token, borrarlo
+//            refreshTokenService.deleteByUser("1");
+//        }
 
-        //String givenNameTest = "TheMaxcraft1"; TEST
+//        String givenNameTest = "TheMaxcraft1"; // TEST
+//        String userId = "1";
 
         //* ACCESS Token ( JWT )
-        String token = Jwts.builder()
-                .setSubject(jsonObject.get("given_name").toString())
-//                .setSubject(givenNameTest) TEST
+        String accessToken = Jwts.builder()
+                .setSubject(userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
 
-        //* REFRESH Token
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userId);
-        //RefreshToken refreshToken = refreshTokenService.createRefreshToken("1"); TEST
-
-        //* Creamos el DTO para devolver ACCESS y REFRESH tokens
-        AuthResponseDTO loginResponse = new AuthResponseDTO();
-        loginResponse.setAccessToken(token);
-        loginResponse.setRefreshToken(refreshToken.getToken());
+        //* CREAMOS EL REFRESH TOKEN ( ENCRIPTAMOS AMBOS TOKENS )| ESTO DEVUELVE EL DTO PARA RETORNAR
+        AuthResponseDTO loginResponse = refreshTokenService.createRefreshToken(userId, accessToken);
+//        AuthResponseDTO loginResponse = refreshTokenService.createRefreshToken("1", accessToken); //TEST
 
         //* DEVOLVEMOS LA RESPUESTA
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
@@ -165,17 +185,17 @@ public class AuthenticationController {
         ByteArrayResource byteArrayResource = restTemplateGet.getForObject(imgURL, ByteArrayResource.class);
 
         Bucket bucket = new Bucket();
-        bucket.setName(Dotenv.load().get("BUCKET_NAME"));
+        bucket.setName(System.getenv("BUCKET_NAME"));
 
         ObsConfiguration config = new ObsConfiguration();
-        config.setEndPoint(Dotenv.load().get("OBS_URL"));
+        config.setEndPoint(System.getenv("OBS_ENDPOINT"));
 
         String userid = "profile-pictures/" + userJSON.get("sub").getAsString() + ".jpg";
 
         try {
             ObsClient obsClient = new ObsClient(config);
-            obsClient.putObject(Dotenv.load().get("BUCKET_NAME"), userid, new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
-            finalURL = Dotenv.load().get("OBS_URL") + userid;
+            obsClient.putObject(System.getenv("BUCKET_NAME"), userid, new ByteArrayInputStream(byteArrayResource.getByteArray()), null);
+            finalURL = System.getenv("OBS_URL") + userid;
         }catch (Exception e){}
 
         return finalURL;

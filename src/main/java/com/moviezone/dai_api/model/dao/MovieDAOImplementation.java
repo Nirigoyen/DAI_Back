@@ -6,18 +6,26 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moviezone.dai_api.model.entity.Movie;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 
 
 @Repository
 public class MovieDAOImplementation implements IMovieDAO {
+
+    String savedSearch = "";
+
+    JsonArray savedResults = new JsonArray();
 
 
     public JsonObject getMovieDetails(int movieId) { //! NO IMPLEMENTADO
@@ -52,8 +60,6 @@ public class MovieDAOImplementation implements IMovieDAO {
     public JsonArray discover(String page, String genres) { //? RESULTADOS DE LA LANDING PAGE
 
         //* FIJAMOS QUE SEAN PELICULAS QUE HAYAN SALIDO YA
-        final String RELEASE_DATE_LOWER_THAN = "2024-05-01"; // Final means CONSTANT - DATE FORMAT YYYY/MM/DD
-
         LocalDate fecha = LocalDate.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String fecha_actual = fecha.format(formato);
@@ -70,7 +76,7 @@ public class MovieDAOImplementation implements IMovieDAO {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
@@ -92,7 +98,17 @@ public class MovieDAOImplementation implements IMovieDAO {
     @Override
     public JsonArray search(String search) {
 
-        final int MAX_PAGES_TO_RETURN = 6;
+        //final int MAX_PAGES_TO_RETURN = 6;
+
+        if (savedSearch.equals(search)) {
+            JsonArray finalResponse = savedResults.deepCopy();
+            return finalResponse;
+        }
+        else {
+            savedSearch = search;
+            savedResults = new JsonArray();
+        }
+
 
         JsonArray finalResponse = new JsonArray();
 
@@ -106,7 +122,7 @@ public class MovieDAOImplementation implements IMovieDAO {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
@@ -141,12 +157,14 @@ public class MovieDAOImplementation implements IMovieDAO {
                     //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
 
                     finalResponse.addAll(allMovies);
+                    savedResults.addAll(allMovies);
                 }
 
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS. COLOCAMOS UN MAXIMO DE 6 PAGINAS (120 RESULTADOS).
 
-                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), MAX_PAGES_TO_RETURN);
+//                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), MAX_PAGES_TO_RETURN);
 
+                int pages_count = jsonObject.get("total_pages").getAsInt();
 
                 //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
 
@@ -167,6 +185,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                         allMovies = jsonObject.getAsJsonArray("results");
 
                         finalResponse.addAll(allMovies);
+                        savedResults.addAll(allMovies);
                     }
                 }
             }
@@ -193,10 +212,63 @@ public class MovieDAOImplementation implements IMovieDAO {
                     //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
 
                     finalResponse.addAll(allMovies);
+                    savedResults.addAll(allMovies);
                 }
 
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS. COLOCAMOS UN MAXIMO DE 6 PAGINAS (120 RESULTADOS).
-                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), MAX_PAGES_TO_RETURN);
+//                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), MAX_PAGES_TO_RETURN);
+                int pages_count = jsonObject.get("total_pages").getAsInt();
+
+
+//                String Threads_URL = "https://api.themoviedb.org/3/search/movie?query={search}&include_adult=false&language=es-AR&page={i}";
+//                ExecutorService executorService = Executors.newFixedThreadPool(2); // Ajusta el tamaño del pool de hilos según tus necesidades
+//                List<Future<?>> futures = new ArrayList<>();
+//
+//                for (int i = 2; i <= pages_count; i++) {
+//                    int page = i;
+//                    JsonArray finalAllMovies = allMovies;
+//                    Future<?> future = executorService.submit(() -> {
+//                        String url = Threads_URL.replace("{search}", search).replace("{i}", String.valueOf(page));
+//
+//                        ResponseEntity<String> testResponse = restTemplate.getForEntity(url, String.class, entity);
+//                        String testDatos = testResponse.getBody();
+//                        JsonParser testParser = new JsonParser();
+//                        JsonObject testJsonObject = (JsonObject) testParser.parse(testDatos);
+//                        JsonArray moviesArray = testJsonObject.getAsJsonArray("results");
+//                        finalAllMovies.add(moviesArray);
+//                    });
+//                    futures.add(future);
+//                }
+//
+//                // Esperar a que todos los hilos terminen
+//                for (Future<?> future : futures) {
+//                    try {
+//                        future.get();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                executorService.shutdown();
+//
+//                finalResponse.addAll(allMovies);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 for (int i = 2; i <= pages_count; i++) { //* HACEMOS LAS REQUESTS RESTANTES HASTA OBTENER TODOS LOS VALORES
                     NEW_API_URL = "https://api.themoviedb.org/3/search/movie" +
@@ -207,6 +279,7 @@ public class MovieDAOImplementation implements IMovieDAO {
 
                     response = restTemplate.exchange(NEW_API_URL,HttpMethod.GET, entity, String.class);
 
+
                     if (response.getStatusCodeValue() == 200) {
 
                         datos = response.getBody();
@@ -215,6 +288,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                         allMovies = jsonObject.getAsJsonArray("results");
 
                         finalResponse.addAll(allMovies);
+                        savedResults.addAll(allMovies);
                     }
                 }
             }

@@ -102,6 +102,15 @@ public class User {
         //FIJARSE EN QUE MOMENTO CONVERTIR LAS PELICULAS EN DTOS.
     }
 
-
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", profilePictureLink='" + profilePictureLink + '\'' +
+                '}';
+    }
 }

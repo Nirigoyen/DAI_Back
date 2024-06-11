@@ -1,11 +1,11 @@
 package com.moviezone.dai_api.model.dao;
 
+import com.moviezone.dai_api.model.entity.RefreshToken;
 import com.moviezone.dai_api.model.entity.User;
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
@@ -29,9 +29,14 @@ public class UserDAOImplementation implements IUserDAO{
     public User findUserById(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
 
-        User user = currentSession.get(User.class, userId);
-
+        Query<User> theQuery = currentSession.createQuery("FROM User WHERE userId=:userId", User.class);
+        theQuery.setParameter("userId", userId);
+        User user = theQuery.uniqueResult();
         return user;
+
+//        User user = currentSession.get(User.class, userId);
+//
+//        return user;
     }
 
     @Override
@@ -46,10 +51,20 @@ public class UserDAOImplementation implements IUserDAO{
     @Transactional
     public void deleteUser(String userId) {
         Session currentSession = entityManager.unwrap(Session.class);
-        currentSession.remove(findUserById(userId));
+
+        System.err.println(userId);
+
+        Query DeleteRefreshTokenQuery = currentSession.createQuery("DELETE FROM RefreshToken WHERE user.userId=:id");
+        DeleteRefreshTokenQuery.setParameter("id", userId);
+        DeleteRefreshTokenQuery.executeUpdate();
+
+        Query theQuery = currentSession.createQuery("DELETE FROM User WHERE userId=:id");
+        theQuery.setParameter("id", userId);
+        theQuery.executeUpdate();
     }
 
     @Override
+    @Transactional
     public void updateUser(User user, String base64Img) {
 
         //? ACTUALIZAMOS LOS DATOS DEL USER EN LA BASE DE DATOS
@@ -63,11 +78,20 @@ public class UserDAOImplementation implements IUserDAO{
         //? ACTUALIZAMOS LA IMAGEN DE PERFIL EN EL OBS
         RestTemplate restTemplate = new RestTemplate();
 
+        String URL = "https://dai-obs.obs.la-south-2.myhuaweicloud.com/";
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
-        formData.add("key", user.getId() + ".jpg");
+        formData.add("key", "profile-pictures/" + user.getId() + ".jpg");
+
+
+        //! SACAMOS LA METADATA DE LA BASEIMG ( data:image/jpg;base64, )
+        String partSeparator = ",";
+        if (base64Img.contains(partSeparator)) {
+            base64Img = base64Img.split(partSeparator)[1];
+        }
 
         //* CONVERTIMOS LA IMAGEN DE BASE64 A JPG Y LA AGREGAMOS A LA REQUEST
         byte[] imageBytes = Base64.getDecoder().decode(base64Img);
@@ -78,11 +102,14 @@ public class UserDAOImplementation implements IUserDAO{
             }
         };
 
+
         formData.add("file", imgResource);
 
         HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(formData, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(user.getProfilePicture(), HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.POST, entity, String.class);
+
+
     }
 
 }

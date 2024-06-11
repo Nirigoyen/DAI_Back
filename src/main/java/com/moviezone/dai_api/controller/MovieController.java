@@ -49,12 +49,9 @@ public class MovieController {
         //? SI EXISTE PAGE, ESTAMOS EN LA LANDING PAGE
         //? SI EXISTE SEARCH, ESTAMOS EN LA BUSQUEDA
         //! SI EXISTEN AMBOS, RETORNAR UN BAD REQUEST
-        if (page != null && search != null) return new ResponseEntity<>
-                (new ErrorResponseDTO("Bad Request, both parameters sent", 4), HttpStatus.BAD_REQUEST);
+        if (page == null || page.isEmpty()) return new ResponseEntity<>
+                (new ErrorResponseDTO("Bad Request, page not sent", 4), HttpStatus.BAD_REQUEST);
 
-        //! SI NO EXISTE PAGE NI SEARCH, RETORNAR UN BAD REQUEST
-        if (page == null && search == null) return new ResponseEntity<>
-                (new ErrorResponseDTO("Bad Request, no parameters sent", 4), HttpStatus.BAD_REQUEST);
 
 
 
@@ -62,8 +59,9 @@ public class MovieController {
         List<MovieComponentDTO> finalResult = null;
 
 
+
         //? SI EL PARAMETRO DE BUSQUEDA ES NULL, ENTONCES ESTAMOS EN LA LANDING PAGE
-        if (search == null){
+        if (search == null || search.isEmpty()){
 
             //* NOS ASEGURAMOS DE QUE "PAGE" ESTE ENTRE LOS LIMITES QUE SOPORTA TMDB
             if (Integer.parseInt(page) < 1) page = "1"; // if page is less than 1 return page 1
@@ -74,10 +72,10 @@ public class MovieController {
 
             //* OBTENEMOS LOS RESULTADOS DE LA LANDING
             finalResult = movieService.discover(page, genres);
-        } else if (page == null) {
+        } else {
 
-            //? SI EL PARAMETRO DE PAGINA ES NULL, ENTONCES ESTAMOS EN LA BUSQUEDA
-            finalResult = movieService.search(search, orderByScore, orderingScore, orderByDate, orderingDate);
+            //? SI NO, ENTONCES ESTAMOS EN LA BUSQUEDA
+            finalResult = movieService.search(page, search, orderByScore, orderingScore, orderByDate, orderingDate);
         }
 
         //* SI HAY RESULTADOS, LOS RETORNAMOS
