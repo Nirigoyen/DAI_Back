@@ -20,7 +20,7 @@ public class RefreshTokenServiceImplementation implements IRefreshTokenService{
     @Autowired
     private IUserDAO userDAO;
 
-    private final int REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000 * 60 * 24; // 5 MINUTES
+    private final int REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000 * 60 * 24; // UN DIA
     private final int SALT_LENGTH = 16;
 
     @Override

@@ -28,7 +28,7 @@ import java.util.Date;
 @RequestMapping("/v1/auths")
 public class AuthenticationController {
 //    private final int EXPIRATION_TIME = 60 * 1000 * 5; //* 1000 milisegundos ( 1 segundo ) * 60 ( PARA QUE DE 1 MINUTO ) * 5 ( PARA QUE DE 5 MINUTOS )
-    private final int EXPIRATION_TIME = 60 * 1000 * 20; //* 1000 milisegundos ( 1 segundo ) * 60 ( PARA QUE DE 1 MINUTO ) * 2 ( PARA QUE DE 2 MINUTOS )
+    private final int EXPIRATION_TIME = 60 * 1000 * 20; //* 20 minutos
 
 
     @Autowired
@@ -39,12 +39,13 @@ public class AuthenticationController {
     private SecretKey secretKey;
 
     @DeleteMapping
-    public ResponseEntity<?> logout(@RequestBody TokenDTO token)
+    public ResponseEntity<?> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token)
     {
-        //! ESTO SE PUEDE HACER DE VARIAS MANERAS, ACA LE ESTAMOS PIDIENDO AL FRONT EL REFRESH TOKEN
-        //! EN VEZ DEL TOKEN SE LE PODRIA PEDIR TAMBIEN EL USER ID
-        RefreshToken refreshToken = refreshTokenService.findByRefreshToken(token.getToken());
-        refreshTokenService.delete(refreshToken);
+        token = token.substring(7); //* AGARRAMOS EL ACCESS TOKEN
+        Claims claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        String userId = claims.getSubject();
+
+        refreshTokenService.deleteByUser(userId);
         return new ResponseEntity<>("Successful logout", HttpStatus.NO_CONTENT);
     }
 
