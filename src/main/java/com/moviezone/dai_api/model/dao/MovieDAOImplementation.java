@@ -76,7 +76,7 @@ public class MovieDAOImplementation implements IMovieDAO {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
+        headers.add("Authorization", System.getenv("TMDB_TOKEN") );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
@@ -122,7 +122,7 @@ public class MovieDAOImplementation implements IMovieDAO {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
+        headers.add("Authorization", System.getenv("TMDB_TOKEN"));
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
@@ -183,6 +183,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                         parser = new JsonParser();
                         jsonObject = (JsonObject) parser.parse(datos);
                         allMovies = jsonObject.getAsJsonArray("results");
+                        if (allMovies == null) continue;
 
                         finalResponse.addAll(allMovies);
                         savedResults.addAll(allMovies);
@@ -209,6 +210,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                     jsonObject = (JsonObject) parser.parse(datos);
                     allMovies = jsonObject.getAsJsonArray("results");
 
+
                     //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
 
                     finalResponse.addAll(allMovies);
@@ -218,6 +220,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                 //* VERIFICAMOS LA CANTIDAD DE PAGINAS DE RESULTADOS. COLOCAMOS UN MAXIMO DE 6 PAGINAS (120 RESULTADOS).
 //                int pages_count = Math.min(jsonObject.get("total_pages").getAsInt(), MAX_PAGES_TO_RETURN);
                 int pages_count = jsonObject.get("total_pages").getAsInt();
+                System.err.println("PAGES_COUNT: " + pages_count);
 
 
 //                String Threads_URL = "https://api.themoviedb.org/3/search/movie?query={search}&include_adult=false&language=es-AR&page={i}";
@@ -285,8 +288,12 @@ public class MovieDAOImplementation implements IMovieDAO {
                         datos = response.getBody();
                         parser = new JsonParser();
                         jsonObject = (JsonObject) parser.parse(datos);
-                        allMovies = jsonObject.getAsJsonArray("results");
 
+                        allMovies = jsonObject.getAsJsonArray("results");
+                        if (allMovies == null) continue;
+
+                        System.err.println(allMovies);
+                        System.err.println("PAGE: " + i);
                         finalResponse.addAll(allMovies);
                         savedResults.addAll(allMovies);
                     }
