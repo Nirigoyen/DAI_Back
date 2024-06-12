@@ -4,12 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dao.IMovieDAO;
-<<<<<<< Updated upstream
 import com.moviezone.dai_api.model.dto.*;
-=======
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
->>>>>>> Stashed changes
-import com.moviezone.dai_api.model.entity.Movie;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,7 +204,6 @@ public class MovieServiceImplementation implements IMovieService {
                 newMovie.setMovieId(movie.get("id").getAsInt());
                 newMovie.setMoviePosterPath(newMovieImagePosterPath);
 
-                //System.err.println(movieIds.contains(newMovie.getMovieId()));
                 if (!movieIds.contains(newMovie.getMovieId()))
                 {
                     result.add(newMovie);
