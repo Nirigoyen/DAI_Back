@@ -4,7 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dao.IMovieDAO;
+<<<<<<< Updated upstream
 import com.moviezone.dai_api.model.dto.*;
+=======
+import com.moviezone.dai_api.model.dto.MovieComponentDTO;
+>>>>>>> Stashed changes
 import com.moviezone.dai_api.model.entity.Movie;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
@@ -13,10 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MovieServiceImplementation implements IMovieService {
@@ -195,6 +196,7 @@ public class MovieServiceImplementation implements IMovieService {
 
 
         //? CREADO DE DTOs Y CARGADO A LA LISTA FINAL DE LOS RESULTADOS
+        Set<Integer> movieIds = new HashSet<>();
 
         for (JsonObject movie: filteredMovies){
             MovieComponentDTO newMovie = new MovieComponentDTO();
@@ -206,7 +208,13 @@ public class MovieServiceImplementation implements IMovieService {
                 newMovie.setMovieId(movie.get("id").getAsInt());
                 newMovie.setMoviePosterPath(newMovieImagePosterPath);
 
-                result.add(newMovie);
+                //System.err.println(movieIds.contains(newMovie.getMovieId()));
+                if (!movieIds.contains(newMovie.getMovieId()))
+                {
+                    result.add(newMovie);
+                    movieIds.add(newMovie.getMovieId());
+                }
+
 
             } catch (Exception ignored) {}
         }
@@ -219,7 +227,7 @@ public class MovieServiceImplementation implements IMovieService {
         if (Math.ceil((double) result.size() / 39) < Integer.parseInt(page)) return new ArrayList<MovieComponentDTO>();
 
         List<MovieComponentDTO> moviePage = getPartition(result, Integer.parseInt(page) - 1);
-
+        System.err.println(moviePage);
         return moviePage;
     }
 
@@ -231,7 +239,8 @@ public class MovieServiceImplementation implements IMovieService {
         List<MovieComponentDTO> aux = new ArrayList<>();
         aux.addAll(list);
 
-        return list.subList(startIndex, endIndex);
+
+        return aux.subList(startIndex, endIndex);
     }
 
     private static void OrderByDate(String orderingDate, List<JsonObject> filteredMovies) {
