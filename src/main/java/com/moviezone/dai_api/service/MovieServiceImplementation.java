@@ -10,6 +10,7 @@ import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.moviezone.dai_api.utils.TrailerLinks;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +37,7 @@ public class MovieServiceImplementation implements IMovieService {
         movieDetails.setMovieId(Integer.parseInt(movie.get("id").toString())); //* TAL VEZ CAMBIARLO A STRING?
         movieDetails.setMovieTitle(movie.get("original_title").toString());
         movieDetails.setMovieReleaseDate(movie.get("release_date").toString());
-        movieDetails.setMovieCertification(movie.get("certification").toString());
+        //! movieDetails.setMovieCertification(movie.get("certification").toString()); HABRIA QUE LLAMAR A RELEASEDATES, PERO NO TIENEN ARG
         movieDetails.setMovieOverview(movie.get("overview").toString());
         movieDetails.setMovieRuntime(movie.get("runtime").getAsInt());
         movieDetails.setMovieVoteAverage(Float.parseFloat(movie.get("vote_average").toString()));
@@ -44,6 +45,7 @@ public class MovieServiceImplementation implements IMovieService {
         //* GENEROS
         List<GenreDTO> genres = new ArrayList<>();
 
+        //* PARSEO DE GENEROS A DTOs
         JsonArray genresArray = movie.get("genres").getAsJsonArray();
         for (JsonElement genre : genresArray) {
             JsonObject genreObject = genre.getAsJsonObject();
@@ -54,10 +56,8 @@ public class MovieServiceImplementation implements IMovieService {
         //* CAST
         List<CastDTO> cast = new ArrayList<>();
 
-        JsonArray castArray = movieDAO.getCast(movieId);
-
-
         //* PARSEO DE ACTORES A DTOs
+        JsonArray castArray = movie.get("credits").getAsJsonObject().get("cast").getAsJsonArray();
         for (JsonElement actor : castArray) {
             JsonObject actorObject = actor.getAsJsonObject();
             if (actorObject.get("known_for_department").getAsString().equals("Acting") &&
@@ -74,13 +74,11 @@ public class MovieServiceImplementation implements IMovieService {
         }
         movieDetails.setMovieCast(cast);
 
-
         //* IMAGENES
         List<MovieImageDTO> images = new ArrayList<>();
 
-        JsonArray imagesArray = movieDAO.getImages(movieId);
-
         //* PARSEO DE IMAGENES
+        JsonArray imagesArray = movie.get("images").getAsJsonObject().get("backdrops").getAsJsonArray();
 
         for (JsonElement imageJson : imagesArray){
             JsonObject imageObject = imageJson.getAsJsonObject();
@@ -90,20 +88,71 @@ public class MovieServiceImplementation implements IMovieService {
             imageDTO.setImageWidth(imageObject.get("width").getAsInt());
 
             try {//* SI LA IMAGEN NO TIENE PATH, NO SE CARGA EN LA LISTA
-                imageDTO.setImagePath(ImageLinks.imageTypeToLink(IMAGE_TYPE.BACKDROP, imageObject.get("sile_path").getAsString()));
+                imageDTO.setImagePath(ImageLinks.imageTypeToLink(IMAGE_TYPE.BACKDROP, imageObject.get("file_path").getAsString()));
                 images.add(imageDTO);
             }catch (Exception ignored){}
 
         }
+        movieDetails.setMovieImages(images);
 
         //* TRAILER YT
-         movieDetails.setMovieTrailerYTKey(movieDAO.getTrailer(movieId));
+        movieDetails.setMovieTrailerYTKey(TrailerLinks.generateYTLink(movie));
 
+        //! movieDetails.setMovieUserRating(); NO IMPLEMENTADO
 
-         //! movieDetails.setMovieUserRating(); NO IMPLEMENTADO
-
-
-        //! CHEQUEAR ERRORES PARA CADA UNO DE LOS LLAMADOS
+//        //* CAST
+//        List<CastDTO> cast = new ArrayList<>();
+//
+//        JsonArray castArray = movieDAO.getCast(movieId);
+//
+//
+//        //* PARSEO DE ACTORES A DTOs
+//        for (JsonElement actor : castArray) {
+//            JsonObject actorObject = actor.getAsJsonObject();
+//            if (actorObject.get("known_for_department").getAsString().equals("Acting") &&
+//                    actorObject.get("popularity").getAsDouble() >= 10) { //* FILTRAMOS SOLO ACTORES CON +10 DE POPULARIDAD
+//
+//                CastDTO castDTO = new CastDTO();
+//                castDTO.setFullName(actorObject.get("name").getAsString());
+//                castDTO.setCharacter(actorObject.get("character").getAsString());
+//                try { //* SI EL ACTOR NO TIENE IMAGEN, NO SE CARGA EN LA LISTA
+//                    castDTO.setProfilePath(ImageLinks.imageTypeToLink(IMAGE_TYPE.PROFILE, actorObject.get("profile_path").getAsString()));
+//                    cast.add(castDTO);
+//                } catch (Exception ignored) {}
+//            }
+//        }
+//        movieDetails.setMovieCast(cast);
+//
+//
+//        //* IMAGENES
+//        List<MovieImageDTO> images = new ArrayList<>();
+//
+//        JsonArray imagesArray = movieDAO.getImages(movieId);
+//
+//        //* PARSEO DE IMAGENES
+//
+//        for (JsonElement imageJson : imagesArray){
+//            JsonObject imageObject = imageJson.getAsJsonObject();
+//            MovieImageDTO imageDTO = new MovieImageDTO();
+//
+//            imageDTO.setImageHeight(imageObject.get("height").getAsInt());
+//            imageDTO.setImageWidth(imageObject.get("width").getAsInt());
+//
+//            try {//* SI LA IMAGEN NO TIENE PATH, NO SE CARGA EN LA LISTA
+//                imageDTO.setImagePath(ImageLinks.imageTypeToLink(IMAGE_TYPE.BACKDROP, imageObject.get("sile_path").getAsString()));
+//                images.add(imageDTO);
+//            }catch (Exception ignored){}
+//
+//        }
+//
+//        //* TRAILER YT
+//         movieDetails.setMovieTrailerYTKey(movieDAO.getTrailer(movieId));
+//
+//
+//         //! movieDetails.setMovieUserRating(); NO IMPLEMENTADO
+//
+//
+//        //! CHEQUEAR ERRORES PARA CADA UNO DE LOS LLAMADOS
 
         return movieDetails;
     }

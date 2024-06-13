@@ -26,7 +26,7 @@ public class MovieController {
     private IMovieService movieService;
 
     @GetMapping("/{MovieId}")
-    public ResponseEntity<?> movieDetails(String movieId){
+    public ResponseEntity<?> movieDetails(@RequestParam (name = "movieId", required = true) String movieId){
 
         if (movieId == null) return new ResponseEntity<>("Movie ID not specified.", HttpStatus.BAD_REQUEST);
 

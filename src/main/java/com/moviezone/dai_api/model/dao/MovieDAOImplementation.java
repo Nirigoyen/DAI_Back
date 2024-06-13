@@ -32,13 +32,12 @@ public class MovieDAOImplementation implements IMovieDAO {
 
         String API_URL = "https://api.themoviedb.org/3/movie/" +
                 movieId +
-                "?language=es-AR";
-
+                "?append_to_response=images%2Ccredits%2Cvideos&language=es-AR&include_image_language=es,null";
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("accept", "application/json");
-        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
@@ -54,6 +53,44 @@ public class MovieDAOImplementation implements IMovieDAO {
         }
         else
             return null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        String API_URL = "https://api.themoviedb.org/3/movie/" +
+//                movieId +
+//                "?language=es-AR";
+//
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("accept", "application/json");
+//        headers.add("Authorization",  Dotenv.load().get("TMDB_TOKEN")  );
+//        HttpEntity<String> entity = new HttpEntity<String>(headers);
+//
+//        ResponseEntity<String> response = restTemplate.exchange(API_URL,HttpMethod.GET, entity, String.class);
+//
+//        if (response.getStatusCodeValue() == 200) {
+//
+//            String datos = response.getBody();
+//
+//            JsonParser parser = new JsonParser();
+//            JsonObject movieJSON = (JsonObject) parser.parse(datos);
+//
+//            return movieJSON;
+//        }
+//        else
+//            return null;
     }
 
     @Override
