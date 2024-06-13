@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dao.IMovieDAO;
 import com.moviezone.dai_api.model.dto.*;
-import com.moviezone.dai_api.model.entity.Movie;
+import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,7 @@ import com.moviezone.dai_api.utils.TrailerLinks;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MovieServiceImplementation implements IMovieService {
@@ -237,13 +234,13 @@ public class MovieServiceImplementation implements IMovieService {
             OrderByDate(orderingDate, filteredMovies);
         }
         else { //* ORDENAMIENTO POR PUNTAJE Y FECHA DE LANZAMIENTO (PRIMERO POR PUNTAJE Y DESPUES POR FECHA)
-            OrderByScore(orderingScore, filteredMovies);
-            OrderByDate(orderingDate, filteredMovies);
+            OrderByDateAndScore(orderingDate, orderingScore, filteredMovies);
         }
 
 
 
         //? CREADO DE DTOs Y CARGADO A LA LISTA FINAL DE LOS RESULTADOS
+        Set<Integer> movieIds = new HashSet<>();
 
         for (JsonObject movie: filteredMovies){
             MovieComponentDTO newMovie = new MovieComponentDTO();
@@ -255,7 +252,12 @@ public class MovieServiceImplementation implements IMovieService {
                 newMovie.setMovieId(movie.get("id").getAsInt());
                 newMovie.setMoviePosterPath(newMovieImagePosterPath);
 
-                result.add(newMovie);
+                if (!movieIds.contains(newMovie.getMovieId()))
+                {
+                    result.add(newMovie);
+                    movieIds.add(newMovie.getMovieId());
+                }
+
 
             } catch (Exception ignored) {}
         }
@@ -268,7 +270,7 @@ public class MovieServiceImplementation implements IMovieService {
         if (Math.ceil((double) result.size() / 39) < Integer.parseInt(page)) return new ArrayList<MovieComponentDTO>();
 
         List<MovieComponentDTO> moviePage = getPartition(result, Integer.parseInt(page) - 1);
-
+        System.err.println(moviePage);
         return moviePage;
     }
 
@@ -280,36 +282,64 @@ public class MovieServiceImplementation implements IMovieService {
         List<MovieComponentDTO> aux = new ArrayList<>();
         aux.addAll(list);
 
-        return list.subList(startIndex, endIndex);
+
+        return aux.subList(startIndex, endIndex);
     }
 
     private static void OrderByDate(String orderingDate, List<JsonObject> filteredMovies) {
-        if (orderingDate.equals("asc")) { //* ORDENAMOS POR FECHA DE MANERA ASCENDENTE
+        if (orderingDate.equals("asc")) { //* ORDENAMOS POR AÑO DE MANERA ASCENDENTE
             Collections.sort(filteredMovies, (o1, o2) -> {
 
-                LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                LocalDate releaseDate2 = LocalDate.parse(o2.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                int year1 = Integer.parseInt(o1.get("release_date").getAsString().substring(0, 4));
+                int year2 = Integer.parseInt(o2.get("release_date").getAsString().substring(0, 4));
 
-                return releaseDate1.compareTo(releaseDate2);
+                return Integer.compare(year1, year2);
             });
-        } else { //* ORDENAMOS POR FECHA DE MANERA DESCENDENTE
+        } else { //* ORDENAMOS POR AÑO DE MANERA DESCENDENTE
             Collections.sort(filteredMovies, (o1, o2) -> {
 
-                LocalDate releaseDate1 = LocalDate.parse(o1.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                LocalDate releaseDate2 = LocalDate.parse(o2.get("release_date").getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                int year1 = Integer.parseInt(o1.get("release_date").getAsString().substring(0, 4));
+                int year2 = Integer.parseInt(o2.get("release_date").getAsString().substring(0, 4));
 
-                return releaseDate2.compareTo(releaseDate1);
+                return Integer.compare(year2, year1);
             });
-        };
+        }
     }
 
     private static void OrderByScore(String orderingScore, List<JsonObject> filteredMovies) {
-        if (orderingScore.equals("asc")) { //* ORDENAMOS POR PUNTAJE DE MANERA ASCENDENTE
-            filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
-        } else { //* ORDENAMOS POR PUNTAJE DE MANERA DESCENDENTE
-            filteredMovies.sort(Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble()));
-            Collections.reverse(filteredMovies);
+        Comparator<JsonObject> comparator = Comparator.comparingDouble(jsonObject -> jsonObject.get("vote_average").getAsDouble());
+
+        if (orderingScore.equals("asc")) {
+            filteredMovies.sort(comparator);
+        } else {
+            filteredMovies.sort(comparator.reversed());
         }
+    }
+
+    private static void OrderByDateAndScore(String orderingDate, String orderingScore, List<JsonObject> filteredMovies) {
+        Collections.sort(filteredMovies, (o1, o2) -> {
+            int year1 = Integer.parseInt(o1.get("release_date").getAsString().substring(0, 4));
+            int year2 = Integer.parseInt(o2.get("release_date").getAsString().substring(0, 4));
+
+            int yearComparison = Integer.compare(year1, year2);
+
+            if (yearComparison == 0) { //* SI LAS PELICULAS SON DEL MISMO AÑO, ORDENAMOS POR PUNTAJE
+                double score1 = o1.get("vote_average").getAsDouble();
+                double score2 = o2.get("vote_average").getAsDouble();
+
+                if (orderingScore.equals("asc")) {
+                    return Double.compare(score1, score2);
+                } else {
+                    return Double.compare(score2, score1);
+                }
+            } else {
+                if (orderingDate.equals("asc")) { //* SI LAS PELICULAS SON DE AÑOS DISTINTOS, ORDENAMOS POR AÑO
+                    return yearComparison;
+                } else {
+                    return -yearComparison;
+                }
+            }
+        });
     }
 
 
