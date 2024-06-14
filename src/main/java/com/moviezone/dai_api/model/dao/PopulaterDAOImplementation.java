@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -33,44 +34,45 @@ public class PopulaterDAOImplementation implements IPopulaterDAO{
 
         JsonArray finalResponse = new JsonArray();
 
-        for (int page = 1; page<=50; page++) {
+        List<String> searches = new ArrayList<>();
+        searches.add("the");
+        searches.add("a");
+        searches.add("el");
 
-            LocalDate fecha = LocalDate.now();
-            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            String fecha_actual = fecha.format(formato);
+        for (String search : searches) {
+            for (int page = 1; page <= 5; page++) {
 
-            String API_URL = "https://api.themoviedb.org/3/discover/movie" +
-                    "?include_adult=false" +
-                    "&include_video=false" +
-                    "&language=es-AR" +
-                    "&page=" + page +
-                    "&release_date.lte=" + fecha_actual +
-                    "&sort_by=primary_release_date.desc&";
-
-
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("accept", "application/json");
-            headers.add("Authorization", Dotenv.load().get("TMDB_TOKEN") );
-            HttpEntity<String> entity = new HttpEntity<String>(headers);
-
-            ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.GET, entity, String.class);
-
-            if (response.getStatusCodeValue() == 200) {
-
-                String datos = response.getBody();
-                JsonParser parser = new JsonParser();
-                JsonObject jsonObject = (JsonObject) parser.parse(datos);
-                JsonArray allMovies = jsonObject.getAsJsonArray("results");
+                String API_URL = "https://api.themoviedb.org/3/search/movie" +
+                        "?query=the" +
+                        "&include_adult=false" +
+                        "&language=es-AR" +
+                        "&page=" + page;
 
 
-                //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
-                finalResponse.addAll(allMovies);
+                RestTemplate restTemplate = new RestTemplate();
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("accept", "application/json");
+                headers.add("Authorization", Dotenv.load().get("TMDB_TOKEN"));
+                HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+                ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.GET, entity, String.class);
+
+                if (response.getStatusCodeValue() == 200) {
+
+                    String datos = response.getBody();
+                    JsonParser parser = new JsonParser();
+                    JsonObject jsonObject = (JsonObject) parser.parse(datos);
+                    JsonArray allMovies = jsonObject.getAsJsonArray("results");
+
+
+                    //* AGREGAMOS LOS VALORES DE LA PRIMERA REQUEST
+                    finalResponse.addAll(allMovies);
+                }
+
             }
-
         }
-        return finalResponse;
-    }
+            return finalResponse;
+        }
 
     @Override
     @Transactional
@@ -78,8 +80,22 @@ public class PopulaterDAOImplementation implements IPopulaterDAO{
 
         Session currentSession = entityManager.unwrap(Session.class);
 
+            currentSession.persist(movies);
 
-        currentSession.persist(movies);
+
+
+
+
+
+    }
+
+    @Override
+    public boolean findMovieById(int id) {
+
+        Session currentSession = entityManager.unwrap(Session.class);
+        MovieDB movie = currentSession.get(MovieDB.class, id);
+
+        return movie != null;
 
 
 

@@ -3,6 +3,7 @@ package com.moviezone.dai_api.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.moviezone.dai_api.model.dao.MovieDAOImplementation;
 import com.moviezone.dai_api.model.dao.PopulaterDAOImplementation;
 import com.moviezone.dai_api.model.entity.MovieDB;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
@@ -19,6 +20,7 @@ public class PopulaterServiceImplementation implements IPopulaterService {
     @Autowired
     private PopulaterDAOImplementation populaterDAO;
 
+
     @Override
     public void populateDB() {
 
@@ -26,25 +28,27 @@ public class PopulaterServiceImplementation implements IPopulaterService {
 
         JsonArray rawMovies = populaterDAO.populateDB();
 
+
         for (JsonElement movie : rawMovies) {
             JsonObject movieObject = movie.getAsJsonObject();
 
             if (movieObject.get("vote_count") == null) continue;
             else if (movieObject.get("vote_count").getAsInt() < 200) continue;
+            else if (populaterDAO.findMovieById(Integer.parseInt(movieObject.get("id").getAsString()))) continue;
 
 
             MovieDB movieDB = new MovieDB();
+
 
             movieDB.setId(movieObject.get("id").getAsInt());
             movieDB.setVote_average(movieObject.get("vote_average").getAsDouble());
             movieDB.setRelease_year(Integer.parseInt(movieObject.get("release_date").getAsString().substring(0, 4)));
             movieDB.setPoster_path(ImageLinks.imageTypeToLink(IMAGE_TYPE.POSTER, movieObject.get("poster_path").getAsString()));
 
-            movies.add(movieDB);
+            populaterDAO.saveMovies(movieDB);
         }
 
 
 
-        populaterDAO.saveMovies(movies.get(0));
     }
 }

@@ -9,4 +9,6 @@ public interface IPopulaterDAO {
     JsonArray populateDB();
 
     void saveMovies(MovieDB movies);
+
+    boolean findMovieById(int id);
 }
