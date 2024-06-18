@@ -452,4 +452,43 @@ public class MovieDAOImplementation implements IMovieDAO {
         }
 return null;
     }
+
+    @Override
+    public String getCertificacion(int movieId) {
+
+        String URL = "https://api.themoviedb.org/3/movie/" +
+                movieId +
+                "/release_dates";
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("accept", "application/json");
+        headers.add("Authorization",  System.getenv("TMDB_TOKEN")  );
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(URL,HttpMethod.GET, entity, String.class);
+
+        if (response.getStatusCodeValue() == 200) {
+
+            String datos = response.getBody();
+            JsonParser parser = new JsonParser();
+            JsonObject jsonObject = (JsonObject) parser.parse(datos);
+            JsonArray certifications = jsonObject.getAsJsonArray("results");
+
+            for (JsonElement certification : certifications){
+                JsonObject certObject = certification.getAsJsonObject();
+                if (certObject.get("iso_3166_1").getAsString().equals("US")){
+                    JsonArray releaseDates = certObject.getAsJsonArray("release_dates");
+                    for (JsonElement date : releaseDates){
+                        JsonObject dateObject = date.getAsJsonObject();
+                        if (dateObject.get("type").getAsString().equals("3")){
+                            return dateObject.get("certification").getAsString();
+                        }
+                    }
+                }
+            }
+        }
+        return "";
+    }
 }
+

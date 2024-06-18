@@ -16,4 +16,5 @@ public interface IMovieDAO {
     public JsonArray getImages(int movieId);
     public JsonArray getCast(int movieId);
     public String getTrailer(int movieId);
+    public String getCertificacion(int movieId);
 }
