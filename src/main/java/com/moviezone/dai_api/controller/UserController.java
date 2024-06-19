@@ -6,10 +6,14 @@ package com.moviezone.dai_api.controller;
 import com.moviezone.dai_api.model.dto.ErrorResponseDTO;
 import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.model.dto.UserEditableDTO;
+import com.moviezone.dai_api.model.dto.favDTO;
 import com.moviezone.dai_api.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -61,6 +65,16 @@ public class UserController {
         UserDTO result = userServiceImplementation.getUser(userId);
         if (result == null ) return new ResponseEntity<>(new ErrorResponseDTO("USER NOT FOUND",1), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{userId}/favs")
+    public ResponseEntity<?> getFavs (@PathVariable String userId){
+        if (userId == null || userId.isEmpty() || userId.isBlank()) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
+
+        List<favDTO> favs = userServiceImplementation.getFavs(userId);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 }

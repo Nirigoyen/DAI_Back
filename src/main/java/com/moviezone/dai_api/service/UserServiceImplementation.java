@@ -3,9 +3,13 @@ package com.moviezone.dai_api.service;
 import com.moviezone.dai_api.model.dao.UserDAOImplementation;
 import com.moviezone.dai_api.model.dto.UserDTO;
 import com.moviezone.dai_api.model.dto.UserEditableDTO;
+import com.moviezone.dai_api.model.dto.favDTO;
+import com.moviezone.dai_api.model.entity.FavMovie;
 import com.moviezone.dai_api.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR ENTITY POR DTOs.
@@ -60,6 +64,14 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
 
             return userDTO;
         }
+        return null;
+    }
+
+    @Override
+    public List<favDTO> getFavs(String userId){
+
+        List<FavMovie> favMovies = userDAO.getUserFavs();
+
         return null;
     }
 }

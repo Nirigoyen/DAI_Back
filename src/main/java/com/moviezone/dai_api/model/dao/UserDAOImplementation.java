@@ -1,5 +1,6 @@
 package com.moviezone.dai_api.model.dao;
 
+import com.moviezone.dai_api.model.entity.FavMovie;
 import com.moviezone.dai_api.model.entity.RefreshToken;
 import com.moviezone.dai_api.model.entity.User;
 import jakarta.persistence.EntityManager;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
+import java.util.List;
 
 
 @Repository
@@ -108,6 +110,19 @@ public class UserDAOImplementation implements IUserDAO{
         HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(formData, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(URL, HttpMethod.POST, entity, String.class);
+
+
+    }
+
+    @Override
+    public List<FavMovie> getUserFavs(String userId){
+
+        Session currentSession = entityManager.unwrap(Session.class);
+        Query<FavMovie> theQuery = currentSession.createQuery("SELECT u.FavMovie FROM User u WHERE u.userId = :userId", FavMovie.class);
+        theQuery.setParameter("userId", userId);
+        List<FavMovie> favs = theQuery.getResultList();
+        return favs;
+
 
 
     }

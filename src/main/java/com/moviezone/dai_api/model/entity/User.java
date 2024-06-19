@@ -20,6 +20,9 @@ public class User {
     private String email;
     private String profilePictureLink;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FavMovie> favMovies = new ArrayList<>();
+
 
     //? Relaciones
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
