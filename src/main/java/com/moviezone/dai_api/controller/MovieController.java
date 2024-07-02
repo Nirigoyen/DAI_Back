@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -65,7 +66,7 @@ public class MovieController {
 
             //* NOS ASEGURAMOS DE QUE "PAGE" ESTE ENTRE LOS LIMITES QUE SOPORTA TMDB
             if (Integer.parseInt(page) < 1) page = "1"; // if page is less than 1 return page 1
-            else if (Integer.parseInt(page) > 500) page = "500"; // if page is greater than 500 return page 500
+            else if (Integer.parseInt(page) > 500) return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK); // if page is greater than 500 return page 500
 
             //* SI NO HAY GENEROS, ENTONCES LOS INICIALIZAMOS COMO UN STRING VACIO
             if (genres == null) genres = ""; // Genre formatting : <GenreID>%2C<GenreID>%2C>GenreID> - Example: 28%2C18 - GenreName to GenreId should be handled for frontend

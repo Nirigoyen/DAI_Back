@@ -3,18 +3,24 @@ package com.moviezone.dai_api.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Favourites")
 public class FavMovie {
     @Id
-    int id;
-    String title;
-    String posterPath;
-    String overview;
-    double averageScore;
-    double userScore;
+    private int id;
+    private String title;
+    private String posterPath;
+    private String overview;
+    private double averageScore;
+    private double userScore;
+
+    @ManyToOne
+    private User user;
+
+
 
     public FavMovie(int id, String title, String posterPath, String overview, double averageScore, double userScore) {
         this.id = id;

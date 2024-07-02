@@ -70,7 +70,7 @@ public class UserServiceImplementation implements IUserService{ //TODO: CAMBIAR 
     @Override
     public List<favDTO> getFavs(String userId){
 
-        List<FavMovie> favMovies = userDAO.getUserFavs();
+        List<FavMovie> favMovies = userDAO.getUserFavs(userId);
 
         return null;
     }
