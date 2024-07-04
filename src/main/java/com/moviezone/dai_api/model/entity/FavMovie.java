@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 public class FavMovie {
     @Id
     private int id;
+    private String movieId;
     private String title;
     private String posterPath;
     private String overview;
@@ -32,6 +33,22 @@ public class FavMovie {
     }
 
     public FavMovie() {
+    }
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getId() {

@@ -20,14 +20,12 @@ public class User {
     private String email;
     private String profilePictureLink;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<FavMovie> favMovies = new ArrayList<>();
+
 
 
     //? Relaciones
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    @JsonManagedReference(value = "user-favoriteMovies")
-//    private List<String> favoriteMovies = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FavMovie> favMovies = new ArrayList<>();
 
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -85,8 +83,15 @@ public class User {
         this.profilePictureLink = profilePictureLink;
     }
 
+    public List<FavMovie> getFavMovies() {
+        return favMovies;
+    }
 
-//        public List<String> getFavoriteMovies() {
+    public void setFavMovies(List<FavMovie> favMovies) {
+        this.favMovies = favMovies;
+    }
+
+    //        public List<String> getFavoriteMovies() {
 //        return favoriteMovies;
 //    }
 //    public void setFavoriteMovies(List<String> favoriteMovies) {
