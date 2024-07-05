@@ -114,17 +114,14 @@ public class UserDAOImplementation implements IUserDAO{
 
     }
 
-    @Override
-    public List<FavMovie> getUserFavs(String userId){
-
-        Session currentSession = entityManager.unwrap(Session.class);
-        Query<FavMovie> theQuery = currentSession.createQuery("SELECT u.FavMovie FROM User u WHERE u.userId = :userId", FavMovie.class);
-        theQuery.setParameter("userId", userId);
-        List<FavMovie> favs = theQuery.getResultList();
-        return favs;
-
-
-
-    }
+//    @Override
+//    public List<FavMovie> getUserFavs(String userId){
+//
+//        Session currentSession = entityManager.unwrap(Session.class);
+//        Query<FavMovie> theQuery = currentSession.createQuery("SELECT u.FavMovie FROM User u WHERE u.userId = :userId", FavMovie.class);
+//        theQuery.setParameter("userId", userId);
+//        List<FavMovie> favs = theQuery.getResultList();
+//        return favs;
+//    }
 
 }

@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface IFavouriteDAO {
     public void addFavourite(FavMovie fmovie);
-    public void removeFavourite(int userId, int movieId);
-    public List<FavMovie> getFavouritesByUser(int userId);
+    public void removeFavourite(String userId, int movieId);
+    public List<FavMovie> getFavouritesByUser(String userId);
 }

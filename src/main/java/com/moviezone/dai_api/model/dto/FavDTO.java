@@ -1,14 +1,16 @@
 package com.moviezone.dai_api.model.dto;
 
-public class favDTO {
+public class FavDTO {
     int id;
     String title;
     String posterPath;
     String overview;
+    String movieId;
     double averageScore;
     double userScore;
 
-    public favDTO(int id, String title, String posterPath, String overview, double averageScore, double userScore) {
+
+    public FavDTO(int id, String title, String posterPath, String overview, double averageScore, double userScore) {
         this.id = id;
         this.title = title;
         this.posterPath = posterPath;
@@ -17,7 +19,15 @@ public class favDTO {
         this.userScore = userScore;
     }
 
-    public favDTO() {
+    public FavDTO() {
+    }
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
     }
 
     public int getId() {

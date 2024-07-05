@@ -11,5 +11,5 @@ public interface IUserDAO {
     public void createUser(User user);
     public void deleteUser(String userId);
     public void updateUser(User user, String base64Img);
-    public List<FavMovie> getUserFavs(String userId);
+//    public List<FavMovie> getUserFavs(String userId);
 }
