@@ -14,19 +14,17 @@ public class Rating {
     private int rating;
     
     @ManyToOne
-    @JsonManagedReference(value = "user-rating")
+    @JsonManagedReference(value = "user")
     private User user;
 
 
-    @ManyToOne
-    @JsonManagedReference(value = "movie-rating")
-    private Movie movie;
+    private int movie;
 
 
     public Rating() {
         super();
     }
-    public Rating(int rating, User user, Movie movie) {
+    public Rating(int rating, User user, int movie) {
         this.rating = rating;
         this.user = user;
         this.movie = movie;
@@ -43,10 +41,10 @@ public class Rating {
     public void setUser(User user) {
         this.user = user;
     }
-    public Movie getMovie() {
+    public int getMovie() {
         return movie;
     }
-    public void setMovie(Movie movie) {
+    public void setMovie(int movie) {
         this.movie = movie;
     }
 }

@@ -1,0 +1,44 @@
+package com.moviezone.dai_api.controller;
+
+
+import com.moviezone.dai_api.model.dto.RatingDTO;
+import com.moviezone.dai_api.service.IRatingService;
+import org.apache.http.protocol.HTTP;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/ratings")
+public class RatingController {
+
+    @Autowired
+    private IRatingService ratingService;
+
+    @GetMapping(value = "")
+    public ResponseEntity<?> getRating(@RequestBody RatingDTO ratingDTO) {
+
+        if (ratingDTO == null) return new ResponseEntity<>("Missing parameters", HttpStatus.BAD_REQUEST);
+
+        int result = ratingService.getRatingByUserAndMovie(ratingDTO.getMovieId(), ratingDTO.getUserId());
+
+        if (result != -1) return new ResponseEntity<>(result, HttpStatus.OK);
+        else return new ResponseEntity<>(-1, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+    @PostMapping
+    public ResponseEntity<?> rateMovie(@RequestBody RatingDTO ratingDTO) {
+
+        if (ratingDTO == null) return new ResponseEntity<>("Missing parameters", HttpStatus.BAD_REQUEST);
+
+        int result = ratingService.rateMovie(ratingDTO);
+
+        if (result == -2) return new ResponseEntity<>("User does not exist", HttpStatus.NOT_FOUND);
+        if (result == -1) return new ResponseEntity<>("Error rating movie", HttpStatus.INTERNAL_SERVER_ERROR);
+        else return new ResponseEntity<>(result, HttpStatus.OK);
+
+    }
+
+}
