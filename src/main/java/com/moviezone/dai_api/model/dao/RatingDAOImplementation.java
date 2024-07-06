@@ -11,7 +11,6 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Repository
 public class RatingDAOImplementation implements IRatingDAO {
@@ -23,13 +22,13 @@ public class RatingDAOImplementation implements IRatingDAO {
 
     @Override
     @Transactional
-    public int rateMovie (int movieId, User user, int score) {
+    public int rateMovie (String movieId, User user, int score) {
         Session currentSession = entityManager.unwrap(Session.class);
 
         Rating rating = new Rating();
         rating.setRating(score);
         rating.setUser(user);
-        rating.setMovie(movieId);
+        rating.setMovie(Integer.parseInt(movieId));
 
         currentSession.persist(rating);
 
@@ -37,7 +36,7 @@ public class RatingDAOImplementation implements IRatingDAO {
     }
 
     @Override
-    public Rating getRatingByUserAndMovie (int movieId, String userId) {
+    public Rating getRatingByUserAndMovie (String movieId, String userId) {
 
         Session currentSession = entityManager.unwrap(Session.class);
 
@@ -52,16 +51,13 @@ public class RatingDAOImplementation implements IRatingDAO {
 
     @Override
     @Transactional
-    public int modifyRating (int movieId, User user, int rating) {
+    public int modifyRating (Rating rating) {
 
         Session currentSession = entityManager.unwrap(Session.class);
 
-        Query<Rating> theQuery = currentSession.createQuery("UPDATE Rating SET rating=:rating WHERE movie=:movieId AND user=:userId", Rating.class);
-        theQuery.setParameter("rating", rating);
-        theQuery.setParameter("movieId", movieId);
-        theQuery.setParameter("userId", user);
-        theQuery.executeUpdate();
+        currentSession.update(rating);
 
-        return rating;
+
+        return rating.getRating();
     }
 }

@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface IRatingService {
     public int rateMovie(RatingDTO rating);
-    public int getRatingByUserAndMovie(int movieId, String userId);
+    public int getRatingByUserAndMovie(String movieId, String userId);
+    public int updateRating(RatingDTO rating);
 }

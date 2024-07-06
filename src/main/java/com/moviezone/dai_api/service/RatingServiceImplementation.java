@@ -24,26 +24,40 @@ public class RatingServiceImplementation implements IRatingService{
     @Override
     public int rateMovie(RatingDTO rating) {
 
-        User user = userDAO.findUserById(String.valueOf(rating.getUserId()));
+        User user = userDAO.findUserById(rating.getUserId());
 
         if (user == null) {
             return -2;
         }
 
-        Rating ratingDB = ratingDAO.getRatingByUserAndMovie(rating.getMovieId(), rating.getUserId());
-
-        ratingDAO.rateMovie(rating.getMovieId(), user, rating.getRating());
-
-        if (ratingDAO.getRatingByUserAndMovie(rating.getMovieId(), rating.getUserId()) == null) {
-            return ratingDAO.rateMovie(rating.getMovieId(), user, rating.getRating());
-        } else {
-            return ratingDAO.modifyRating(rating.getMovieId(), user, rating.getRating());
+        if (ratingDAO.getRatingByUserAndMovie(rating.getMovieId(), rating.getUserId()) != null) {
+            return -3;
         }
+
+        return ratingDAO.rateMovie(rating.getMovieId(), user, Integer.parseInt(rating.getRating()));
     }
 
     @Override
-    public int getRatingByUserAndMovie(int movieId, String userId) {
+    public int updateRating(RatingDTO rating) {
 
+        User user = userDAO.findUserById(rating.getUserId());
+
+        if (user == null) {
+            return -2;
+        }
+
+        if (ratingDAO.getRatingByUserAndMovie(rating.getMovieId(), rating.getUserId()) == null) {
+            return -1;
+        }
+        Rating ratingDB = ratingDAO.getRatingByUserAndMovie(rating.getMovieId(), rating.getUserId());
+
+        ratingDB.setRating(Integer.parseInt(rating.getRating()));
+
+        return ratingDAO.modifyRating(ratingDB);
+    }
+
+    @Override
+    public int getRatingByUserAndMovie(String movieId, String userId) {
         return ratingDAO.getRatingByUserAndMovie(movieId, userId).getRating();
     }
 
