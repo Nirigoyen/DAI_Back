@@ -1,11 +1,13 @@
 package com.moviezone.dai_api.model.dao;
 
+import com.moviezone.dai_api.model.dto.RatingDTO;
 import com.moviezone.dai_api.model.entity.Rating;
+import com.moviezone.dai_api.model.entity.User;
 
 import java.util.List;
 
 public interface IRatingDAO {
-    public void rateMovie(int id, int rating, int userId);
-    public int getRatingByUserAndMovie(int movieId, int userId);
-    public void modifyRating(int id, int rating, int userId);
+    public int rateMovie(String movieId, User user, int rating);
+    public Rating getRatingByUserAndMovie(String movieId, String userId);
+    public int modifyRating(Rating rating);
 }

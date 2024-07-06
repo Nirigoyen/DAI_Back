@@ -3,13 +3,11 @@ package com.moviezone.dai_api.model.dto;
 
 //! NO IMPLEMENTADO
 public class RatingDTO {
-    private int id;
-    private int rating;
-    private int movieId;
-    private int userId;
+    private String rating;
+    private String movieId;
+    private String userId;
 
-    public RatingDTO(int id, int rating, int movieId, int userId) {
-        this.id = id;
+    public RatingDTO(String rating, String movieId, String userId) {
         this.rating = rating;
         this.movieId = movieId;
         this.userId = userId;
@@ -17,20 +15,15 @@ public class RatingDTO {
 
     public RatingDTO() {
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public int getMovieId() {
+    public String getMovieId() {
         return movieId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 }
