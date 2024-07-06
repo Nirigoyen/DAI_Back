@@ -34,7 +34,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests((authz) ->
-                        authz.requestMatchers("/v1/auths", "/v1/auths/**", "/v1/health/**", "v1/ratings").permitAll()
+                        authz.requestMatchers("/v1/auths", "/v1/auths/**", "/v1/health/**").permitAll()
                                 .anyRequest().authenticated())
                 .addFilterBefore(corsFilter, ChannelProcessingFilter.class)
                 .addFilterBefore(jwtAuth(), UsernamePasswordAuthenticationFilter.class)
