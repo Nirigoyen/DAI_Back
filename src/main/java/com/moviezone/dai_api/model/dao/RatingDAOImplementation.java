@@ -21,6 +21,7 @@ public class RatingDAOImplementation implements IRatingDAO {
 
 
     @Override
+
     @Transactional
     public int rateMovie (String movieId, User user, int score) {
         Session currentSession = entityManager.unwrap(Session.class);
@@ -45,7 +46,6 @@ public class RatingDAOImplementation implements IRatingDAO {
         theQuery.setParameter("userId", userId);
         Rating rating = theQuery.uniqueResult();
 
-
         return rating;
     }
 
@@ -56,7 +56,6 @@ public class RatingDAOImplementation implements IRatingDAO {
         Session currentSession = entityManager.unwrap(Session.class);
 
         currentSession.update(rating);
-
 
         return rating.getRating();
     }
