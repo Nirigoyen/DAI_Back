@@ -27,13 +27,14 @@ public class MovieController {
     private IMovieService movieService;
 
     @GetMapping("/{MovieId}")
-    public ResponseEntity<?> movieDetails(@RequestParam (name = "movieId", required = true) String movieId){
+    public ResponseEntity<?> movieDetails(@RequestParam (name = "movieId", required = true) String movieId, @RequestParam(name = "userId", required = true) String userId){
 
         if (movieId == null) return new ResponseEntity<>("Movie ID not specified.", HttpStatus.BAD_REQUEST);
+        if (userId == null) return new ResponseEntity<>("User ID not specified.", HttpStatus.BAD_REQUEST);
 
-        MovieDTO movieDetails = movieService.getMovieDetails(Integer.parseInt(movieId));
+        MovieDTO movieDetails = movieService.getMovieDetails(Integer.parseInt(movieId), userId);
 
-
+        if (movieDetails == null) return new ResponseEntity<>("Error while getting movie details", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(movieDetails, HttpStatus.OK);
     }
 

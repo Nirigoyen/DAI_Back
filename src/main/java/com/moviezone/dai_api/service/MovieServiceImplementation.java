@@ -21,7 +21,10 @@ public class MovieServiceImplementation implements IMovieService {
     @Autowired
     private IMovieDAO movieDAO;
 
-    public MovieDTO getMovieDetails(int movieId) { //! NO IMPLEMENTADO AUN
+    @Autowired
+    private RatingServiceImplementation ratingService;
+
+    public MovieDTO getMovieDetails(int movieId, String userId) { //! NO IMPLEMENTADO AUN
 
         //? OBTENEMOS EL JSON CON LOS DATOS DE LA PELICULA
         JsonObject movie = movieDAO.getMovieDetails(movieId);
@@ -96,7 +99,10 @@ public class MovieServiceImplementation implements IMovieService {
         //* CERTIFICACION
         movieDetails.setMovieCertification(CertUtil.convertCert(movieDAO.getCertificacion(movieId)));
 
-        //! movieDetails.setMovieUserRating(); NO IMPLEMENTADO
+        //* RATING
+        int score = ratingService.getRatingByUserAndMovie(String.valueOf(movieId), userId);
+        if (score == -1) movieDetails.setMovieUserRating(0);
+        else movieDetails.setMovieUserRating(score);
 
         return movieDetails;
     }
