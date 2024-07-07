@@ -1,7 +1,7 @@
 package com.moviezone.dai_api.controller;
 
 import com.moviezone.dai_api.model.dto.FavDTO;
-import com.moviezone.dai_api.model.entity.FavMovie;
+import com.moviezone.dai_api.model.dto.MovieIdDTO;
 import com.moviezone.dai_api.service.IFavouriteService;
 import com.moviezone.dai_api.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +21,24 @@ public class FavouritesController {
     @Autowired
     private IUserService userService;
 
-    @PostMapping(value = "")
-    public ResponseEntity<?> save(@RequestBody FavDTO favMovie)
+    @PostMapping(value = "/{userId}")
+    public ResponseEntity<?> save(@PathVariable String userId, @RequestBody FavDTO favMovie)
     {
-        FavDTO response = favouriteService.addFavourite(favMovie);
+        if(userId == null || userId.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(userService.getUser(userId) == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        FavDTO response = favouriteService.addFavourite(favMovie, userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "")
-    public ResponseEntity<?> deleteFav()
+    @DeleteMapping(value = "/{userId}")
+    public ResponseEntity<?> deleteFav(@PathVariable String userId, @RequestBody MovieIdDTO movie)
     {
-        return null;
+        if(userId == null || userId.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(userService.getUser(userId) == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        favouriteService.removeFavourite(userId, String.valueOf(movie.getMovieId()));
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/{userId}")

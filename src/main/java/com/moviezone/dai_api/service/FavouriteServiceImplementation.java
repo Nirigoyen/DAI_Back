@@ -1,9 +1,11 @@
 package com.moviezone.dai_api.service;
 
 import com.moviezone.dai_api.model.dao.IFavouriteDAO;
+import com.moviezone.dai_api.model.dao.IUserDAO;
 import com.moviezone.dai_api.model.dto.FavDTO;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 import com.moviezone.dai_api.model.entity.FavMovie;
+import com.moviezone.dai_api.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +18,26 @@ public class FavouriteServiceImplementation implements IFavouriteService{
     @Autowired
     private IFavouriteDAO favouriteDAO;
 
-    @Override
-    public FavDTO addFavourite(FavDTO fav) {
+    @Autowired
+    private IUserDAO userDAO;
 
-        favouriteDAO.addFavourite(toModel(fav));
+    @Override
+    public FavDTO addFavourite(FavDTO fav, String userId) {
+
+        FavMovie favMovie = toModel(fav);
+        User user = userDAO.findUserById(userId);
+
+        user.getFavMovies().add(favMovie);
+        favMovie.setUser(user);
+
+        favouriteDAO.addFavourite(favMovie);
+
+        fav.setId(favMovie.getId());
         return fav;
     }
 
     @Override
-    public void removeFavourite(String userId, int movieId) {
+    public void removeFavourite(String userId, String movieId) {
         favouriteDAO.removeFavourite(userId, movieId);
     }
 

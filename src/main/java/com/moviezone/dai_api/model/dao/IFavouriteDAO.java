@@ -1,12 +1,11 @@
 package com.moviezone.dai_api.model.dao;
 
 import com.moviezone.dai_api.model.entity.FavMovie;
-import com.moviezone.dai_api.model.entity.Favourite;
 
 import java.util.List;
 
 public interface IFavouriteDAO {
     public void addFavourite(FavMovie fmovie);
-    public void removeFavourite(String userId, int movieId);
+    public void removeFavourite(String userId, String movieId);
     public List<FavMovie> getFavouritesByUser(String userId);
 }

@@ -7,7 +7,7 @@ import com.moviezone.dai_api.model.entity.FavMovie;
 import java.util.List;
 
 public interface IFavouriteService {
-    public FavDTO addFavourite(FavDTO fmovie);
-    public void removeFavourite(String userId, int movieId);
+    public FavDTO addFavourite(FavDTO fmovie, String userId);
+    public void removeFavourite(String userId, String movieId);
     public List<FavDTO> getFavouritesFromUser(String userId);
 }
