@@ -1,23 +1,15 @@
 package com.moviezone.dai_api.model.dao;
 
-import com.google.api.client.json.Json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.moviezone.dai_api.model.entity.Movie;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 
 
 @Repository
