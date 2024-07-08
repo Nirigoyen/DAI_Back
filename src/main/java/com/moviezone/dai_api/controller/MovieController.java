@@ -70,10 +70,11 @@ public class MovieController {
             else if (Integer.parseInt(page) > 500) return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK); // if page is greater than 500 return page 500
 
             //* SI NO HAY GENEROS, ENTONCES LOS INICIALIZAMOS COMO UN STRING VACIO
-            if (genres == null) genres = ""; // Genre formatting : <GenreID>%2C<GenreID>%2C>GenreID> - Example: 28%2C18 - GenreName to GenreId should be handled for frontend
+            if (genres == null) genres = "";
+            String genresFormatted = genres.replace(",", "%2C");// Genre formatting : <GenreID>%2C<GenreID>%2C>GenreID> - Example: 28%2C18 - GenreName to GenreId should be handled for frontend
 
             //* OBTENEMOS LOS RESULTADOS DE LA LANDING
-            finalResult = movieService.discover(page, genres);
+            finalResult = movieService.discover(page, genresFormatted);
         } else {
 
             //? SI NO, ENTONCES ESTAMOS EN LA BUSQUEDA
