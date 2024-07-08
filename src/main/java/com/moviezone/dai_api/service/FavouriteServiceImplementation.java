@@ -1,22 +1,79 @@
 package com.moviezone.dai_api.service;
 
+import com.moviezone.dai_api.model.dao.IFavouriteDAO;
+import com.moviezone.dai_api.model.dao.IUserDAO;
+import com.moviezone.dai_api.model.dto.FavDTO;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
+import com.moviezone.dai_api.model.entity.FavMovie;
+import com.moviezone.dai_api.model.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class FavouriteServiceImplementation implements IFavouriteService{
-    @Override
-    public void addFavourite(int userId, int movieId) {
 
+    @Autowired
+    private IFavouriteDAO favouriteDAO;
+
+    @Autowired
+    private IUserDAO userDAO;
+
+    @Override
+    public FavDTO addFavourite(FavDTO fav, String userId) {
+
+        FavMovie favMovie = toModel(fav);
+        User user = userDAO.findUserById(userId);
+
+        user.getFavMovies().add(favMovie);
+        favMovie.setUser(user);
+
+        favouriteDAO.addFavourite(favMovie);
+
+        fav.setId(favMovie.getId());
+        return fav;
     }
 
     @Override
-    public void removeFavourite(int userId, int movieId) {
-
+    public void removeFavourite(String userId, String movieId) {
+        favouriteDAO.removeFavourite(userId, movieId);
     }
 
     @Override
-    public List<MovieComponentDTO> getFavouritesFromUser(int userId) {
-        return List.of();
+    public List<FavDTO> getFavouritesFromUser(String userId) {
+        List<FavMovie> favMovies = favouriteDAO.getFavouritesByUser(userId);
+        List<FavDTO> favDTOs = new ArrayList<>();
+        for(FavMovie favMovie : favMovies){
+            favDTOs.add(toDTO(favMovie));
+        }
+        return favDTOs;
+    }
+
+    private FavMovie toModel(FavDTO fav) {
+        FavMovie favMovie = new FavMovie();
+        favMovie.setAverageScore(fav.getAverageScore());
+        favMovie.setMovieId(fav.getMovieId());
+        favMovie.setTitle(fav.getTitle());
+        favMovie.setOverview(fav.getOverview());
+        favMovie.setPosterPath(fav.getPosterPath());
+        favMovie.setUserScore(fav.getUserScore());
+
+        return favMovie;
+    }
+
+    private FavDTO toDTO(FavMovie fav) {
+        FavDTO favDTO = new FavDTO();
+        favDTO.setAverageScore(fav.getAverageScore());
+        favDTO.setMovieId(fav.getMovieId());
+        favDTO.setTitle(fav.getTitle());
+        favDTO.setOverview(fav.getOverview());
+        favDTO.setPosterPath(fav.getPosterPath());
+        favDTO.setUserScore(fav.getUserScore());
+        favDTO.setId(fav.getId());
+
+        return favDTO;
     }
 }
+

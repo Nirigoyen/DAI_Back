@@ -1,16 +1,15 @@
 package com.moviezone.dai_api.model.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Favourites")
 public class FavMovie {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String movieId;
     private String title;
     private String posterPath;
     private String overview;
@@ -32,6 +31,22 @@ public class FavMovie {
     }
 
     public FavMovie() {
+    }
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getId() {
