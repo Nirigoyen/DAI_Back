@@ -58,7 +58,14 @@ public class RatingServiceImplementation implements IRatingService{
 
     @Override
     public int getRatingByUserAndMovie(String movieId, String userId) {
-        return ratingDAO.getRatingByUserAndMovie(movieId, userId).getRating();
+
+        Rating rating = ratingDAO.getRatingByUserAndMovie(movieId, userId);
+        if (rating == null) {
+            return 0;
+        }
+        else {
+            return rating.getRating();
+        }
     }
 
 }

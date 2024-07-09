@@ -15,7 +15,7 @@ public class ImageLinks {
                 return baseLink + "w185" + imageURL;
             }
             case BACKDROP -> {
-                return "w780" + imageURL;
+                return baseLink + "w780" + imageURL;
             }
         }
         return null;

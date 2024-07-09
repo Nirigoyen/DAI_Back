@@ -24,7 +24,8 @@ public class MovieDAOImplementation implements IMovieDAO {
 
         String API_URL = "https://api.themoviedb.org/3/movie/" +
                 movieId +
-                "?append_to_response=images%2Ccredits%2Cvideos&language=es-AR&include_image_language=es,null";
+                "?append_to_response=images%2Ccredits%2Cvideos&language=es-AR";
+
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -364,7 +365,9 @@ public class MovieDAOImplementation implements IMovieDAO {
 
         String URL = "https://api.themoviedb.org/3/movie/" +
                 movieId+
-                "/images?include_image_language=en%2C%20es%2C%20null";
+                "/images?include_image_language=null";
+
+        System.err.println("URL: " + URL);
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -405,8 +408,8 @@ public class MovieDAOImplementation implements IMovieDAO {
                 String datos = response.getBody();
                 JsonParser parser = new JsonParser();
                 JsonObject jsonObject = (JsonObject) parser.parse(datos);
-                JsonArray images = jsonObject.getAsJsonArray("backdrops");
-                return images;
+                JsonArray cast = jsonObject.get("cast").getAsJsonArray();
+                return cast;
 
             }
             else return null;

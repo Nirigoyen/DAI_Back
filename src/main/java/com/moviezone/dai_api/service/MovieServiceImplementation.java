@@ -27,16 +27,19 @@ public class MovieServiceImplementation implements IMovieService {
     public MovieDTO getMovieDetails(int movieId, String userId) { //! NO IMPLEMENTADO AUN
 
         //? OBTENEMOS EL JSON CON LOS DATOS DE LA PELICULA
+
         JsonObject movie = movieDAO.getMovieDetails(movieId);
+
 
         MovieDTO movieDetails = new MovieDTO();
 
         //? SETEAMOS LOS DATOS DE LA PELICULA
         //* DATOS BASICOS
+
         movieDetails.setMovieId(Integer.parseInt(movie.get("id").toString())); //* TAL VEZ CAMBIARLO A STRING?
-        movieDetails.setMovieTitle(movie.get("original_title").toString());
-        movieDetails.setMovieReleaseDate(movie.get("release_date").toString());
-        movieDetails.setMovieOverview(movie.get("overview").toString());
+        movieDetails.setMovieTitle(movie.get("original_title").getAsString());
+        movieDetails.setMovieReleaseDate(movie.get("release_date").getAsString());
+        movieDetails.setMovieOverview(movie.get("overview").getAsString());
         movieDetails.setMovieRuntime(movie.get("runtime").getAsInt());
         movieDetails.setMovieVoteAverage(Float.parseFloat(movie.get("vote_average").toString()));
 
@@ -55,7 +58,7 @@ public class MovieServiceImplementation implements IMovieService {
         List<CastDTO> cast = new ArrayList<>();
 
         //* PARSEO DE ACTORES A DTOs
-        JsonArray castArray = movie.get("credits").getAsJsonObject().get("cast").getAsJsonArray();
+        JsonArray castArray = movieDAO.getCast(movieId);
         for (JsonElement actor : castArray) {
             JsonObject actorObject = actor.getAsJsonObject();
             if (actorObject.get("known_for_department").getAsString().equals("Acting") &&
@@ -76,7 +79,7 @@ public class MovieServiceImplementation implements IMovieService {
         List<MovieImageDTO> images = new ArrayList<>();
 
         //* PARSEO DE IMAGENES
-        JsonArray imagesArray = movie.get("images").getAsJsonObject().get("backdrops").getAsJsonArray();
+        JsonArray imagesArray = movieDAO.getImages(movieId);
 
         for (JsonElement imageJson : imagesArray){
             JsonObject imageObject = imageJson.getAsJsonObject();
@@ -94,7 +97,8 @@ public class MovieServiceImplementation implements IMovieService {
         movieDetails.setMovieImages(images);
 
         //* TRAILER YT
-        movieDetails.setMovieTrailerYTKey(TrailerLinks.generateYTLink(movie));
+        String trailer = movieDAO.getTrailer(movieId);
+        movieDetails.setMovieTrailerYTKey(trailer);
 
         //* CERTIFICACION
         movieDetails.setMovieCertification(CertUtil.convertCert(movieDAO.getCertificacion(movieId)));

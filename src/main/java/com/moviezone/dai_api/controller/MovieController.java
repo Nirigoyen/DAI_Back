@@ -9,12 +9,10 @@ import com.moviezone.dai_api.service.IMovieService;
 import com.moviezone.dai_api.model.dto.ErrorResponseDTO;
 
 
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +24,8 @@ public class MovieController {
     @Autowired
     private IMovieService movieService;
 
-    @GetMapping("/{MovieId}")
-    public ResponseEntity<?> movieDetails(@RequestParam (name = "movieId", required = true) String movieId, @RequestParam(name = "userId", required = true) String userId){
+    @GetMapping("/{movieId}")
+    public ResponseEntity<?> movieDetails(@PathVariable String movieId, @RequestParam(name = "userId", required = true) String userId){
 
         if (movieId == null) return new ResponseEntity<>("Movie ID not specified.", HttpStatus.BAD_REQUEST);
         if (userId == null) return new ResponseEntity<>("User ID not specified.", HttpStatus.BAD_REQUEST);
