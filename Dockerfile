@@ -35,6 +35,7 @@ ENV OBS_ENDPOINT=$OBS_ENDPOINT
 
 # Expose port
 EXPOSE 8080
+EXPOSE 8443
 
 
 # Run the application
