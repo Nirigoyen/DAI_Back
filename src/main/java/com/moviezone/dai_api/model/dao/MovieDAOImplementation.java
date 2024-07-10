@@ -389,7 +389,7 @@ public class MovieDAOImplementation implements IMovieDAO {
     }
 
     @Override
-    public JsonArray getCast(int movieId) {
+    public JsonObject getCredits(int movieId) {
 
         String URL = "https://api.themoviedb.org/3/movie/" +
                 movieId +
@@ -408,8 +408,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                 String datos = response.getBody();
                 JsonParser parser = new JsonParser();
                 JsonObject jsonObject = (JsonObject) parser.parse(datos);
-                JsonArray cast = jsonObject.get("cast").getAsJsonArray();
-                return cast;
+                return jsonObject;
 
             }
             else return null;

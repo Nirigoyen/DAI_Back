@@ -54,13 +54,18 @@ public class MovieServiceImplementation implements IMovieService {
         }
         movieDetails.setMovieGenres(genres);
 
+        //* SE OBTIENE JSON CREDITOS
+        JsonObject credits = movieDAO.getCredits(movieId);
+
         //* CAST
         List<CastDTO> cast = new ArrayList<>();
-
         //* PARSEO DE ACTORES A DTOs
-        JsonArray castArray = movieDAO.getCast(movieId);
+        JsonArray castArray = credits.get("cast").getAsJsonArray();
+
         for (JsonElement actor : castArray) {
             JsonObject actorObject = actor.getAsJsonObject();
+
+            //* CAST
             if (actorObject.get("known_for_department").getAsString().equals("Acting") &&
                     actorObject.get("popularity").getAsDouble() >= 10) { //* FILTRAMOS SOLO ACTORES CON +10 DE POPULARIDAD
 
@@ -74,6 +79,13 @@ public class MovieServiceImplementation implements IMovieService {
             }
         }
         movieDetails.setMovieCast(cast);
+
+        //* DIRECTOR
+        JsonArray crew = credits.get("crew").getAsJsonArray();
+        for (JsonElement crewElement : crew) {
+            JsonObject crewJsonObject = crewElement.getAsJsonObject();
+            if(crewJsonObject.get("job").getAsString().equals("Director")) movieDetails.setMovieDirector(crewJsonObject.get("name").getAsString());
+        }
 
         //* IMAGENES
         List<MovieImageDTO> images = new ArrayList<>();

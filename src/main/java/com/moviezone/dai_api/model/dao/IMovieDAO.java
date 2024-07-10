@@ -9,7 +9,7 @@ public interface IMovieDAO {
     public JsonArray search(String search);
     public JsonArray getGenres(int movieId);
     public JsonArray getImages(int movieId);
-    public JsonArray getCast(int movieId);
+    public JsonObject getCredits(int movieId);
     public String getTrailer(int movieId);
     public String getCertificacion(int movieId);
 }

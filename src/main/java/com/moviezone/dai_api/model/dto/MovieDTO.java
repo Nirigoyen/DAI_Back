@@ -7,6 +7,7 @@ import java.util.List;
 public class MovieDTO {
     private int movieId;
     private String movieTitle;
+    private String movieDirector;
     private String movieReleaseDate;
     private String movieCertification;
     private List<GenreDTO> movieGenres;
@@ -38,6 +39,14 @@ public class MovieDTO {
         this.movieTrailerYTKey = movieTrailerYTKey;
         this.movieCast = movieCast;
         this.movieImages = movieImages;
+    }
+
+    public String getMovieDirector() {
+        return movieDirector;
+    }
+
+    public void setMovieDirector(String movieDirector) {
+        this.movieDirector = movieDirector;
     }
 
     public int getMovieRuntime() {
