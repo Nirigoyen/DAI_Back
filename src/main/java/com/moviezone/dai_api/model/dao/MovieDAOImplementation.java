@@ -99,7 +99,7 @@ public class MovieDAOImplementation implements IMovieDAO {
                 "&include_video=false" +
                 "&language=es-AR" +
                 "&page=" + page +
-                "&release_date.lte=" + fecha_actual +
+                "&primary_release_date.lte=" + fecha_actual +
                 "&sort_by=primary_release_date.desc&with_genres=" + genres;
 
 
