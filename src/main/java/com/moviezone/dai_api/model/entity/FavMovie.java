@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "Favourites")
+@Table(name = "favourites")
 public class FavMovie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
