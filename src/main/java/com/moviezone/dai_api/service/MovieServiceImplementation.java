@@ -92,8 +92,12 @@ public class MovieServiceImplementation implements IMovieService {
 
         //* PARSEO DE IMAGENES
         JsonArray imagesArray = movieDAO.getImages(movieId);
+        int final IMAGES_LIMIT = 15;
+        int counter = 0;
 
         for (JsonElement imageJson : imagesArray){
+            if (counter >= IMAGES_LIMIT) break;
+
             JsonObject imageObject = imageJson.getAsJsonObject();
             MovieImageDTO imageDTO = new MovieImageDTO();
 
@@ -104,7 +108,7 @@ public class MovieServiceImplementation implements IMovieService {
                 imageDTO.setImagePath(ImageLinks.imageTypeToLink(IMAGE_TYPE.BACKDROP, imageObject.get("file_path").getAsString()));
                 images.add(imageDTO);
             }catch (Exception ignored){}
-
+            counter++;
         }
         movieDetails.setMovieImages(images);
 
