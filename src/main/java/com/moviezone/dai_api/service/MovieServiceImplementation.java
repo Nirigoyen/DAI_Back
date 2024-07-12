@@ -92,7 +92,7 @@ public class MovieServiceImplementation implements IMovieService {
 
         //* PARSEO DE IMAGENES
         JsonArray imagesArray = movieDAO.getImages(movieId);
-        int final IMAGES_LIMIT = 15;
+        final int IMAGES_LIMIT = 15;
         int counter = 0;
 
         for (JsonElement imageJson : imagesArray){
