@@ -1,5 +1,7 @@
 package com.moviezone.dai_api.model.dto;
 
+import java.util.List;
+
 public class FavDTO {
     int id;
     String title;
@@ -8,6 +10,7 @@ public class FavDTO {
     String movieId;
     double averageScore;
     double userScore;
+    List<GenreDTO> genres;
 
 
     public FavDTO(int id, String title, String posterPath, String overview, double averageScore, double userScore) {
@@ -20,6 +23,14 @@ public class FavDTO {
     }
 
     public FavDTO() {
+    }
+
+    public List<GenreDTO> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<GenreDTO> genres) {
+        this.genres = genres;
     }
 
     public String getMovieId() {

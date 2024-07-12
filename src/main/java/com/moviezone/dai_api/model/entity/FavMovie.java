@@ -3,6 +3,8 @@ package com.moviezone.dai_api.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Favourites")
 public class FavMovie {
@@ -18,7 +20,8 @@ public class FavMovie {
     @ManyToOne
     private User user;
 
-
+    @ManyToMany
+    private List<Genre> genres;
 
     public FavMovie(int id, String title, String posterPath, String overview, double averageScore, double userScore) {
         this.id = id;
@@ -26,6 +29,14 @@ public class FavMovie {
         this.posterPath = posterPath;
         this.overview = overview;
         this.averageScore = averageScore;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
     }
 
     public FavMovie() {

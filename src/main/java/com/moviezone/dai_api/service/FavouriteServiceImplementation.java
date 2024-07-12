@@ -4,8 +4,10 @@ import com.moviezone.dai_api.model.dao.IFavouriteDAO;
 import com.moviezone.dai_api.model.dao.IRatingDAO;
 import com.moviezone.dai_api.model.dao.IUserDAO;
 import com.moviezone.dai_api.model.dto.FavDTO;
+import com.moviezone.dai_api.model.dto.GenreDTO;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
 import com.moviezone.dai_api.model.entity.FavMovie;
+import com.moviezone.dai_api.model.entity.Genre;
 import com.moviezone.dai_api.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,10 @@ public class FavouriteServiceImplementation implements IFavouriteService{
     private IFavouriteDAO favouriteDAO;
 
     @Autowired
-    private IRatingDAO ratingDAO;
+    private IRatingService ratingService;
+
+    @Autowired
+    private IGenreService genreService;
 
     @Autowired
     private IUserDAO userDAO;
@@ -63,6 +68,12 @@ public class FavouriteServiceImplementation implements IFavouriteService{
         favMovie.setOverview(fav.getOverview());
         favMovie.setPosterPath(fav.getPosterPath());
 
+        List<Genre> genres = new ArrayList<>();
+        for(GenreDTO genreDTO : fav.getGenres()){
+            genres.add(genreService.getGenreById(genreDTO.getGenreId()));
+        }
+        favMovie.setGenres(genres);
+
         return favMovie;
     }
 
@@ -73,8 +84,14 @@ public class FavouriteServiceImplementation implements IFavouriteService{
         favDTO.setTitle(fav.getTitle());
         favDTO.setOverview(fav.getOverview());
         favDTO.setPosterPath(fav.getPosterPath());
-        favDTO.setUserScore((ratingDAO.getRatingByUserAndMovie(fav.getMovieId(), fav.getUser().getId()).getRating()));
+        favDTO.setUserScore((ratingService.getRatingByUserAndMovie(fav.getMovieId(), fav.getUser().getId())));
         favDTO.setId(fav.getId());
+
+        List<GenreDTO> genreDTOs = new ArrayList<>();
+        for(Genre genre : fav.getGenres()){
+            genreDTOs.add(genreService.toDTO(genre));
+        }
+        favDTO.setGenres(genreDTOs);
 
         return favDTO;
     }
