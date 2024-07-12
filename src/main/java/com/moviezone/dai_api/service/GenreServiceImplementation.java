@@ -13,8 +13,8 @@ public class GenreServiceImplementation implements IGenreService{
     private IGenreDAO genreDAO;
 
     @Override
-    public GenreDTO getGenreById(int id) {
-        return toDTO(genreDAO.getGenreById(id));
+    public Genre getGenreById(int id) {
+        return genreDAO.getGenreById(id);
     }
 
 
