@@ -1,18 +1,15 @@
 package com.moviezone.dai_api.model.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 
 @Entity
 public class Genre {
     @Id
     private int id;
-    @Enumerated(EnumType.STRING)
-    private GenreName genre;
+    private String genre;
 
-    public Genre(int id, GenreName genre) {
+    public Genre(int id, String genre) {
         this.id = id;
         this.genre = genre;
     }
@@ -28,11 +25,11 @@ public class Genre {
         this.id = id;
     }
 
-    public GenreName getGenre() {
+    public String getGenre() {
         return genre;
     }
 
-    public void setGenre(GenreName genre) {
+    public void setGenre(String genre) {
         this.genre = genre;
     }
 }
