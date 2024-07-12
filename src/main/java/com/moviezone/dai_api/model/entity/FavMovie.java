@@ -14,7 +14,6 @@ public class FavMovie {
     private String posterPath;
     private String overview;
     private double averageScore;
-    private double userScore;
 
     @ManyToOne
     private User user;
@@ -27,7 +26,6 @@ public class FavMovie {
         this.posterPath = posterPath;
         this.overview = overview;
         this.averageScore = averageScore;
-        this.userScore = userScore;
     }
 
     public FavMovie() {
@@ -81,13 +79,6 @@ public class FavMovie {
         this.averageScore = averageScore;
     }
 
-    public double getUserScore() {
-        return userScore;
-    }
-
-    public void setUserScore(double userScore) {
-        this.userScore = userScore;
-    }
 
     public String getTitle() {
         return title;

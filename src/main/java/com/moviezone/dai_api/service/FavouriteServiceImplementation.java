@@ -1,6 +1,7 @@
 package com.moviezone.dai_api.service;
 
 import com.moviezone.dai_api.model.dao.IFavouriteDAO;
+import com.moviezone.dai_api.model.dao.IRatingDAO;
 import com.moviezone.dai_api.model.dao.IUserDAO;
 import com.moviezone.dai_api.model.dto.FavDTO;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
@@ -17,6 +18,9 @@ public class FavouriteServiceImplementation implements IFavouriteService{
 
     @Autowired
     private IFavouriteDAO favouriteDAO;
+
+    @Autowired
+    private IRatingDAO ratingDAO;
 
     @Autowired
     private IUserDAO userDAO;
@@ -58,7 +62,6 @@ public class FavouriteServiceImplementation implements IFavouriteService{
         favMovie.setTitle(fav.getTitle());
         favMovie.setOverview(fav.getOverview());
         favMovie.setPosterPath(fav.getPosterPath());
-        favMovie.setUserScore(fav.getUserScore());
 
         return favMovie;
     }
@@ -70,7 +73,7 @@ public class FavouriteServiceImplementation implements IFavouriteService{
         favDTO.setTitle(fav.getTitle());
         favDTO.setOverview(fav.getOverview());
         favDTO.setPosterPath(fav.getPosterPath());
-        favDTO.setUserScore(fav.getUserScore());
+        favDTO.setUserScore((ratingDAO.getRatingByUserAndMovie(fav.getMovieId(), fav.getUser().getId()).getRating()));
         favDTO.setId(fav.getId());
 
         return favDTO;
