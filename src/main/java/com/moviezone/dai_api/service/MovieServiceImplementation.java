@@ -11,7 +11,6 @@ import com.moviezone.dai_api.utils.ImageLinks;
 import com.moviezone.dai_api.utils.CertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.moviezone.dai_api.utils.TrailerLinks;
 
 import java.util.*;
 
@@ -241,11 +240,7 @@ public class MovieServiceImplementation implements IMovieService {
         }
 
         //? PAGINADO
-//        System.err.println(result);
-//        System.err.println(result.size());
-//        System.err.println(Math.ceil((double) result.size() / 39));
-
-        if (Math.ceil((double) result.size() / 39) < Integer.parseInt(page)) return new ArrayList<MovieComponentDTO>();
+        if (Math.ceil((double) result.size() / 39) < Integer.parseInt(page)) return new ArrayList<>();
 
         List<MovieComponentDTO> moviePage = getPartition(result, Integer.parseInt(page) - 1);
         System.err.println(moviePage);
@@ -257,9 +252,7 @@ public class MovieServiceImplementation implements IMovieService {
         int startIndex = partitionIndex * pageSize;
         int endIndex = Math.min(startIndex + pageSize, list.size());
 
-        List<MovieComponentDTO> aux = new ArrayList<>();
-        aux.addAll(list);
-
+        List<MovieComponentDTO> aux = new ArrayList<>(list);
 
         return aux.subList(startIndex, endIndex);
     }
