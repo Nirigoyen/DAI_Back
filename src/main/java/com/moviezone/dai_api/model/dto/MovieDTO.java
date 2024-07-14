@@ -18,6 +18,7 @@ public class MovieDTO {
     private String movieTrailerYTKey;
     private List<CastDTO> movieCast;
     private List<MovieImageDTO> movieImages;
+    private boolean isFavorite;
 
     public MovieDTO() {
     }
@@ -143,5 +144,13 @@ public class MovieDTO {
 
     public void setMovieImages(List<MovieImageDTO> movieImages) {
         this.movieImages = movieImages;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

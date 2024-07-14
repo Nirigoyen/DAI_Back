@@ -6,6 +6,7 @@ import com.moviezone.dai_api.model.dao.IUserDAO;
 import com.moviezone.dai_api.model.dto.FavDTO;
 import com.moviezone.dai_api.model.dto.GenreDTO;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
+import com.moviezone.dai_api.model.dto.MovieDTO;
 import com.moviezone.dai_api.model.entity.FavMovie;
 import com.moviezone.dai_api.model.entity.Genre;
 import com.moviezone.dai_api.model.entity.User;
@@ -94,6 +95,11 @@ public class FavouriteServiceImplementation implements IFavouriteService{
         favDTO.setGenres(genreDTOs);
 
         return favDTO;
+    }
+
+    @Override
+    public boolean isFavourite(String userId, String movieId) {
+        return favouriteDAO.isFavourite(userId, movieId);
     }
 }
 

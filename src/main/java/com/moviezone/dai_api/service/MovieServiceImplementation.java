@@ -23,6 +23,8 @@ public class MovieServiceImplementation implements IMovieService {
 
     @Autowired
     private RatingServiceImplementation ratingService;
+    @Autowired
+    private FavouriteServiceImplementation favouriteServiceImplementation;
 
     public MovieDTO getMovieDetails(int movieId, String userId) { //! NO IMPLEMENTADO AUN
 
@@ -123,6 +125,9 @@ public class MovieServiceImplementation implements IMovieService {
         int score = ratingService.getRatingByUserAndMovie(String.valueOf(movieId), userId);
         if (score == -1) movieDetails.setMovieUserRating(0);
         else movieDetails.setMovieUserRating(score);
+        
+        //* FAVORITO
+        movieDetails.setFavorite(favouriteServiceImplementation.isFavourite(userId, String.valueOf(movieId)));
 
         return movieDetails;
     }

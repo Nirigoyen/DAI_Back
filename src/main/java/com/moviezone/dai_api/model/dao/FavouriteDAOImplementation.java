@@ -42,4 +42,14 @@ public class FavouriteDAOImplementation implements IFavouriteDAO{
         getQuery.setParameter("userId", userId);
         return getQuery.getResultList();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isFavourite(String userId, String movieId) {
+        Session currentSession = entityManager.unwrap(Session.class);
+        Query<FavMovie> getQuery = currentSession.createQuery("from FavMovie where user.userId=:userId and movieId=:movieId", FavMovie.class);
+        getQuery.setParameter("userId", userId);
+        getQuery.setParameter("movieId", movieId);
+        return getQuery.uniqueResult() != null;
+    }
 }
