@@ -34,6 +34,8 @@ public class FavouriteServiceImplementation implements IFavouriteService{
     @Override
     public FavDTO addFavourite(FavDTO fav, String userId) {
 
+        if (isFavourite(userId, fav.getMovieId())) return null;
+
         FavMovie favMovie = toModel(fav);
         User user = userDAO.findUserById(userId);
 

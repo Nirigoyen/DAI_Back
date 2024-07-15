@@ -28,6 +28,8 @@ public class FavouritesController {
         if(userService.getUser(userId) == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         FavDTO response = favouriteService.addFavourite(favMovie, userId);
+
+        if (response == null) return new ResponseEntity<>("Already a Favourite.", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
