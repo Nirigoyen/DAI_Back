@@ -34,12 +34,12 @@ public class FavouritesController {
     }
 
     @DeleteMapping(value = "/{userId}")
-    public ResponseEntity<?> deleteFav(@PathVariable String userId, @RequestBody MovieIdDTO movie)
+    public ResponseEntity<?> deleteFav(@PathVariable String userId, @RequestParam int movie)
     {
         if(userId == null || userId.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         if(userService.getUser(userId) == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        favouriteService.removeFavourite(userId, String.valueOf(movie.getMovieId()));
+        favouriteService.removeFavourite(userId, String.valueOf(movie));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
