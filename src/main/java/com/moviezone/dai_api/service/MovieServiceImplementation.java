@@ -88,6 +88,9 @@ public class MovieServiceImplementation implements IMovieService {
             if(crewJsonObject.get("job").getAsString().equals("Director")) movieDetails.setMovieDirector(crewJsonObject.get("name").getAsString());
         }
 
+        if(movieDetails.getMovieDirector() == null) movieDetails.setMovieDirector("No contiene director");
+        System.err.println("DIRECTOR: " +  movieDetails.getMovieDirector());
+
         //* IMAGENES
         List<MovieImageDTO> images = new ArrayList<>();
 
