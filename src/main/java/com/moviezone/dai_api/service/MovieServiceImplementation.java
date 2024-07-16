@@ -122,8 +122,7 @@ public class MovieServiceImplementation implements IMovieService {
 
         //* RATING
         int score = ratingService.getRatingByUserAndMovie(String.valueOf(movieId), userId);
-        if (score == -1) movieDetails.setMovieUserRating(0);
-        else movieDetails.setMovieUserRating(score);
+        movieDetails.setMovieUserRating(score);
         
         //* FAVORITO
         movieDetails.setFavorite(favouriteServiceImplementation.isFavourite(userId, String.valueOf(movieId)));

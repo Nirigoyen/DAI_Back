@@ -16,12 +16,12 @@ public class RatingController {
     private IRatingService ratingService;
 
     @GetMapping(value = "")
-    public ResponseEntity<?> getRating(@RequestBody RatingDTO ratingDTO) {
+    public ResponseEntity<?> getRating(@RequestParam String movieId, @RequestParam String userId) {
 
-        if (ratingDTO == null || ratingDTO.getMovieId().isEmpty() || ratingDTO.getUserId().isEmpty())
+        if (movieId == null || movieId.isEmpty() || userId == null || userId.isEmpty())
             return new ResponseEntity<>("Missing parameters", HttpStatus.BAD_REQUEST);
 
-        int result = ratingService.getRatingByUserAndMovie(ratingDTO.getMovieId(), ratingDTO.getUserId());
+        int result = ratingService.getRatingByUserAndMovie(movieId, userId);
 
         if (result != -1) return new ResponseEntity<>(result, HttpStatus.OK);
 

@@ -61,7 +61,7 @@ public class RatingServiceImplementation implements IRatingService{
 
         Rating rating = ratingDAO.getRatingByUserAndMovie(movieId, userId);
         if (rating == null) {
-            return 0;
+            return -1;
         }
         else {
             return rating.getRating();
