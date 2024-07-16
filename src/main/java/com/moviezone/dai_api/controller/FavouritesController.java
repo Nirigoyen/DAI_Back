@@ -44,12 +44,12 @@ public class FavouritesController {
     }
 
     @GetMapping(value = "/{userId}")
-    public ResponseEntity<?> getAllFromUser(@PathVariable String userId)
+    public ResponseEntity<?> getAllFromUser(@PathVariable String userId, @RequestParam String genres)
     {
         if(userId == null || userId.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         if(userService.getUser(userId) == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        List<FavDTO> favourites = favouriteService.getFavouritesFromUser(userId);
+        List<FavDTO> favourites = favouriteService.getFavouritesFromUser(userId, genres);
         return new ResponseEntity<>(favourites, HttpStatus.OK);
     }
 

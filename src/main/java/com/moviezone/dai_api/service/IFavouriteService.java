@@ -9,6 +9,6 @@ import java.util.List;
 public interface IFavouriteService {
     public FavDTO addFavourite(FavDTO fmovie, String userId);
     public void removeFavourite(String userId, String movieId);
-    public List<FavDTO> getFavouritesFromUser(String userId);
+    public List<FavDTO> getFavouritesFromUser(String userId, String genres);
     public boolean isFavourite(String userId, String movieId);
 }

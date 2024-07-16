@@ -11,6 +11,7 @@ import com.moviezone.dai_api.model.entity.FavMovie;
 import com.moviezone.dai_api.model.entity.Genre;
 import com.moviezone.dai_api.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ public class FavouriteServiceImplementation implements IFavouriteService{
 
     @Autowired
     private IUserDAO userDAO;
+    @Autowired
+    private SecurityExpressionHandler webSecurityExpressionHandler;
 
     @Override
     public FavDTO addFavourite(FavDTO fav, String userId) {
@@ -54,13 +57,34 @@ public class FavouriteServiceImplementation implements IFavouriteService{
     }
 
     @Override
-    public List<FavDTO> getFavouritesFromUser(String userId) {
+    public List<FavDTO> getFavouritesFromUser(String userId, String genres) {
+
+        ArrayList<String> genreList = new ArrayList<>(List.of(genres.split(",")));
+
+        List<FavDTO> response = new ArrayList<>();
+
         List<FavMovie> favMovies = favouriteDAO.getFavouritesByUser(userId);
-        List<FavDTO> favDTOs = new ArrayList<>();
-        for(FavMovie favMovie : favMovies){
-            favDTOs.add(toDTO(favMovie));
+
+        if (genreList.get(0).isEmpty()) {
+            for(FavMovie favMovie : favMovies){
+            response.add(toDTO(favMovie));
+            }
+            return response;
         }
-        return favDTOs;
+
+        for(FavMovie favMovie : favMovies){
+
+            ArrayList<Genre> favGenreList = new ArrayList<>(favMovie.getGenres());
+            ArrayList<String> favGenresIds = new ArrayList<>();
+            for(Genre genre : favGenreList){
+                favGenresIds.add(String.valueOf(genre.getId()));
+            }
+
+            if(favGenresIds.containsAll(genreList)){
+                response.add(toDTO(favMovie));
+            }
+        }
+        return response;
     }
 
     private FavMovie toModel(FavDTO fav) {
