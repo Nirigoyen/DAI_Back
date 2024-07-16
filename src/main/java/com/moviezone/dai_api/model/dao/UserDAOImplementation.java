@@ -59,6 +59,14 @@ public class UserDAOImplementation implements IUserDAO{
         DeleteRefreshTokenQuery.setParameter("id", userId);
         DeleteRefreshTokenQuery.executeUpdate();
 
+        Query DeleteFavourites = currentSession.createQuery("DELETE FROM FavMovie where user.userId=:id");
+        DeleteFavourites.setParameter("id", userId);
+        DeleteFavourites.executeUpdate();
+
+        Query DeleteRatings = currentSession.createQuery("DELETE FROM Rating where user.userId=:id");
+        DeleteRatings.setParameter("id", userId);
+        DeleteRatings.executeUpdate();
+
         Query theQuery = currentSession.createQuery("DELETE FROM User WHERE userId=:id");
         theQuery.setParameter("id", userId);
         theQuery.executeUpdate();
