@@ -97,7 +97,7 @@ public class MovieDAOImplementation implements IMovieDAO {
         String API_URL = "https://api.themoviedb.org/3/discover/movie" +
                 "?include_adult=false" +
                 "&include_video=false" +
-                "&language=es-AR" +
+                "&language=en-US" +
                 "&page=" + page +
                 "&primary_release_date.lte=" + fecha_actual +
                 "&sort_by=primary_release_date.desc&with_genres=" + genres;
