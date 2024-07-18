@@ -9,4 +9,6 @@ public interface IFavouriteDAO {
     public void removeFavourite(String userId, String movieId);
     public List<FavMovie> getFavouritesByUser(String userId);
     public boolean isFavourite(String userId, String movieId);
+    public FavMovie getFavouriteByMovieId(String movieId, String userId);
+    public void updateFavourite(FavMovie fmovie);
 }

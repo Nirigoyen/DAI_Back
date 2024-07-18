@@ -11,4 +11,5 @@ public interface IFavouriteService {
     public void removeFavourite(String userId, String movieId);
     public List<FavDTO> getFavouritesFromUser(String userId, String genres);
     public boolean isFavourite(String userId, String movieId);
+    public FavDTO updateFavRatings(String userId, FavDTO fmovie);
 }

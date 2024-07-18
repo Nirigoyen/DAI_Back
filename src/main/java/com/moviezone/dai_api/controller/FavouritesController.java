@@ -2,6 +2,7 @@ package com.moviezone.dai_api.controller;
 
 import com.moviezone.dai_api.model.dto.FavDTO;
 import com.moviezone.dai_api.model.dto.MovieIdDTO;
+import com.moviezone.dai_api.model.dto.RatingDTO;
 import com.moviezone.dai_api.service.IFavouriteService;
 import com.moviezone.dai_api.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,16 @@ public class FavouritesController {
 
         List<FavDTO> favourites = favouriteService.getFavouritesFromUser(userId, genres);
         return new ResponseEntity<>(favourites, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{userId}")
+    public ResponseEntity<?> updateFavRatings(@PathVariable String userId, @RequestBody FavDTO fav){
+        if(userId == null || userId.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(userService.getUser(userId) == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        FavDTO response = favouriteService.updateFavRatings(userId, fav);
+        if (response == null) return new ResponseEntity<>("Favourite does not exists", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

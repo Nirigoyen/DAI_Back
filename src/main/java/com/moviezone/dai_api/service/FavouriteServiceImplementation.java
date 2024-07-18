@@ -127,5 +127,19 @@ public class FavouriteServiceImplementation implements IFavouriteService{
     public boolean isFavourite(String userId, String movieId) {
         return favouriteDAO.isFavourite(userId, movieId);
     }
+
+    @Override
+    public FavDTO updateFavRatings(String userId, FavDTO fmovie) {
+        FavMovie favToUpdate = favouriteDAO.getFavouriteByMovieId(fmovie.getMovieId(),userId);
+        System.err.println("FAV TO UPDATE: " + favToUpdate);
+
+        if(favToUpdate != null){
+            favToUpdate.setAverageScore(fmovie.getAverageScore());
+            favouriteDAO.updateFavourite(favToUpdate);
+
+            return fmovie;
+        }
+        return null;
+    }
 }
 
