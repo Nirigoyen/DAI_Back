@@ -68,4 +68,9 @@ public class RatingServiceImplementation implements IRatingService{
         }
     }
 
+    @Override
+    public int countRatings(String movieId) {
+        return ratingDAO.countRatings(movieId);
+    }
+
 }

@@ -9,4 +9,5 @@ public interface IRatingService {
     public int rateMovie(RatingDTO rating);
     public int getRatingByUserAndMovie(String movieId, String userId);
     public int updateRating(RatingDTO rating);
+    public int countRatings(String movieId);
 }

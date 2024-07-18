@@ -43,6 +43,7 @@ public class MovieServiceImplementation implements IMovieService {
         movieDetails.setMovieOverview(movie.get("overview").getAsString());
         movieDetails.setMovieRuntime(movie.get("runtime").getAsInt());
         movieDetails.setMovieVoteAverage(Float.parseFloat(movie.get("vote_average").toString()));
+        movieDetails.setVoteCount(movie.get("vote_count").getAsInt() + ratingService.countRatings(String.valueOf(movieId)));
 
         //* GENEROS
         List<GenreDTO> genres = new ArrayList<>();

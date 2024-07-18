@@ -19,6 +19,7 @@ public class MovieDTO {
     private List<CastDTO> movieCast;
     private List<MovieImageDTO> movieImages;
     private boolean isFavorite;
+    private int voteCount;
 
     public MovieDTO() {
     }
@@ -152,5 +153,13 @@ public class MovieDTO {
 
     public void setFavorite(boolean favorite) {
         isFavorite = favorite;
+    }
+
+    public int getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
     }
 }

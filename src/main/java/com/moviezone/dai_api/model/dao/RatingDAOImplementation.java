@@ -11,6 +11,8 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Repository
 public class RatingDAOImplementation implements IRatingDAO {
@@ -58,5 +60,17 @@ public class RatingDAOImplementation implements IRatingDAO {
         currentSession.update(rating);
 
         return rating.getRating();
+    }
+
+    @Override
+    @Transactional
+    public int countRatings (String movieId) {
+
+        Session currentSession = entityManager.unwrap(Session.class);
+
+        Query<Rating> theQuery = currentSession.createQuery("FROM Rating WHERE movie=:movieId", Rating.class);
+        theQuery.setParameter("movieId", movieId);
+        List<Rating> ratings = theQuery.getResultList();
+        return ratings.size();
     }
 }

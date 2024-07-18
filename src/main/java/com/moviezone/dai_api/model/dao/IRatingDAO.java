@@ -10,4 +10,5 @@ public interface IRatingDAO {
     public int rateMovie(String movieId, User user, int rating);
     public Rating getRatingByUserAndMovie(String movieId, String userId);
     public int modifyRating(Rating rating);
+    public int countRatings(String movieId);
 }
