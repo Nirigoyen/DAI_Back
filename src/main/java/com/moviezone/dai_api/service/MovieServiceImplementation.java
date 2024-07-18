@@ -43,6 +43,7 @@ public class MovieServiceImplementation implements IMovieService {
         movieDetails.setMovieReleaseDate(movie.get("release_date").getAsString());
         movieDetails.setMovieOverview(movie.get("overview").getAsString());
         movieDetails.setMovieRuntime(movie.get("runtime").getAsInt());
+        movieDetails.setMoviePosterPathDetails(ImageLinks.imageTypeToLink(IMAGE_TYPE.DETAILS, movie.get("poster_path").getAsString()));
 
         int tmdbUsersVoteCount = movie.get("vote_count").getAsInt();
         int usersVoteCount = ratingService.countRatings(String.valueOf(movieId));

@@ -4,5 +4,6 @@ public enum IMAGE_TYPE {
     POSTER,
     BACKDROP,
     LOGO,
-    PROFILE
+    PROFILE,
+    DETAILS
 }

@@ -20,6 +20,7 @@ public class MovieDTO {
     private List<MovieImageDTO> movieImages;
     private boolean isFavorite;
     private int voteCount;
+    private String moviePosterPathDetails;
 
     public MovieDTO() {
     }
@@ -161,5 +162,13 @@ public class MovieDTO {
 
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public String getMoviePosterPathDetails() {
+        return moviePosterPathDetails;
+    }
+
+    public void setMoviePosterPathDetails(String moviePosterPathDetails) {
+        this.moviePosterPathDetails = moviePosterPathDetails;
     }
 }
