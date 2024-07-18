@@ -77,6 +77,8 @@ public class RatingServiceImplementation implements IRatingService{
     public float getUsersAverageRatingByMovieId(String movieId) {
         List<Rating> userRatings = ratingDAO.getAllRatingsByMovieId(movieId);
 
+        if (userRatings.size() == 0) return 0;
+
         float ratingSum = 0;
         for(Rating userRating : userRatings) {
             ratingSum += userRating.getRating();
