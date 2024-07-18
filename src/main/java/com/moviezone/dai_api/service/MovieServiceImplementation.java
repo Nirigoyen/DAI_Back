@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.moviezone.dai_api.model.dao.IMovieDAO;
 import com.moviezone.dai_api.model.dto.*;
 import com.moviezone.dai_api.model.dto.MovieComponentDTO;
+import com.moviezone.dai_api.model.entity.Rating;
 import com.moviezone.dai_api.utils.IMAGE_TYPE;
 import com.moviezone.dai_api.utils.ImageLinks;
 import com.moviezone.dai_api.utils.CertUtil;
@@ -42,8 +43,23 @@ public class MovieServiceImplementation implements IMovieService {
         movieDetails.setMovieReleaseDate(movie.get("release_date").getAsString());
         movieDetails.setMovieOverview(movie.get("overview").getAsString());
         movieDetails.setMovieRuntime(movie.get("runtime").getAsInt());
-        movieDetails.setMovieVoteAverage(Float.parseFloat(movie.get("vote_average").toString()));
-        movieDetails.setVoteCount(movie.get("vote_count").getAsInt() + ratingService.countRatings(String.valueOf(movieId)));
+
+        int tmdbUsersVoteCount = movie.get("vote_count").getAsInt();
+        int usersVoteCount = ratingService.countRatings(String.valueOf(movieId));
+
+        float tmdbUsersAverageRating = Float.parseFloat(movie.get("vote_average").toString());
+        float userAverageRating = ratingService.getUsersAverageRatingByMovieId(movie.get("id").toString());
+
+        float tmdbUsersAverageTimesVoteCount = tmdbUsersAverageRating * tmdbUsersVoteCount;
+        float usersAverageTimesVoteCount = userAverageRating * usersVoteCount;
+        System.err.println("tmdbUsersAverageTimesVoteCount: " + tmdbUsersAverageTimesVoteCount);
+        System.err.println("usersAverageTimesVoteCount: " + usersAverageTimesVoteCount);
+
+        float totalAverageRating = (tmdbUsersAverageTimesVoteCount + usersAverageTimesVoteCount) / (tmdbUsersVoteCount + usersVoteCount);
+        System.err.println("TOTAL AVG RATING: " + totalAverageRating);
+
+        movieDetails.setMovieVoteAverage(totalAverageRating);
+        movieDetails.setVoteCount(usersVoteCount + tmdbUsersVoteCount);
 
         //* GENEROS
         List<GenreDTO> genres = new ArrayList<>();

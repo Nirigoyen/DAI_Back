@@ -73,4 +73,17 @@ public class RatingDAOImplementation implements IRatingDAO {
         List<Rating> ratings = theQuery.getResultList();
         return ratings.size();
     }
+
+    @Override
+    @Transactional
+    public List<Rating> getAllRatingsByMovieId(String movieId) {
+        Session currentSession = entityManager.unwrap(Session.class);
+        Query<Rating> theQuery = currentSession.createQuery("FROM Rating WHERE movie=:movieId", Rating.class);
+        theQuery.setParameter("movieId", movieId);
+        List<Rating> ratings = theQuery.getResultList();
+
+        return ratings;
+    }
+
+
 }

@@ -1,6 +1,5 @@
 package com.moviezone.dai_api.model.dao;
 
-import com.moviezone.dai_api.model.dto.RatingDTO;
 import com.moviezone.dai_api.model.entity.Rating;
 import com.moviezone.dai_api.model.entity.User;
 
@@ -11,4 +10,5 @@ public interface IRatingDAO {
     public Rating getRatingByUserAndMovie(String movieId, String userId);
     public int modifyRating(Rating rating);
     public int countRatings(String movieId);
+    public List<Rating> getAllRatingsByMovieId(String movieId);
 }
